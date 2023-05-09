@@ -63,5 +63,5 @@ app.use(session({
 ));
 
 app.get('/', (req, res) => {
-    res.send("Hello World");
+    res.render("templates/header");
 });
