@@ -65,3 +65,7 @@ app.use(session({
 app.get('/', (req, res) => {
     res.render("templates/header");
 });
+
+app.listen(port, () => {
+    console.log("Node application listening on port " + port);
+}); 
