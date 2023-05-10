@@ -65,3 +65,7 @@ app.use(session({
 app.get('/', (req, res) => {
     res.send("Hello World");
 });
+
+app.listen(port, () => {
+    console.log("Node application listening on port " + port);
+}); 
