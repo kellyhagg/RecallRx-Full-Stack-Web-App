@@ -74,14 +74,14 @@ function sessionValidation(req, res, next) {
     }
     //otherwise don't render and redirect to login
     else {
-        res.redirect('/login');
+        res.redirect("login.ejs");
     }
 }
 
 app.use('/loggedin', sessionValidation);
 app.get('/loggedin', (req, res) => {
     if (!req.session.authenticated) {
-        res.redirect('/login');
+        res.redirect('/login.ejs');
     }
     res.render("loggedin.ejs");
 });
