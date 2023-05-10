@@ -11,6 +11,7 @@ const saltRounds = 12;
 const port = process.env.PORT || 3000;
 
 const app = express();
+app.use(express.static("public"));
 
 const Joi = require("joi");
 const mongoSanitize = require('express-mongo-sanitize');
@@ -30,6 +31,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
+
 
 app.set('view engine', 'ejs');
 
@@ -63,5 +65,9 @@ app.use(session({
 ));
 
 app.get('/', (req, res) => {
-    res.send("Hello World");
+    res.render("settings");
+});
+
+app.listen(port, () => {
+    console.log(`Application is listening at http://localhost:${port}`);
 });
