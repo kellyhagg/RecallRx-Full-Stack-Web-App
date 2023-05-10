@@ -17,6 +17,15 @@
                 background-position: center;
                 height: 100vh;
             }
+
+            .text-end {
+                margin: 0;
+                position: relative;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+
+            }
         </style>
     </head>
 
@@ -24,84 +33,67 @@
 
         <!--This code was on https://mdbootstrap.com/docs/standard/extended/bootstrap-survey-form/ with adjustments and modifications made by Emma Lee -->
         <!---MMME Questionnaires obtained from https://cgatoolkit.ca/Uploads/ContentDocuments/MMSE.pdf -->
-        <div class="row col-5">
-            <h4 class="fw-bold text-center mt-3"></h4>
-            <form class=" bg-white px-4" action="">
-                <p class="fw-bold">1. What year is it? </p>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" />
-                    <label class="form-check-label" for="radioExample1">
-                        2022
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample2" />
-                    <label class="form-check-label" for="radioExample2">
-                        2023
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample3" />
-                    <label class="form-check-label" for="radioExample3">
-                        2024
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample4" />
-                    <label class="form-check-label" for="radioExample4">
-                        2025
-                    </label>
-                </div>
-                <br>
-            </form>
-            <form class=" bg-white px-4" action="">
-                <p class="fw-bold">2. Which of the following is NOT a school supply?</p>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" />
-                    <label class="form-check-label" for="radioExample1">
-                        Pencil
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample2" />
-                    <label class="form-check-label" for="radioExample2">
-                        Eraser
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample3" />
-                    <label class="form-check-label" for="radioExample3">
-                        Soap
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample4" />
-                    <label class="form-check-label" for="radioExample4">
-                        Backpack
-                    </label>
-                </div>
-                <br>
-            </form>
-            <form class=" bg-white px-4" action="">
-                <p class="fw-bold">3. Please complete the following: Take a paper in your hand, fold it in half, and
-                    put
-                    it on the floor.</p>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" />
-                    <label class="form-check-label" for="radioExample1">
-                        I was unable to complete it.
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="exampleForm" id="radioExample2" />
-                    <label class="form-check-label" for="radioExample2">
-                        It was able to complete it.
-                    </label>
-                </div>
-            </form>
-            <div class="text-end">
-                <button type="button" class="btn btn-primary">Submit</button>
+        <br>
+        <form class=" bg-white px-4" action="">
+            <p class="fw-bold">1. What year is it? </p>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" />
+                <label class="form-check-label" for="radioExample1">
+                    2022
+                </label>
             </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample2" />
+                <label class="form-check-label" for="radioExample2">
+                    2023
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample3" />
+                <label class="form-check-label" for="radioExample3">
+                    2024
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample4" />
+                <label class="form-check-label" for="radioExample4">
+                    2025
+                </label>
+            </div>
+            </div>
+            </div>
+        </form>
+        <br>
+        </div>
+        </div>
+        <form class=" bg-white px-4" action="">
+            <p class="fw-bold">2. Which of the following is a country in North America? </p>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" />
+                <label class="form-check-label" for="radioExample1">
+                    Austria
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample2" />
+                <label class="form-check-label" for="radioExample2">
+                    Canada
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample3" />
+                <label class="form-check-label" for="radioExample3">
+                    Italy
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample4" />
+                <label class="form-check-label" for="radioExample4">
+                    Austrlia
+                </label>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg">Submit</button>
+        </form>
         </div>
     </body>
 
