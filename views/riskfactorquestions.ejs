@@ -1,7 +1,20 @@
 <%- include("templates/header") %>
+<style>
+    body {
+        padding: 5%;
+    }
+
+    .btn-startrisksurvey {
+        background-color: #7B8B50;
+        border-color: #7B8B50;
+        color: #edf3de;
+    }
+</style>
+
+<!-- risk factor survey for users to fill out so the app can have an initial assessment of their cognitive health. -->
 
 <body class="d-flex flex-column justify-content-center align-items-center"
-    style="background-image: url('background-image.jpg'); background-size: cover;">
+    style="background-image: url('riskfactorsurvey.jpg'); background-size: cover;">
 
     <div class="container bg-light p-5 rounded">
         <h2 class="text-center mb-4">Risk Factor Survey</h2>
@@ -56,22 +69,22 @@
                     </label>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="depression" class="form-label">5. Do you have depression?</label>
-                <div>
+            <div class="form-group mb-3">
+                <label>5. Do you have depression?</label>
+                <div class="form-check">
                     <input class="form-check-input" type="radio" name="depression" id="depression-yes" value="yes">
                     <label class="form-check-label" for="depression-yes">
                         Yes
                     </label>
                 </div>
-                <div>
+                <div class="form-check">
                     <input class="form-check-input" type="radio" name="depression" id="depression-no" value="no">
                     <label class="form-check-label" for="depression-no">
                         No
                     </label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
         </form>
     </div>
 </body>
