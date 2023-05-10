@@ -6,6 +6,10 @@
     color: #EDF3DE;
 }
 
+.dark-pink {
+    color: #D88A63;
+}
+
 .white-font{
     color:white;
 }
@@ -72,4 +76,26 @@ div.form-group {
 
 .active-btn:active {
     font-weight: 600;
+}
+
+/* Edit pages style  */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    padding-left: 12px;
+    color: #25271C;
+}
+
+.font-md {
+    font-size: 1.1em;
+}
+
+.font-lg {
+    font-size: 1.3em;
+}
+
+/* Button */
+.pill {
+    width: 100%;
 }
