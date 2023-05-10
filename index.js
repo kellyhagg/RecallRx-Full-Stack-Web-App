@@ -86,17 +86,8 @@ app.get('/loggedin', (req, res) => {
     res.render("loggedin.ejs");
 });
 
-app.get('/loggedin/info', (req, res) => {
-    res.render("loggedin-info");
-});
-
-app.get('/logoutuser', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
-});
-
 app.get('/user', sessionValidation, async (req, res) => {
-    res.render("homepage.ejs")
+    res.redirect("/contact.html");
 });
 
 app.get('/logoutuser', (req, res) => {
