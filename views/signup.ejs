@@ -47,7 +47,7 @@
     </style>
 </head>
 
-<!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu -->
+<!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu, with size and color adaptation made. The Error message part is written with assistance of chatGPT -->
 
 <body>
     <div class="text-center">
@@ -62,6 +62,7 @@
         </form>
     </div>
 
+    <!-- Modified bootstrap modal, which is used to show the error message. -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -76,7 +77,7 @@
         </div>
     </div>
 
-    <!-- This block of code was written with assistance of chatGPT -->
+    <!-- Using array to store the missing fields, and then join them with a comma and space to form a string.  -->
     <script>
         function validateForm() {
             var username = document.getElementsByName("username")[0].value;
@@ -95,6 +96,7 @@
                 missingFields.push("Password");
             }
 
+            // if user miss any of the fields, the error message will show up.
             if (missingFields.length > 0) {
                 $("#errorMessage").html("Please provide " + missingFields.join(", ") + ".");
                 $("#myModal").modal("show");

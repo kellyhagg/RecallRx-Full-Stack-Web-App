@@ -70,6 +70,7 @@ app.get('/signup', (req, res) => {
     res.render('signup', { missing: req.query.missing });
 });
 
+
 app.use(express.static(__dirname + "/public"));
 
 app.listen(port, () => {
