@@ -1,0 +1,79 @@
+<%- include("templates/header") %>
+
+<body class="d-flex flex-column justify-content-center align-items-center"
+    style="background-image: url('background-image.jpg'); background-size: cover;">
+
+    <div class="container bg-light p-5 rounded">
+        <h2 class="text-center mb-4">Risk Factor Survey</h2>
+        <form>
+            <div class="form-group mb-3">
+                <label for="educationLevel">1. Please select your education level:</label>
+                <select class="form-control" id="educationLevel" name="educationLevel">
+                    <option value="lessThanSecondary">Less than secondary (high) school graduation</option>
+                    <option value="secondary">Secondary (high) school diploma or equivalent</option>
+                    <option value="postSecondary">Postsecondary certificate, diploma or degree</option>
+                    <option value="graduate">Graduate school and higher</option>
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <label for="age">2. What's your age?</label>
+                <select class="form-control" id="age" name="age">
+                    <option value="lessThan65">Less than 65</option>
+                    <option value="65-69">65 - 69</option>
+                    <option value="70-75">70 - 75</option>
+                    <option value="76-80">76 - 80</option>
+                    <option value="81-85">81 - 85</option>
+                    <option value="Over85">Over 85</option>
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <label>3. Do you smoke?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="smoke" id="smokeYes" value="yes">
+                    <label class="form-check-label" for="smokeYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="smoke" id="smokeNo" value="no" checked>
+                    <label class="form-check-label" for="smokeNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label>4. Do you have diabetes?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="diabetes" id="diabetesYes" value="yes">
+                    <label class="form-check-label" for="diabetesYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="diabetes" id="diabetesNo" value="no" checked>
+                    <label class="form-check-label" for="diabetesNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="depression" class="form-label">5. Do you have depression?</label>
+                <div>
+                    <input class="form-check-input" type="radio" name="depression" id="depression-yes" value="yes">
+                    <label class="form-check-label" for="depression-yes">
+                        Yes
+                    </label>
+                </div>
+                <div>
+                    <input class="form-check-input" type="radio" name="depression" id="depression-no" value="no">
+                    <label class="form-check-label" for="depression-no">
+                        No
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+
+<%- include("templates/footer") %>

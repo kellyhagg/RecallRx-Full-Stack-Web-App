@@ -70,6 +70,13 @@ app.get('/signup', (req, res) => {
     res.render('signup', { missing: req.query.missing });
 });
 
+app.get('/riskfactorsurvey', (req, res) => {
+    res.render('riskfactorsurvey');
+});
+
+app.get('/riskfactorquestions', (req, res) => {
+    res.render('riskfactorquestions');
+});
 
 app.use(express.static(__dirname + "/public"));
 
