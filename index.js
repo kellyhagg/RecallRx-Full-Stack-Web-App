@@ -68,6 +68,46 @@ app.get('/', (req, res) => {
     res.render("settings");
 });
 
+// Settings routes
+app.get('/settings', (req, res) => {
+    console.log("settings");
+    res.render("settings");
+});
+
+// User information update routes 
+app.get("/user-name-edit", (req, res) => { 
+    res.render("user-name-edit");
+});
+
+// app.post("/update-user-name/:userId", (req, res) => {
+app.post("/update-user-name", (req, res) => {
+    // add db update 
+    console.log("redirect to settings")
+    res.redirect("settings");
+});
+
+app.get("/email-edit", (req, res) => { 
+    console.log("email-edit");
+    res.render("email-edit");
+});
+
+app.post("/update-email/:userId", (req, res) => {
+    // add db update 
+    res.redirect("settings");
+});
+
+
+app.get("/password-change", (req, res) => { 
+    console.log("password-change");
+    res.render("password-change");
+});
+
+app.post("/update-password/:userId", (req, res) => {
+    // add db update 
+    res.redirect("settings");
+});
+
+
 app.listen(port, () => {
     console.log(`Application is listening at http://localhost:${port}`);
 });
