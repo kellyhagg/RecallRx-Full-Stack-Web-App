@@ -61,7 +61,7 @@ app.use(session({
 app.get('/', (req, res) => {
     console.log(req.url);
     console.log(url.parse(req.url));
-    res.render("mmse.ejs");
+    res.render("home.ejs");
 });
 
 app.use(express.static(__dirname + "/public"));
