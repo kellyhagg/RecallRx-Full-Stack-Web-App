@@ -1,0 +1,62 @@
+<!-- Header -->
+<%- include("templates/header") %>
+
+<!-- Settings Page -->
+
+
+
+<div class="container my-5">
+    <div class="d-flex align-items-center justify-content-center rounded-circle dark-green-background my-4 mx-auto">
+        <i class="fas fa-user-cog light-green header-icon"></i>
+    </div>
+
+    <div class="card light-green-border">
+        <!-- fill with user data from db -->
+        <div class="card-body card-background p-0 border-0 light-green-background">
+
+            <div class="form-group border-bottom dark-green-border">
+                <input type="text" class="form-control border-0 light-green-background focus" id="name" placeholder="Enter your name">
+            </div>
+
+            <div class="form-group border-bottom dark-green-border">
+                <input type="email" class="form-control border-0 light-green-background" id="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control border-0 light-green-background" id="password" placeholder="Enter your password">
+            </div>
+        </div>
+    </div>
+
+    <div class="card my-2 dark-green-background border-0 ">
+        <div class="card-body p-0 border-0 light-green-border ">
+            <div class="form-group border-bottom light-green-border group-height ">
+                <!-- add link to notifications page -->
+               <a href="#" class="reset-style white-font block active-btn">
+                    <div class="d-flex justify-content-between align-items-center button-padding block">
+                        <span>Notifications</span>
+                        <i class='fas fa-chevron-right'></i>
+                    </div>
+                </a>
+            </div>
+            <div class="form-group group-height ">
+                <!-- add link to Help and support page -->
+                <a href="#" class="reset-style white-font block active-btn">
+                    <div class="d-flex justify-content-between align-items-center button-padding block">
+                        <span>Help and support</span>
+                        <i class='fas fa-chevron-right'></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Sign out button -->
+<a href="/logout" class="link reset-style dark-green">
+    Sign Out
+</a>
+
+<!-- Footer -->
