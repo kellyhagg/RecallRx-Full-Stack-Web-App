@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('signup_background.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+
+        .form-signup {
+            margin: auto;
+            width: 300px;
+            max-width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .form-signup input[type="text"],
+        .form-signup input[type="email"],
+        .form-signup input[type="password"] {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            background-color: #778251;
+            border-color: #778251;
+        }
+    </style>
+</head>
+
+<!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu -->
+
+<body>
+    <div class="text-center">
+        <form class="form-signup" action="/riskfactorsurvey" method="post" onsubmit="return validateForm();">
+            <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
+            <input name="username" type="text" placeholder="Username">
+            <br>
+            <input name="email" type="email" placeholder="Email address">
+            <br>
+            <input name="password" type="password" placeholder="Password">
+            <button class="btn btn-lg btn-primary btn-block btn-submit" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Error</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- This block of code was written with assistance of chatGPT -->
+    <script>
+        function validateForm() {
+            var username = document.getElementsByName("username")[0].value;
+            var email = document.getElementsByName("email")[0].value;
+            var password = document.getElementsByName("password")[0].value;
+
+            var missingFields = [];
+
+            if (!username) {
+                missingFields.push("Username");
+            }
+            if (!email) {
+                missingFields.push("Email");
+            }
+            if (!password) {
+                missingFields.push("Password");
+            }
+
+            if (missingFields.length > 0) {
+                $("#errorMessage").html("Please provide " + missingFields.join(", ") + ".");
+                $("#myModal").modal("show");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

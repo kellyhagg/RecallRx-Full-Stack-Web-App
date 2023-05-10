@@ -63,5 +63,15 @@ app.use(session({
 ));
 
 app.get('/', (req, res) => {
-    res.send("Hello World");
+    res.render("index");
+});
+
+app.get('/signup', (req, res) => {
+    res.render('signup', { missing: req.query.missing });
+});
+
+app.use(express.static(__dirname + "/public"));
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
