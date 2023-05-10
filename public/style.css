@@ -1,0 +1,75 @@
+.dark-green{
+    color: #7B8B50;
+}
+
+.light-green {
+    color: #EDF3DE;
+}
+
+.white-font{
+    color:white;
+}
+
+.dark-green-background {
+    background-color: #7B8B50;
+}
+
+.light-green-background {
+    background-color: #EDF3DE;
+}
+
+.dark-green-border {
+    border-color: #7B8B50;
+}
+
+.light-green-border {
+    border-color: #EDF3DE;
+}
+
+a.reset-style {
+    text-decoration: none;
+}
+
+a.link  {
+    font-weight: 500;
+}
+
+div.form-group {
+    border-bottom: 1px;
+}
+
+.transparent-background {
+    background-color: transparent;
+}
+
+.button-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.group-height {
+    height: 36px;;
+}
+
+.block {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.rounded-circle,
+.header-icon {
+    height: 5em;
+    width: 5em;
+    font-size: 1.5em
+}
+
+
+.focus:focus {
+    background-color: #EDF3DE;
+    box-shadow: none;
+}
+
+.active-btn:active {
+    font-weight: 600;
+}
