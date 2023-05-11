@@ -114,6 +114,46 @@ app.get('/riskfactorquestions', (req, res) => {
     res.render('riskfactorquestions');
 });
 
+app.post('/riskfactorquestions', async (req, res) => {
+    const educationLevel = req.body.educationLevel;
+    const age = req.body.age;
+    const smoke = req.body.smoke;
+    const diabetes = req.body.diabetes;
+    const depression = req.body.depression;
+
+    const schema = Joi.object({
+        educationLevel: Joi.string().required(),
+        age: Joi.string().required(),
+        smoke: Joi.string().required(),
+        diabetes: Joi.string().required(),
+        depression: Joi.string().required(),
+    });
+
+    const validationResult = schema.validate({ educationLevel, age, smoke, diabetes, depression });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.redirect('/riskfactorquestions');
+        return;
+    }
+
+    await userCollection.insertOne({
+        educationLevel: educationLevel,
+        age: age,
+        smoke: smoke,
+        diabetes: diabetes,
+        depression: depression,
+    });
+
+    console.log('Inserted user survey through signup');
+
+    res.redirect('/surveyfinished');
+});
+
+
+app.get('/surveyfinished', (req, res) => {
+    res.render('surveyfinished');
+});
+
 app.use(express.static(__dirname + "/public"));
 
 app.listen(port, () => {
