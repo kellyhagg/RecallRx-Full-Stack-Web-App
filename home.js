@@ -6,7 +6,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const ObjectId = require('mongodb').ObjectId;
-const usersModel = require('./models/w2users');
+const usersModel = require('./models/w2users.js');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
@@ -17,7 +17,7 @@ const app = express();
 
 const Joi = require("joi");
 
-const expireTime = 60 * 60 * 1000;  //expires after 1 hour  (hours * minutes * seconds * millis)
+const expireTime = 1 * 60 * 60 * 1000;  //expires after 1 hour (hour * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -61,7 +61,7 @@ app.use(session({
 app.get('/', (req, res) => {
     console.log(req.url);
     console.log(url.parse(req.url));
-    res.render("mmse.ejs");
+    res.render("home.ejs");
 });
 
 app.use(express.static(__dirname + "/public"));
