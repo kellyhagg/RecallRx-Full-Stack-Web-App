@@ -85,26 +85,41 @@ app.get("/user-name-edit", async (req, res) => {
 
 app.post("/update-user-name/:userId", async (req, res) => {
   const userId = req.params.userId;
-  const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const newUserName = req.body.userName;
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { username: newUserName } }
   );
+  user = await userCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+  req.session.username = user.username;
   res.redirect("/settings");
 });
 
-app.get("/email-edit", (req, res) => {
-  //   const email = req.session.email;
-  const email = "test@gmail.com";
-  console.log("email-edit");
-  res.render("email-edit", { email: email });
+app.get("/email-edit", async (req, res) => {
+  const email = req.session.email;
+  const user = await userCollection
+    .find({ email: email })
+    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
+    .toArray();
+  res.render("email-edit", { user: user });
 });
 
-// app.post("/update-email/:userId", (req, res) => {
-app.post("/update-email", (req, res) => {
-  // add db update
-  res.redirect("settings");
+app.post("/update-email/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  const newEmail = req.body.email;
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { email: newEmail } }
+  );
+  user = await userCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+  req.session.email = user.email;
+  res.redirect("/settings");
 });
 
 app.get("/password-change", (req, res) => {
