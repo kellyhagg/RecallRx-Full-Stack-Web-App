@@ -176,3 +176,44 @@ input:checked~label {
     border-bottom: 1px solid;
     border-top: 1px solid;
 }
+
+/* Weekday Spinner */
+
+.spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 200px;
+    height: 50px;
+}
+
+.text-boxes {
+    display: flex;
+    justify-content: center;
+}
+
+.text-boxes input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    margin: 0 5px;
+}
+
+.spinner-value {
+    text-align: center;
+    font-size: 24px;
+    width: 120px;
+    margin: 0 10px;
+}
+
+.spinner-btn {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 24px;
+}
