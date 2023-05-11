@@ -1,0 +1,52 @@
+<%- include("templates/header", {headerMessage: headerMessage }) %>
+
+    <br><br>
+    <div class="card mx-auto rounded">
+        <div class="card-body">
+            <h3>What year is it?</h3>
+            <div class="text-boxes">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+            </div>
+            <br>
+            <h3>What month is it</h3>
+            <h3> (as a 2-digit number)?</h3>
+            <div class="text-boxes">
+                <input type="text" maxlength="2" style="width: 40%">
+            </div>
+            <style>
+                .text-boxes {
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .text-boxes input {
+                    width: 50px;
+                    height: 50px;
+                    text-align: center;
+                    border: 1px solid #ccc;
+                    border-radius: 0;
+                    margin: 0 5px;
+                }
+            </style>
+            <br>
+            <h3>What day of the week is it?</h3>
+            <div class="container">
+                <div class="row justify-content-center">
+
+                    <div class="spinner">
+                        <button class="up">&#9650;</button>
+                        <input type="text" class="value" value="Monday" readonly>
+                        <button class="down">&#9660;</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <br><br>
+    <%- include("templates/mmse-footer", {questionType : "sentence-recall" , mmseBtnText: "Next" }) %>
