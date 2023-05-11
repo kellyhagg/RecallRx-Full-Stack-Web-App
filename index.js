@@ -17,7 +17,7 @@ const app = express();
 
 const Joi = require("joi");
 
-const expireTime = 1 * 60 * 60 * 1000;  //expires after 1 hour (hour * minutes * seconds * millis)
+const expireTime = 60 * 60 * 1000;  //expires after 1 hour  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -61,7 +61,7 @@ app.use(session({
 app.get('/', (req, res) => {
     console.log(req.url);
     console.log(url.parse(req.url));
-    res.render("home.ejs");
+    res.render("mmse.ejs");
 });
 
 app.use(express.static(__dirname + "/public"));
