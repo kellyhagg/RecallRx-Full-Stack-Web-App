@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
-        body {
+        .signupsetting {
             background-image: url('signup_background.jpg');
             background-size: cover;
             background-position: center;
@@ -50,67 +50,70 @@
 <!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu, with size and color adaptation made. The Error message part is written with assistance of chatGPT -->
 
 <body>
-    <div class="text-center">
-        <form class="form-signup" action="/riskfactorsurvey" method="post" onsubmit="return validateForm();">
-            <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
-            <input name="username" type="text" placeholder="Username">
-            <br>
-            <input name="email" type="email" placeholder="Email address">
-            <br>
-            <input name="password" type="password" placeholder="Password">
-            <button class="btn btn-lg btn-primary btn-block btn-submit" type="submit">Submit</button>
-        </form>
-    </div>
+    <div class="signupsetting">
+        <div class="text-center">
+            <form class="form-signup" action="/riskfactorsurvey" method="post" onsubmit="return validateForm();">
+                <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
+                <input name="username" type="text" placeholder="Username">
+                <br>
+                <input name="email" type="email" placeholder="Email address">
+                <br>
+                <input name="password" type="password" placeholder="Password">
+                <button class="btn btn-lg btn-primary btn-block btn-submit" type="submit">Submit</button>
+            </form>
+        </div>
 
-    <!-- Modified bootstrap modal, which is used to show the error message. -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Error</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p id="errorMessage"></p>
+        <!-- Modified bootstrap modal, which is used to show the error message. -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Error</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage"></p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Using array to store the missing fields, and then join them with a comma and space to form a string.  -->
+        <script>
+            function validateForm() {
+                var username = document.getElementsByName("username")[0].value;
+                var email = document.getElementsByName("email")[0].value;
+                var password = document.getElementsByName("password")[0].value;
+
+                var missingFields = [];
+
+                if (!username) {
+                    missingFields.push("Username");
+                }
+                if (!email) {
+                    missingFields.push("Email");
+                }
+                if (!password) {
+                    missingFields.push("Password");
+                }
+
+                // if user miss any of the fields, the error message will show up.
+                if (missingFields.length > 0) {
+                    $("#errorMessage").html("Please provide " + missingFields.join(", ") + ".");
+                    $("#myModal").modal("show");
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     </div>
-
-    <!-- Using array to store the missing fields, and then join them with a comma and space to form a string.  -->
-    <script>
-        function validateForm() {
-            var username = document.getElementsByName("username")[0].value;
-            var email = document.getElementsByName("email")[0].value;
-            var password = document.getElementsByName("password")[0].value;
-
-            var missingFields = [];
-
-            if (!username) {
-                missingFields.push("Username");
-            }
-            if (!email) {
-                missingFields.push("Email");
-            }
-            if (!password) {
-                missingFields.push("Password");
-            }
-
-            // if user miss any of the fields, the error message will show up.
-            if (missingFields.length > 0) {
-                $("#errorMessage").html("Please provide " + missingFields.join(", ") + ".");
-                $("#myModal").modal("show");
-                return false;
-            }
-
-            return true;
-        }
-    </script>
-
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 
 </html>
