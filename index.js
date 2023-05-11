@@ -1,20 +1,25 @@
-
 require("./utils.js");
 
-require('dotenv').config();
-const express = require('express');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const bcrypt = require('bcrypt');
+require("dotenv").config();
+const express = require("express");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const bcrypt = require("bcrypt");
 const saltRounds = 12;
+const { ObjectId } = require("mongodb");
 
 const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.static("public"));
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.urlencoded({ extended: true }));
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 const Joi = require("joi");
-const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitize = require("express-mongo-sanitize");
 const { emit } = require("process");
 const { type } = require("os");
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
@@ -28,86 +33,90 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
-var { database } = include('databaseConnection');
+var { database } = include("databaseConnection");
 
-const userCollection = database.db(mongodb_database).collection('users');
+const userCollection = database.db(mongodb_database).collection("users");
 
-
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(mongoSanitize(
-    //{replaceWith: '%'}
-));
-
-// app.use(
-//     mongoSanitize({
-//       onSanitize: ({ req, key }) => {
-//         console.warn(`This request[${key}] is sanitized`);
-//       },
-//     }),
-//   );
-
 var mongoStore = MongoStore.create({
-    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-    crypto: {
-        secret: mongodb_session_secret
-    }
-})
+  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+  crypto: {
+    secret: mongodb_session_secret,
+  },
+});
 
-app.use(session({
+app.use(
+  session({
     secret: node_session_secret,
-    store: mongoStore, //default is memory store 
+    store: mongoStore, //default is memory store
     saveUninitialized: false,
-    resave: true
-}
-));
+    resave: true,
+  })
+);
 
-app.get('/', (req, res) => {
-    res.render("settings");
+app.get("/", (req, res) => {
+  const username = "Olga";
+  const email = "test@gmail.com";
+  console.log("settings");
+  res.render("login");
 });
 
 // Settings routes
-app.get('/settings', (req, res) => {
-    console.log("settings");
-    res.render("settings");
+app.get("/settings", (req, res) => {
+  const username = req.session.username;
+  const email = req.session.email;
+  console.log("settings");
+  res.render("settings", { userName: username, email: email });
 });
 
-// User information update routes 
-app.get("/user-name-edit", (req, res) => { 
-    res.render("user-name-edit");
+// User information update routes
+app.get("/user-name-edit", async (req, res) => {
+  const username = req.session.username;
+  const email = req.session.email;
+  const user = await userCollection
+    .find({ email: email })
+    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
+    .toArray();
+  res.render("user-name-edit", { user: user });
 });
 
-// app.post("/update-user-name/:userId", (req, res) => {
-app.post("/update-user-name", (req, res) => {
-    // add db update 
-    console.log("redirect to settings")
-    res.redirect("settings");
+app.post("/update-user-name/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  const newUserName = req.body.userName;
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { username: newUserName } }
+  );
+  res.redirect("/settings");
 });
 
-app.get("/email-edit", (req, res) => { 
-    console.log("email-edit");
-    res.render("email-edit");
+app.get("/email-edit", (req, res) => {
+  //   const email = req.session.email;
+  const email = "test@gmail.com";
+  console.log("email-edit");
+  res.render("email-edit", { email: email });
 });
 
-app.post("/update-email/:userId", (req, res) => {
-    // add db update 
-    res.redirect("settings");
+// app.post("/update-email/:userId", (req, res) => {
+app.post("/update-email", (req, res) => {
+  // add db update
+  res.redirect("settings");
 });
 
-
-app.get("/password-change", (req, res) => { 
-    console.log("password-change");
-    res.render("password-change");
+app.get("/password-change", (req, res) => {
+  console.log("password-change");
+  res.render("password-change");
 });
 
 app.post("/update-password/:userId", (req, res) => {
-    // add db update 
-    res.redirect("settings");
+  // add db update
+  res.redirect("settings");
 });
 
-
 app.listen(port, () => {
-    console.log(`Application is listening at http://localhost:${port}`);
+  console.log(`Application is listening at http://localhost:${port}`);
 });
