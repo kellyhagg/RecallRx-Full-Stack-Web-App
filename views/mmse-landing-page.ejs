@@ -1,0 +1,21 @@
+<%- include("templates/header", {headerMessage: headerMessage }) %>
+
+    <br><br>
+    <div class="card mx-auto rounded">
+        <div class="card-body">
+            <h4>You are about to complete an assessment of your cognition.</h4>
+            <br>
+            <h4>This assessment will require your <span class="dark-green">audio volume <i class="fas fa-volume-up">
+                    </i></span> to be turned up to an audible level prior to
+                starting.
+            </h4>
+            <br>
+            <h4>Press <span style="color: #778251;">Start</span> when you are ready.
+            </h4>
+            <br>
+            <br>
+        </div>
+    </div>
+    <br><br>
+
+    <%- include("templates/mmse-footer", {questionType : "landing-page" , mmseBtnText : "Start" }) %>
