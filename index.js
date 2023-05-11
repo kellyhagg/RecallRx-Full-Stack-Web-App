@@ -1,5 +1,3 @@
-//This code was modified from Emma Lee's COMP 2537 Assignment 2 
-
 require("./utils.js");
 
 const url = require('url');
@@ -8,6 +6,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const ObjectId = require('mongodb').ObjectId;
+const usersModel = require('./models/w2users');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
@@ -17,6 +16,8 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 const Joi = require("joi");
+
+const expireTime = 60 * 60 * 1000;  //expires after 1 hour  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -41,7 +42,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // initially was /session, now /test in mongoURL
 var mongoStore = MongoStore.create({
-    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@clustera1.squca6a.mongodb.net/test`,
+    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/test`,
     // mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/test`,
     crypto: {
         secret: mongodb_session_secret
@@ -57,41 +58,15 @@ app.use(session({
 }
 ));
 
-
-//AUTHENTICATION
-function isValidSession(req) {
-    if (req.session.authenticated) {
-        return true;
-    }
-    return false;
-}
-
-//session validation
-function sessionValidation(req, res, next) {
-    //if valid session call next action
-    if (isValidSession(req)) {
-        next();
-    }
-    //otherwise don't render and redirect to login
-    else {
-        res.redirect("login.ejs");
-    }
-}
-
-app.use('/loggedin', sessionValidation);
-app.get('/loggedin', (req, res) => {
-    if (!req.session.authenticated) {
-        res.redirect('/login.ejs');
-    }
-    res.render("loggedin.ejs");
+app.get('/', (req, res) => {
+    console.log(req.url);
+    console.log(url.parse(req.url));
+    res.render("mmse.ejs");
 });
 
-app.get('/user', sessionValidation, async (req, res) => {
-    res.redirect("/contact.html");
-});
+app.use(express.static(__dirname + "/public"));
 
-app.get('/logoutuser', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
-});
 
+app.listen(port, () => {
+    console.log("Node application listening on port " + port);
+});
