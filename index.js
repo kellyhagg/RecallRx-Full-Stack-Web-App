@@ -67,7 +67,38 @@ app.get('/', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render('signup', { missing: req.query.missing });
+    res.render('signup');
+});
+
+app.post('/signup', async (req, res) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const schema = Joi.object({
+        username: Joi.string().alphanum().max(20).required(),
+        email: Joi.string().max(20).required(),
+        password: Joi.string().max(20).required(),
+    });
+
+    const validationResult = schema.validate({ username, email, password });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.redirect('/signup');
+        return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    await userCollection.insertOne({
+        username: username,
+        email: email,
+        password: hashedPassword,
+    });
+
+    console.log('Inserted user through signup');
+
+    res.redirect('/riskfactorsurvey');
 });
 
 app.get('/riskfactorsurvey', (req, res) => {
