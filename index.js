@@ -122,14 +122,27 @@ app.post("/update-email/:userId", async (req, res) => {
   res.redirect("/settings");
 });
 
-app.get("/password-change", (req, res) => {
-  console.log("password-change");
-  res.render("password-change");
+app.get("/password-change", async (req, res) => {
+  const email = req.session.email;
+  const user = await userCollection
+    .find({ email: email })
+    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
+    .toArray();
+  res.render("password-change", { user: user });
 });
 
-app.post("/update-password/:userId", (req, res) => {
-  // add db update
-  res.redirect("settings");
+app.post("/update-password/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  const newPassword = req.body.password;
+
+  console.log(newPassword);
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { password: newPassword } }
+  );
+  console.log("password updated");
+  res.redirect("/settings");
 });
 
 app.listen(port, () => {
