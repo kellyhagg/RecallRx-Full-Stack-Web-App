@@ -70,17 +70,20 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
+// post method for signup
 app.post('/signup', async (req, res) => {
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
 
+    // validate the input style for username, email and password using Joi
     const schema = Joi.object({
         username: Joi.string().alphanum().max(20).required(),
         email: Joi.string().max(20).required(),
         password: Joi.string().max(20).required(),
     });
 
+    // validate the input
     const validationResult = schema.validate({ username, email, password });
     if (validationResult.error != null) {
         console.log(validationResult.error);
@@ -88,8 +91,10 @@ app.post('/signup', async (req, res) => {
         return;
     }
 
+    // hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // insert the user into the database
     await userCollection.insertOne({
         username: username,
         email: email,
@@ -98,10 +103,12 @@ app.post('/signup', async (req, res) => {
 
     console.log('Inserted user through signup');
 
+    // redirect to the risk factory survey page
     res.redirect('/riskfactorsurvey');
 });
 
 app.get('/logout', (req, res) => {
+    // kills the session when users click logout
     req.session.destroy();
     res.render("logout");
 });
@@ -114,6 +121,7 @@ app.get('/riskfactorquestions', (req, res) => {
     res.render('riskfactorquestions');
 });
 
+// post method for risk factor survey
 app.post('/riskfactorquestions', async (req, res) => {
     const educationLevel = req.body.educationLevel;
     const age = req.body.age;
@@ -121,6 +129,7 @@ app.post('/riskfactorquestions', async (req, res) => {
     const diabetes = req.body.diabetes;
     const depression = req.body.depression;
 
+    // validate the input style for educationLevel, age, smoke, diabetes and depression using Joi
     const schema = Joi.object({
         educationLevel: Joi.string().required(),
         age: Joi.string().required(),
@@ -129,6 +138,7 @@ app.post('/riskfactorquestions', async (req, res) => {
         depression: Joi.string().required(),
     });
 
+    // validate the input
     const validationResult = schema.validate({ educationLevel, age, smoke, diabetes, depression });
     if (validationResult.error != null) {
         console.log(validationResult.error);
@@ -136,6 +146,7 @@ app.post('/riskfactorquestions', async (req, res) => {
         return;
     }
 
+    // insert the user's risk factor survey results into the database
     await userCollection.insertOne({
         educationLevel: educationLevel,
         age: age,
