@@ -101,6 +101,11 @@ app.post('/signup', async (req, res) => {
     res.redirect('/riskfactorsurvey');
 });
 
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.render("logout");
+});
+
 app.get('/riskfactorsurvey', (req, res) => {
     res.render('riskfactorsurvey');
 });
