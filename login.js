@@ -90,7 +90,17 @@ app.get('/loggedin', (req, res) => {
 app.get('/', (req, res) => {
     console.log(req.url);
     console.log(url.parse(req.url));
-    res.render("login.ejs");
+    res.render("login");
+});
+
+app.get('/login', (req, res) => {
+    //Do wherever you want here like fetching data and show from the previous form.
+    res.render('login');
+});
+
+app.get('/email', (req, res) => {
+    //Do wherever you want here like fetching data and show from the previous form.
+    res.render('email');
 });
 
 app.get('/logoutuser', (req, res) => {

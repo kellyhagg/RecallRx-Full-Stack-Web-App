@@ -10,9 +10,18 @@
         KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <title>Document</title>
     <style>
+        .buttondiv {
+            text-align: center;
+        }
+
         body {
+            background-image: url('login.jpg');
             background-position: center;
             height: 100vh;
+        }
+
+        .pill {
+            width: 100%;
         }
     </style>
 </head>
@@ -20,22 +29,23 @@
 <body>
     <!--This code was on https://mdbootstrap.com/docs/standard/extended/login/ with adjustments and modifications made by Emma Lee -->
     <form>
+        <br>
         <div class="form-group">
-            <h1 style='text-align: center;'>Find your password </h1>
-            <h3 style=" text-align: center;"> Enter your recovery email </h3>
+            <h1 style="text-align: center; color: #778251;">Find your email </h1>
+            <h4 style=" text-align: center; color: #778251;"> Enter your recovery email </h4>
         </div>
         <div>
-
-            <input type="email" style="width: 100%; height: 50px" ; class="form-control" id="exampleInputEmail1"
+            <input type=" email" style="text-align: left; color: #778251;" class="form-control" id="exampleInputEmail1"
                 aria-describedby="emailHelp" placeholder="Email">
-            <span style="font-size: 2em; color: #778251;">
+            <br>
+            <br>
+            <div class="buttondiv">
+                <button type="button" class="btn dark-green-background pill white-font font-lg"
+                    style="background-color: #778251;">
+                    <h1>Submit</h1>
+                </button>
+            </div>
         </div>
-        <br>
-        <button type="next" class="btn dark-green-background pill white-font font-lg"
-            style="background-color: #778251;">
-            <h3>Next</h3>
-        </button>
-    </form>
 </body>
 
 </html>
