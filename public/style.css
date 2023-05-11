@@ -76,6 +76,13 @@
     color: #333;
 }
 
+.btn-back {
+    padding: 0;
+    padding-left: .25em;
+    padding-right: .25em;
+    margin: 0;
+}
+
 /* General */
 .dark-green {
     color: #7B8B50;
