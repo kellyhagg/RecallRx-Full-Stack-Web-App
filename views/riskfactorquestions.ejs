@@ -1,19 +1,8 @@
-<%- include("templates/header") %>
-<style>
-    .riskfactorquestion {
-        padding: 5%;
-    }
-
-    .btn-startrisksurvey {
-        background-color: #7B8B50;
-        border-color: #7B8B50;
-        color: #edf3de;
-    }
-</style>
+<%- include("templates/header", {headerMessage: "Risk Factor Survey Questions" }) %>
 
 <!-- risk factor survey for users to fill out so the app can have an initial assessment of their cognitive health. -->
 
-<body class="riskfactorquestion d-flex flex-column justify-content-center align-items-center"
+<div class="riskfactorquestion d-flex flex-column justify-content-center align-items-center"
     style="background-image: url('riskfactorsurvey.jpg'); background-size: cover;">
 
     <div class="container bg-light p-5 rounded">
@@ -87,6 +76,6 @@
             <button type="submit" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
         </form>
     </div>
-</body>
+</div>
 
 <%- include("templates/footer") %>

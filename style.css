@@ -1,8 +1,3 @@
-@media (max-width: 576px) {
-    .btn-lg {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.3rem;
-    }
+#myCarousel {
+    height: 600px;
 }

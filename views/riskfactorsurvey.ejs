@@ -1,36 +1,11 @@
-<%- include("templates/header") %>
-
-<style>
-    .riskfactorsurvey {
-        background-image: url('riskfactorsurvey.jpg');
-        background-size: cover;
-        background-position: center;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .text-center {
-        color: #35430e;
-    }
-
-    .btn-startrisksurvey {
-        background-color: #7B8B50;
-        border-color: #7B8B50;
-        color: #edf3de;
-    }
-</style>
+<%- include("templates/header", {headerMessage: "Risk Factor Survey" }) %>
 
 <!-- Clicking on the "Start The Survey" button will take the user to the survey questions page. -->
-
-<body>
-    <div class="text-center riskfactorsurvey">
-        <h2>Ready to optimize your cognitive health?</h2>
-        <p>Let's start by answering a few questions.</p>
-        <p class="lead">
-            <a href="/riskfactorquestions" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Start The Survey</a>
-        </p>
-    </div>
-</body>
+<div class="text-center riskfactorsurvey">
+    <h2>Ready to optimize your cognitive health?</h2>
+    <p>Let's start by answering a few questions.</p>
+    <p class="lead">
+        <a href="/riskfactorquestions" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Start The Survey</a>
+    </p>
+</div>
 <%- include("templates/footer") %>

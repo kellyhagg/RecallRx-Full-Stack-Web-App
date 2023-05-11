@@ -1,4 +1,4 @@
-<%- include("templates/header") %>
+<%- include("templates/header", {headerMessage: "Index" }) %>
 <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
@@ -66,15 +66,3 @@
         </a>
     </div>
 </div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-    integrity="sha384-/liUaO8/HAaCLrDyBQL5LWk5dkDIZH+RYL5/8Z38MweI3UksdQRVvoxMefEwwYmI"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"
-    integrity="sha512-rcC/6s+V7NwJnQ2V7ZuIivxT68Tqu43Ezq3r1D0UyH31QJ+GwRohB+nHLpOh1rgkaFPOfghIzl1aXZhTVGJeg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"
-    integrity="sha512-K01zL52zd0UBUN/V+uV7vjv0cY35p/LxD+0rHrJSkFz5Z5J6SyKIQ6Hnp2ImyvD6y3qixpH1r6rCmRUpw8M/gw=="
-    crossorigin="anonymous" referrerpolicy="no-ref
-<%- include("templates/footer") %></script>
