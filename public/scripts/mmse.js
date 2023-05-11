@@ -11,9 +11,11 @@ function speak() {
 
 function nextQuestionButton(questionType) {
     console.log(questionType)
-    var userInput = document.getElementById("mmse-input").value;
+    if (questionType == "landing-page") {
+        window.location.href = "/mmse-sentence-recall";
+    }
     if (questionType == "sentence-recall") {
-        console.log('The phone fell off of the shelf.');
+        var userInput = document.getElementById("mmse-input").value;
         verifySentence(userInput);
     }
 }
