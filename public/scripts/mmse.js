@@ -7,7 +7,7 @@ let index = 0;
 
 const upButton = document.querySelector(".up");
 const downButton = document.querySelector(".down");
-const value = document.querySelector(".value");
+const value = document.querySelector(".spinner-value");
 
 if (window.location.pathname == "/mmse-orientation") {
     upButton.addEventListener("click", () => {
