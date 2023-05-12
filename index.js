@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const ObjectId = require('mongodb').ObjectId;
 
 const port = process.env.PORT || 3000;
 
@@ -95,17 +96,26 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // insert the user into the database
-    await userCollection.insertOne({
+    const result = await userCollection.insertOne({
         username: username,
         email: email,
         password: hashedPassword,
+        educationLevel: null,
+        age: null,
+        smoke: null,
+        diabetes: null,
+        depression: null,
     });
 
     console.log('Inserted user through signup');
 
-    // redirect to the risk factory survey page
+    // store the user ID in the session
+    req.session.userId = result.insertedId;
+
+    // redirect to the risk factor survey page
     res.redirect('/riskfactorsurvey');
 });
+
 
 app.get('/logout', (req, res) => {
     // kills the session when users click logout
@@ -120,7 +130,6 @@ app.get('/riskfactorsurvey', (req, res) => {
 app.get('/riskfactorquestions', (req, res) => {
     res.render('riskfactorquestions');
 });
-
 // post method for risk factor survey
 app.post('/riskfactorquestions', async (req, res) => {
     const educationLevel = req.body.educationLevel;
@@ -146,16 +155,24 @@ app.post('/riskfactorquestions', async (req, res) => {
         return;
     }
 
-    // insert the user's risk factor survey results into the database
-    await userCollection.insertOne({
-        educationLevel: educationLevel,
-        age: age,
-        smoke: smoke,
-        diabetes: diabetes,
-        depression: depression,
-    });
+    // retrieve the user ID from the session
+    const userId = req.session.userId;
 
-    console.log('Inserted user survey through signup');
+    // insert the user's risk factor survey results into the database and save it to the same document
+    await userCollection.updateOne(
+        { _id: ObjectId(userId) },
+        {
+            $set: {
+                educationLevel: educationLevel,
+                age: age,
+                smoke: smoke,
+                diabetes: diabetes,
+                depression: depression,
+            }
+        }
+    );
+
+    console.log('Inserted user survey');
 
     res.redirect('/surveyfinished');
 });
