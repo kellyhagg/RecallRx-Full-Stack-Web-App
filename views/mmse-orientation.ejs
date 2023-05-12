@@ -3,7 +3,7 @@
     <br><br>
     <div class="card mx-auto rounded">
         <div class="card-body">
-            <h3>What year is it?</h3>
+            <h4>What year is it?</h4>
             <div class="text-boxes">
                 <input type="text" maxlength="1">
                 <input type="text" maxlength="1">
@@ -11,13 +11,13 @@
                 <input type="text" maxlength="1">
             </div>
             <br>
-            <h3>What month is it</h3>
-            <h3> (as a 2-digit number)?</h3>
+            <h4>What month is it</h4>
+            <h4> (as a 2-digit number)?</h4>
             <div class="text-boxes">
                 <input type="text" maxlength="2" style="width: 40%">
             </div>
             <br>
-            <h3>What day of the week is it?</h3>
+            <h4>What day of the week is it?</h4>
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="spinner">
@@ -30,4 +30,6 @@
         </div>
     </div>
     <br><br>
-    <%- include("templates/mmse-footer", {questionType : "sentence-recall" , mmseBtnText: "Next" }) %>
+
+    <%- include("templates/mmse-footer", {questionType : "orientation" , mmseBtnText: "Next" , reference
+        : "../../mmse-object-recall" }) %>

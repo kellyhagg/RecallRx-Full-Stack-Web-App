@@ -3,9 +3,9 @@
     <br><br>
     <div class="card mx-auto rounded">
         <div class="card-body">
-            <h3>Press the listen <i class="material-icons">&#xe023;</i> button and type the sentence you hear into the
+            <h4>Press the listen <i class="material-icons">&#xe023;</i> button and type the sentence you hear into the
                 text
-                box below then click submit.</h3>
+                box below then press <span style="color: #778251;">Next</span>.</h4>
             <br>
             <div class="d-flex justify-content-center">
                 <button class="btn btn-lg btn-submit btn-block btn-speak btn-mmse" onclick="speak()">Listen <i
@@ -17,4 +17,5 @@
         </div>
     </div>
     <br><br>
-    <%- include("templates/mmse-footer", {questionType : "sentence-recall" , mmseBtnText: "Next" }) %>
+    <%- include("templates/mmse-footer", {questionType : "sentence-recall" , mmseBtnText: "Next" , reference
+        : "../../mmse-word-reversal" }) %>

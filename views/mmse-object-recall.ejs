@@ -1,13 +1,19 @@
 <%- include("templates/header-back", {headerMessage: headerMessage }) %>
 
-    <br><br>
+
+    <br>
     <div class="card mx-auto rounded">
         <div class="card-body">
             <h4>Enter the name of the object shown in the text
-                box below then click submit.</h4>
-            <br>
+                box below then press <span style="color: #778251;">Next</span>. (<%=pageCount%>/3)</h4>
             <img src="/images/objects/<%= objectName %>.jpg" class="img-fluid mx-auto d-block" alt="Responsive image">
+            <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
+                id="mmse-input" placeholder="Type the name of the object here">
         </div>
+
     </div>
-    <br><br>
-    <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Next" }) %>
+    <br>
+    <% var text="Next" ; %>
+
+        <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: text, reference
+            : "../../mmse-object-recall" }); %>
