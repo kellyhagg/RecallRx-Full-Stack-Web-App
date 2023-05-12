@@ -1,0 +1,13 @@
+<%- include("templates/header-back", {headerMessage: headerMessage }) %>
+
+    <br><br>
+    <div class="card mx-auto rounded">
+        <div class="card-body">
+            <h4>Enter the name of the object shown in the text
+                box below then click submit.</h4>
+            <br>
+            <img src="/images/objects/<%= objectName %>.jpg" class="img-fluid mx-auto d-block" alt="Responsive image">
+        </div>
+    </div>
+    <br><br>
+    <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Next" }) %>
