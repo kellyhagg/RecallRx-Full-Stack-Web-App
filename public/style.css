@@ -1,0 +1,147 @@
+.dark-green {
+    color: #7B8B50;
+}
+
+.light-green {
+    color: #EDF3DE;
+}
+
+.dark-pink {
+    color: #D88A63;
+}
+
+.white-font {
+    color: white;
+}
+
+.faded-font {
+    color: #9a9a9a;
+}
+
+.dark-green-background {
+    background-color: #7B8B50;
+}
+
+.light-green-background {
+    background-color: #EDF3DE;
+}
+
+.white-background {
+    background-color: white;
+}
+
+.dark-green-border {
+    border-color: #7B8B50;
+}
+
+.light-green-border {
+    border-color: #EDF3DE;
+}
+
+a.reset-style {
+    text-decoration: none;
+}
+
+a.link {
+    font-weight: 500;
+}
+
+div.form-group {
+    border-bottom: 1px;
+}
+
+.transparent-background {
+    background-color: transparent;
+}
+
+.button-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.group-height {
+    height: 36px;
+    ;
+}
+
+.block {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.rounded-circle,
+.header-icon {
+    height: 5em;
+    width: 5em;
+    font-size: 1.5em
+}
+
+
+.focus:focus {
+    background-color: #EDF3DE;
+    box-shadow: none;
+}
+
+.active-btn:active {
+    font-weight: 600;
+}
+
+/* Edit pages style  */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    padding-left: 12px;
+    color: #25271C;
+}
+
+.light-font {
+    font-weight: 300;
+}
+
+.font-s {
+    font-size: 0.8em;;
+}
+
+.font-md {
+    font-size: 1.1em;
+}
+
+.font-lg {
+    font-size: 1.3em;
+}
+
+/* Button */
+.pill {
+    width: 100%;
+}
+
+/* Log in */
+.b-radius {
+    border-radius: 2%;
+}
+
+.shadow {
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+.block {
+    display: block;
+}
+
+input[type=email]:focus,
+input[type=password]:focus {
+    border-color: #7B8B50;
+    box-shadow: 0 0 5px #7B8B50;
+}
+
+.form-floating label {
+   display: inline-block;
+}
+
+.to-the-right {
+    text-decoration: none;
+    text-align: right;
+}
