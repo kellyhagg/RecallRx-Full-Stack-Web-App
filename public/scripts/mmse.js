@@ -3,13 +3,6 @@ let questionType;
 let pageCount;
 let sentence;
 
-// Function created by ChatGPT
-function speak() {
-    let utterance = new SpeechSynthesisUtterance('The phone fell off of the shelf.');
-    utterance.voice = speechSynthesis.getVoices()[0];
-    speechSynthesis.speak(utterance);
-}
-
 function getOrientationScore(questionType) {
     return 1;
 }
