@@ -203,8 +203,8 @@ input:checked~label {
 }
 
 .text-boxes input {
-    width: 50px;
-    height: 50px;
+    width: 100%;
+    height: 3em;
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 0;
