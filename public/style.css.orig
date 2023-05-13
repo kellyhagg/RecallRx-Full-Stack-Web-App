@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .navbar {
     /* display: none; */
     border-radius: 0 0 1.5em 1.5em;
@@ -84,6 +85,8 @@
 }
 
 /* General */
+=======
+>>>>>>> Olga_LogIn_Page
 .dark-green {
     color: #7B8B50;
 }
@@ -92,10 +95,24 @@
     color: #EDF3DE;
 }
 
+<<<<<<< HEAD
+=======
+.dark-pink {
+    color: #D88A63;
+}
+
+>>>>>>> Olga_LogIn_Page
 .white-font {
     color: white;
 }
 
+<<<<<<< HEAD
+=======
+.faded-font {
+    color: #9a9a9a;
+}
+
+>>>>>>> Olga_LogIn_Page
 .dark-green-background {
     background-color: #7B8B50;
 }
@@ -104,8 +121,13 @@
     background-color: #EDF3DE;
 }
 
+<<<<<<< HEAD
 .white-transparent-background {
     background-color: rgba(255, 255, 255, 0.2);
+=======
+.white-background {
+    background-color: white;
+>>>>>>> Olga_LogIn_Page
 }
 
 .dark-green-border {
@@ -116,6 +138,7 @@
     border-color: #EDF3DE;
 }
 
+<<<<<<< HEAD
 /* Notifications page */
 .form-label {
     font-weight: 600;
@@ -133,6 +156,32 @@
     background-color: #7B8B50;
     border-color: #7B8B50;
     box-shadow: none;
+=======
+a.reset-style {
+    text-decoration: none;
+}
+
+a.link {
+    font-weight: 500;
+}
+
+div.form-group {
+    border-bottom: 1px;
+}
+
+.transparent-background {
+    background-color: transparent;
+}
+
+.button-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.group-height {
+    height: 36px;
+    ;
+>>>>>>> Olga_LogIn_Page
 }
 
 .block {
@@ -141,6 +190,7 @@
     width: 100%;
 }
 
+<<<<<<< HEAD
 .height {
     height: 100%;
 }
@@ -300,78 +350,7 @@ input:checked~label {
     border-radius: 50px;
     padding: 5%;
 }
-.dark-green {
-    color: #7B8B50;
-}
-
-.light-green {
-    color: #EDF3DE;
-}
-
-.dark-pink {
-    color: #D88A63;
-}
-
-.white-font {
-    color: white;
-}
-
-.faded-font {
-    color: #9a9a9a;
-}
-
-.dark-green-background {
-    background-color: #7B8B50;
-}
-
-.light-green-background {
-    background-color: #EDF3DE;
-}
-
-.white-background {
-    background-color: white;
-}
-
-.dark-green-border {
-    border-color: #7B8B50;
-}
-
-.light-green-border {
-    border-color: #EDF3DE;
-}
-
-a.reset-style {
-    text-decoration: none;
-}
-
-a.link {
-    font-weight: 500;
-}
-
-div.form-group {
-    border-bottom: 1px;
-}
-
-.transparent-background {
-    background-color: transparent;
-}
-
-.button-padding {
-    padding-left: 12px;
-    padding-right: 12px;
-}
-
-.group-height {
-    height: 36px;
-    ;
-}
-
-.block {
-    display: block;
-    height: 100%;
-    width: 100%;
-}
-
+=======
 .rounded-circle,
 .header-icon {
     height: 5em;
@@ -447,3 +426,4 @@ input[type=password]:focus {
     text-decoration: none;
     text-align: right;
 }
+>>>>>>> Olga_LogIn_Page

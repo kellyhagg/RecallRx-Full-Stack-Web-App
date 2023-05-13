@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 require("./utils.js");
@@ -9,16 +10,27 @@ const bodyParser = require('body-parser');
 
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcrypt');
+=======
+// Import necessary modules and packages
+require("./utils.js");
+require("dotenv").config();
+const express = require("express");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const bcrypt = require("bcrypt");
+>>>>>>> Olga_LogIn_Page
 const saltRounds = 12;
 const ObjectId = require('mongodb').ObjectId;
 
+// Set up the port number to listen on
 const port = process.env.PORT || 3000;
 const number = 1
 
+// Create the Express application
 const app = express();
 
 const Joi = require("joi");
-const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitize = require("express-mongo-sanitize");
 const { emit } = require("process");
 const { type } = require("os");
 const { getOrientationScore, getWord, getReversalScore } = require("./public/scripts/mmse.js");
@@ -33,6 +45,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
+<<<<<<< HEAD
 const mmse = require('./public/scripts/mmse.js');
 
 var { database } = include('databaseConnection');
@@ -52,110 +65,37 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
+=======
+// Set up the view engine and static files
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+
+app.use(express.urlencoded({ extended: false }));
+
+// Connect to the database
+var { database } = include("databaseConnection");
+const userCollection = database.db(mongodb_database).collection("users");
+>>>>>>> Olga_LogIn_Page
 
 var mongoStore = MongoStore.create({
-    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-    crypto: {
-        secret: mongodb_session_secret
-    }
-})
+  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+  crypto: {
+    secret: mongodb_session_secret,
+  },
+});
 
-app.use(session({
+app.use(
+  session({
     secret: node_session_secret,
-    store: mongoStore, //default is memory store 
+    store: mongoStore, //default is memory store
     saveUninitialized: false,
-    resave: true
-}
-));
+    resave: true,
+  })
+);
 
 <<<<<<< HEAD
 app.use(express.static("public"));
 
-
-// app.get('/', (req, res) => {
-//     res.redirect('/mmse-landing-page');
-// });
-
-// app.post('/', async (req, res) => {
-//     res.redirect('/mmse-landing-page');
-// });
-
-app.get('/mmse-landing-page', (req, res) => {
-    res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
-});
-
-app.post('/mmse-landing-page', async (req, res) => {
-    res.redirect('/mmse-orientation');
-});
-
-app.get('/mmse-orientation', (req, res) => {
-    res.render("mmse-orientation.ejs", { headerMessage: "MMSE Questionnaire" });
-});
-
-app.post('/mmse-orientation', async (req, res) => {
-    var year = req.body.year;
-    var month = req.body.month;
-    var day = req.body.day;
-
-    userScore = userScore + getOrientationScore(year, month, day);
-    res.render("mmse-object-recall.ejs", { headerMessage: "MMSE Questionnaire", objectName: "scissors", pageCount: pageCount++ });
-    console.log("userScore: " + userScore);
-    return;
-});
-
-app.get('/mmse-object-recall', (req, res) => {
-    res.render("mmse-object-recall.ejs", { headerMessage: "MMSE Questionnaire", objectName: "scissors", pageCount: pageCount++ });
-});
-
-app.post('/mmse-object-recall', async (req, res) => {
-    if (pageCount <= 3) {
-        res.redirect('/mmse-object-recall');
-    } else {
-        pageCount = 1;
-        res.redirect('/mmse-sentence-recall');
-    }
-});
-
-app.get('/mmse-sentence-recall', (req, res) => {
-    res.render("mmse-sentence-recall.ejs", { headerMessage: "MMSE Questionnaire" });
-});
-
-app.post('/mmse-sentence-recall', async (req, res) => {
-    res.redirect('/mmse-word-reversal');
-});
-
-app.get('/mmse-word-reversal', async (req, res) => {
-    var word = getWord();
-    console.log("word: " + word);
-    res.render("mmse-word-reversal.ejs", { headerMessage: "MMSE Questionnaire", word: word, pageCount: pageCount++ });
-});
-
-app.post('/mmse-word-reversal', async (req, res) => {
-    const word = req.body.word;
-    console.log(req.body);
-    console.log("word in index: " + word);
-    const inputWord = req.body.inputWord;
-    userScore = userScore + getReversalScore(inputWord, word);
-    console.log("userScore: " + userScore);
-
-    if (pageCount <= 3) {
-        res.redirect('/mmse-word-reversal');
-    } else {
-        pageCount = 1;
-        res.redirect('/mmse-results');
-    }
-});
-
-app.get('/mmse-results', (req, res) => {
-    var score = parseInt(Math.round(userScore / 18 * 100));
-    res.render("mmse-results.ejs", { headerMessage: "MMSE Results", score: score });
-    userScore = 0;
-});
-
-app.listen(port, () => {
-    console.log("Node application listening on port " + port);
-}); 
-=======
 app.get('/', (req, res) => {
     res.render("index");
 });
@@ -275,9 +215,175 @@ app.get('/surveyfinished', (req, res) => {
     res.render('surveyfinished');
 });
 
+
+
+app.get('/mmse-landing-page', (req, res) => {
+    res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
+});
+
+app.post('/mmse-landing-page', async (req, res) => {
+    res.redirect('/mmse-orientation');
+});
+
+app.get('/mmse-orientation', (req, res) => {
+    res.render("mmse-orientation.ejs", { headerMessage: "MMSE Questionnaire" });
+});
+
+app.post('/mmse-orientation', async (req, res) => {
+    var year = req.body.year;
+    var month = req.body.month;
+    var day = req.body.day;
+
+    userScore = userScore + getOrientationScore(year, month, day);
+    res.render("mmse-object-recall.ejs", { headerMessage: "MMSE Questionnaire", objectName: "scissors", pageCount: pageCount++ });
+    console.log("userScore: " + userScore);
+    return;
+});
+
+app.get('/mmse-object-recall', (req, res) => {
+    res.render("mmse-object-recall.ejs", { headerMessage: "MMSE Questionnaire", objectName: "scissors", pageCount: pageCount++ });
+});
+
+app.post('/mmse-object-recall', async (req, res) => {
+    if (pageCount <= 3) {
+        res.redirect('/mmse-object-recall');
+    } else {
+        pageCount = 1;
+        res.redirect('/mmse-sentence-recall');
+    }
+});
+
+app.get('/mmse-sentence-recall', (req, res) => {
+    res.render("mmse-sentence-recall.ejs", { headerMessage: "MMSE Questionnaire" });
+});
+
+app.post('/mmse-sentence-recall', async (req, res) => {
+    res.redirect('/mmse-word-reversal');
+});
+
+app.get('/mmse-word-reversal', async (req, res) => {
+    var word = getWord();
+    console.log("word: " + word);
+    res.render("mmse-word-reversal.ejs", { headerMessage: "MMSE Questionnaire", word: word, pageCount: pageCount++ });
+});
+
+app.post('/mmse-word-reversal', async (req, res) => {
+    const word = req.body.word;
+    console.log(req.body);
+    console.log("word in index: " + word);
+    const inputWord = req.body.inputWord;
+    userScore = userScore + getReversalScore(inputWord, word);
+    console.log("userScore: " + userScore);
+
+    if (pageCount <= 3) {
+        res.redirect('/mmse-word-reversal');
+    } else {
+        pageCount = 1;
+        res.redirect('/mmse-results');
+    }
+});
+
+app.get('/mmse-results', (req, res) => {
+    var score = parseInt(Math.round(userScore / 18 * 100));
+    res.render("mmse-results.ejs", { headerMessage: "MMSE Results", score: score });
+    userScore = 0;
+});
+
 app.use(express.static(__dirname + "/public"));
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+}); 
+=======
+// Function to check if the user has a valid session
+function isValidSession(req) {
+  return req.session.authenticated;
+}
+
+// Middleware to validate user sessions
+function validateSession(req, res, next) {
+  if (isValidSession(req)) {
+    next();
+  } else {
+    res.redirect("login");
+  }
+}
+
+// Route for the home page
+app.get("/", (req, res) => {
+  //   res.send("Hello World");
+  res.redirect("/login");
 });
->>>>>>> Shuyi_Signup_RiskFactorSurvey
+
+// Login API
+// This block of code is modified from COMP 2537 Assignment 2 by Olga Zimina.
+
+// Render login page
+app.get("/login", (req, res) => {
+  res.render("login", { errorMsg: "", username: "" });
+});
+
+// Handle login form submission
+app.post("/login", async (req, res) => {
+  console.log("inside login");
+  var username = req.body.userName;
+  var password = req.body.password;
+
+  // Validate user input
+  const schema = Joi.object({
+    username: Joi.string().max(30).required(),
+    password: Joi.string().max(20).required(),
+  });
+
+  const validationResult = schema.validate({ username, password });
+  if (validationResult.error != null) {
+    console.log(validationResult.error);
+    res.redirect("/login");
+    return;
+  }
+  // Retrieve user information from database
+  const user = await userCollection
+    .find({ username: username })
+    .project({ username: 1, email: 1, password: 1, is_admin: 1, _id: 1 })
+    .toArray();
+  if (!user) {
+    console.log("User not found");
+    res.redirect("/loginFailure");
+    return;
+  }
+  // Check password match and set session variables
+  const passwordMatch = await bcrypt.compare(password, user[0].password);
+  if (passwordMatch) {
+    req.session.authenticated = true;
+    req.session.username = username;
+    req.session.email = user[0].email;
+    req.session.cookie.maxAge = expireTime;
+    res.redirect("/login");
+    return;
+  } else {
+    console.log("Invalid user name or password");
+    res.render("login", {
+      errorMsg: "Invalid user name or password",
+      username: username,
+    });
+    return;
+  }
+});
+
+// Middleware to validate user session
+app.use("/loggedIn", validateSession);
+
+// Route to handle user session validation
+app.get("/loggedIn", (res, req) => {
+  console.log("loggedin");
+  res.redirect("/home");
+});
+
+app.get("/home", (req, res) => {});
+
+// End of login API
+
+app.listen(port, () => {
+  console.log(`Application is listening at http://localhost:${port}`);
+});
+>>>>>>> Olga_LogIn_Page
