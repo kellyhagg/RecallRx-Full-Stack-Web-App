@@ -70,13 +70,13 @@ app.use(session({
 app.use(express.static("public"));
 
 
-app.get('/', (req, res) => {
-    res.redirect('/mmse-landing-page');
-});
+// app.get('/', (req, res) => {
+//     res.redirect('/mmse-landing-page');
+// });
 
-app.post('/', async (req, res) => {
-    res.redirect('/mmse-landing-page');
-});
+// app.post('/', async (req, res) => {
+//     res.redirect('/mmse-landing-page');
+// });
 
 app.get('/mmse-landing-page', (req, res) => {
     res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
