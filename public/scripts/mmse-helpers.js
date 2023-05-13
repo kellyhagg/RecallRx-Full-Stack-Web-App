@@ -1,6 +1,6 @@
 // Function created by ChatGPT
-function speak() {
-    let utterance = new SpeechSynthesisUtterance('the phone fell off of the shelf');
+function speak(phrase) {
+    let utterance = new SpeechSynthesisUtterance(phrase);
     utterance.voice = speechSynthesis.getVoices()[0];
     speechSynthesis.speak(utterance);
 }
