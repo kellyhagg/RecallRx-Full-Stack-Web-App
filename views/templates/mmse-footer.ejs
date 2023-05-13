@@ -1,9 +1,11 @@
 <footer class="fixed-bottom align-items-center">
     <div class="card-body">
         <br>
-        <a class="btn btn-lg btn-block btn-submit btn-mmse" href="<%= reference %>" id="nextQuestionButton">
-            <%= mmseBtnText %>
-        </a>
+        <form method="POST" action="<%= reference %>">
+            <button class="btn btn-lg btn-block btn-submit btn-mmse" type="submit" id="nextQuestionButton">
+                <%= mmseBtnText %>
+            </button>
+        </form>
 
     </div>
     <br><br>
@@ -58,8 +60,6 @@
 <script>
     questionType = "<%= questionType %>"
 </script>
-
-<script src="scripts/mmse.js"></script>
 
 </body>
 
