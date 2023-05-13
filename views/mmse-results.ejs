@@ -1,0 +1,11 @@
+<%- include("templates/header-back", {headerMessage: headerMessage }) %>
+    <br>
+    <div class="card mx-auto rounded">
+        <div class="card-body">
+            <h4>Results:</h4>
+            <h5>You scored <%= score %>% on this test</h5>
+        </div>
+
+    </div>
+    <br>
+    <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Close" , reference : "/" }); %>
