@@ -1,22 +1,18 @@
 <%- include("templates/header-back", {headerMessage: headerMessage }) %>
 
-    <br><br>
+    <br>
 
     <div class="card mx-auto rounded">
         <div class="card-body">
             <form method="POST" action="/mmse-orientation">
-                <h4>What year is it?</h4>
+                <h4>What year is it (YYYY)?</h4>
                 <div class="text-boxes">
-                    <input type="text" id="year1" name="year1" maxlength="1">
-                    <input type="text" id="year2" name="year2" maxlength="1">
-                    <input type="text" id="year3" name="year3" maxlength="1">
-                    <input type="text" id="year4" name="year4" maxlength="1">
+                    <input type="number" id="year" name="year" maxlength="4">
                 </div>
                 <br>
-                <h4>What month is it</h4>
-                <h4> (as a 2-digit number)?</h4>
+                <h4>What month is it (MM)?</h4>
                 <div class="text-boxes">
-                    <input type="text" id="month" name="month" maxlength="2" style="width: 40%">
+                    <input type="number" id="month" name="month" maxlength="2">
                 </div>
                 <br>
                 <h4>What day of the week is it?</h4>
