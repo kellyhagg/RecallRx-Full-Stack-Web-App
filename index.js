@@ -1,4 +1,5 @@
 
+
 require("./utils.js");
 
 require('dotenv').config();
@@ -19,7 +20,7 @@ const Joi = require("joi");
 const mongoSanitize = require('express-mongo-sanitize');
 const { emit } = require("process");
 const { type } = require("os");
-const { getOrientationScore } = require("./public/scripts/mmse.js");
+const { getOrientationScore, getWord, getReversalScore } = require("./public/scripts/mmse.js");
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
 
 /* secret information section */
@@ -40,7 +41,7 @@ const userCollection = database.db(mongodb_database).collection('users');
 // file1.js
 const myGlobalVar = "Hello, world!";
 
-let userScore = 0;
+var userScore = 0;
 
 module.exports = userScore;
 
@@ -49,19 +50,7 @@ let pageCount = 1;
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(mongoSanitize(
-    //{replaceWith: '%'}
-));
-
-// app.use(
-//     mongoSanitize({
-//       onSanitize: ({ req, key }) => {
-//         console.warn(`This request[${key}] is sanitized`);
-//       },
-//     }),
-//   );
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var mongoStore = MongoStore.create({
     mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -102,16 +91,11 @@ app.get('/mmse-orientation', (req, res) => {
 });
 
 app.post('/mmse-orientation', async (req, res) => {
-    var year1 = req.body.year1;
-    var year2 = req.body.year2;
-    var year3 = req.body.year3;
-    var year4 = req.body.year4;
+    var year = req.body.year;
     var month = req.body.month;
     var day = req.body.day;
 
-    let result = year1 + year2 + year3 + year4 + month + day;
-
-    userScore = userScore + await getOrientationScore(result);
+    userScore = userScore + getOrientationScore(year, month, day);
     res.render("mmse-object-recall.ejs", { headerMessage: "MMSE Questionnaire", objectName: "scissors", pageCount: pageCount++ });
     console.log("userScore: " + userScore);
     return;
@@ -138,11 +122,20 @@ app.post('/mmse-sentence-recall', async (req, res) => {
     res.redirect('/mmse-word-reversal');
 });
 
-app.get('/mmse-word-reversal', (req, res) => {
-    res.render("mmse-word-reversal.ejs", { headerMessage: "MMSE Questionnaire", word: "hello", pageCount: pageCount++ });
+app.get('/mmse-word-reversal', async (req, res) => {
+    var word = getWord();
+    console.log("word: " + word);
+    res.render("mmse-word-reversal.ejs", { headerMessage: "MMSE Questionnaire", word: word, pageCount: pageCount++ });
 });
 
 app.post('/mmse-word-reversal', async (req, res) => {
+    const word = req.body.word;
+    console.log(req.body);
+    console.log("word in index: " + word);
+    const inputWord = req.body.inputWord;
+    userScore = userScore + getReversalScore(inputWord, word);
+    console.log("userScore: " + userScore);
+
     if (pageCount <= 3) {
         res.redirect('/mmse-word-reversal');
     } else {
@@ -152,7 +145,9 @@ app.post('/mmse-word-reversal', async (req, res) => {
 });
 
 app.get('/mmse-results', (req, res) => {
-    res.render("mmse-results.ejs", { headerMessage: "MMSE Results" });
+    var score = parseInt(Math.round(userScore / 18 * 100));
+    res.render("mmse-results.ejs", { headerMessage: "MMSE Results", score: score });
+    userScore = 0;
 });
 
 app.listen(port, () => {
