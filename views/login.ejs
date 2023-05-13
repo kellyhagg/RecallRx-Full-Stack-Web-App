@@ -21,13 +21,13 @@
                         <h1 class="h2 fw-normal py-3">Sign In</h1>
                         <!-- User ID input -->
                         <div class="form-floating m-3">
-                            <input name="userName" type="text" class="form-control dark-green-border" id="floatingInput" placeholder="Enter your username">
+                            <input name="userName" type="text" class="form-control dark-green-border" id="floatingInput" value="<%= username ? username : '' %>" placeholder="Enter your username" required>
                             <label for="floatingInput" class="light-font  faded-font">User name</label>
                         </div>
                         <!-- Password input -->
                         <div class="form-floating mt-3 mx-3">
                             <input name="password" type="password" class="form-control font-md dark-green-border" id="floatingPassword"
-                                placeholder="Enter password">
+                                placeholder="Enter password" required>
                             <label for="floatingPassword" class="light-font faded-font">Password</label>
                         </div>
                         <!-- <div class="row">
@@ -35,7 +35,8 @@
                                 <a href="#" class="float-right">Link</a>
                             </div>
                         </div> -->
-                        <div class="px-3 w-100">
+                        <div class="px-3 w-100 d-flex justify-content-between align-items-center">
+                            <span class="error-message dark-pink"><%= errorMsg %></span>
                             <a href="forgotPassword" class="dark-green font-s to-the-right">Forgot Password?</a>
                         </div>
                         <!-- Submit button -->
@@ -52,3 +53,4 @@
         </div>
     </body>
 </html>
+

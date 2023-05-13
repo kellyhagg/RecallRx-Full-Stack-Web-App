@@ -76,7 +76,7 @@ app.get("/loginFailure", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", { errorMsg: "", username: "" });
 });
 
 app.post("/login", async (req, res) => {
@@ -115,8 +115,11 @@ app.post("/login", async (req, res) => {
     res.redirect("/home");
     return;
   } else {
-    console.log("Invalid email or password");
-    res.redirect("/loginFailure");
+    console.log("Invalid user name or password");
+    res.render("login", {
+      errorMsg: "Invalid user name or password",
+      username: username,
+    });
     return;
   }
 });
