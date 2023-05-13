@@ -1,22 +1,24 @@
 <%- include("templates/header-back", {headerMessage: headerMessage }) %>
-
-
     <br>
-    <div class="card mx-auto rounded">
-        <div class="card-body">
-            <h4>Enter the reverse of the word you hear. <span style="color: #778251;">Next</span>. (<%=pageCount%>/3)
-                    <h4>Press the listen <i class="material-icons">&#xe023;</i> button and enter the <span
-                            style="text-decoration: underline;">reverse</span>
-                        of the word you hear in the text box below then press <span style="color: #778251;">Next</span>.
-                    </h4>
-            </h4>
-            <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
-                id="mmse-input" placeholder="Type the name of the object here">
+    <form method="POST" action="/mmse-word-reversal">
+        <input type="hidden" name="word" value="<%= word %>">
+        <div class="card mx-auto rounded">
+            <div class="card-body">
+                <h4>Press the listen <i class="material-icons">&#xe023;</i> button and enter what you hear
+                    spelt in <span style="text-decoration: underline;">reverse</span>
+                    in the text box below then press <span style="color: #778251;">Next</span>. (<%=pageCount%>/3)
+                </h4>
+                <br>
+                <button type="button" class="btn btn-lg btn-submit btn-block btn-speak btn-mmse"
+                    onclick="speak('<%= word %>')">Listen
+                    <i class="material-icons">&#xe023;</i></button>
+                <br><br>
+                <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
+                    id="inputWord" name="inputWord" placeholder="Type the name of the object here">
+            </div>
         </div>
+        <br>
+        <% var text="Next" ; %>
 
-    </div>
-    <br>
-    <% var text="Next" ; %>
-
-        <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: text, reference
-            : "/mmse-word-reversal" }); %>
+            <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: text, reference
+                : "/mmse-word-reversal" }); %>
