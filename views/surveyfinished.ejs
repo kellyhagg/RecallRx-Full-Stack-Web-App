@@ -1,0 +1,19 @@
+<%- include("templates/header", {headerMessage: "Survey Submitted" }) %>
+
+<!-- this page is shown when the user has completed the survey -->
+<div class="thank-you-page d-flex justify-content-center align-items-center light-green-background"
+    style="height: 80vh;">
+
+    <div class="thank-you-content container bg-light p-5 rounded text-center">
+        <!-- inform the user that their responses have been submitted -->
+        <h2 class="mb-4">Thank you for completing the survey!</h2>
+        <p>Your responses have been submitted.</p>
+        <div class="mt-4">
+            <!-- allow the user to go to the homepage -->
+            <a href="/homepage" class="btn btn-lg btn-primary btn-block btn-submit">Get Started</a>
+        </div>
+    </div>
+
+</div>
+
+<%- include("templates/footer") %>
