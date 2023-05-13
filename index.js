@@ -81,15 +81,15 @@ app.get("/login", (req, res) => {
 
 app.post("/login", async (req, res) => {
   console.log("inside login");
-  var email = req.body.email;
+  var username = req.body.userName;
   var password = req.body.password;
 
   const schema = Joi.object({
-    email: Joi.string().max(30).required(),
+    username: Joi.string().max(30).required(),
     password: Joi.string().max(20).required(),
   });
 
-  const validationResult = schema.validate({ email, password });
+  const validationResult = schema.validate({ username, password });
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/login");
@@ -97,10 +97,9 @@ app.post("/login", async (req, res) => {
   }
 
   const user = await userCollection
-    .find({ email: email })
-    .project({ username: 1, email: 1, password: 1, is_admin: 1 })
+    .find({ username: username })
+    .project({ username: 1, email: 1, password: 1, is_admin: 1, _id: 1 })
     .toArray();
-
   if (!user) {
     console.log("User not found");
     res.redirect("/loginFailure");
@@ -110,10 +109,9 @@ app.post("/login", async (req, res) => {
 
   if (passwordMatch) {
     req.session.authenticated = true;
-    req.session.username = user[0].username;
-    req.session.email = email;
-    req.session.is_admin = user[0].is_admin;
-    req.session.cookie.maxAge = expirationPeriod;
+    req.session.username = username;
+    req.session.email = user[0].email;
+    req.session.cookie.maxAge = expireTime;
     res.redirect("/home");
     return;
   } else {
