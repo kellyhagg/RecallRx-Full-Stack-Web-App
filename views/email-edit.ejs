@@ -1,12 +1,15 @@
 <!-- Header -->
-<%- include("templates/header") %>
+<%- include("templates/header", {headerMessage: "Edit Email" }) %>
     <!-- User name page  -->
-    <form method="POST" action="update-email/<%= user[0]._id %>">
+    <form method="POST" action="update-email/<%= userId %>" class="mx-2 px-1">
         <div class="container py-2"></div>
             <div class="form-group border-1 dark-green-border my-5">
                 <label for="email" class="text-start font-md">Email</label>
                 <input type="email" class="form-control border-0 light-green-background font-lg focus" id="email"
-                    name="email" placeholder="Enter your email" value=<%= user[0].email %>>
+                    name="email" placeholder="Enter your email" value=<%= userEmail %>>
+                    <span class="error-message dark-pink text-start font-s">
+                        <%= errorMsg %>
+                    </span>
             </div>
         </div>
 
@@ -14,3 +17,6 @@
             Save
         </button>
     </form>
+
+    <!-- Validation toasts customization JS -->
+    <script src="/scripts/customize_validation_toast.js"></script>
