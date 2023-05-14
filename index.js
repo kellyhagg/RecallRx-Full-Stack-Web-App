@@ -405,6 +405,12 @@ app.get("/loggedIn", (res, req) => {
 });
 // End of Login API
 
+app.get("*", (req, res) => {
+  res.status(404);
+  res.render("404");
+});
+
+
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);
 });
