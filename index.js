@@ -638,7 +638,13 @@ app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
   console.log(username, email);
-  res.render("settings", { userName: username, email: email });
+  // res.render("settings", { userName: username, email: email });
+  res.render("settings", {
+    userName: username,
+    email: email,
+    data: "",
+    showPopUp: false,
+  });
 });
 
 // User information update routes
@@ -649,6 +655,7 @@ app.get("/user-name-edit", async (req, res) => {
     .find({ username: username })
     .project({ username: 1, email: 1, password: 1, _id: 1 })
     .toArray();
+  console.log(user);
   res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
@@ -680,7 +687,13 @@ app.post("/update-user-name/:userId", async (req, res) => {
 
   console.log("post user name - user: " + user.username);
   req.session.username = user.username;
-  res.redirect("/settings");
+  res.render("settings", {
+    userName: user.username,
+    email: user.email,
+    data: "user name",
+    showPopUp: true,
+  });
+  // res.redirect("/settings");
 });
 
 app.get("/email-edit", async (req, res) => {
@@ -737,7 +750,13 @@ app.post("/update-email/:userId", async (req, res) => {
   });
 
   req.session.email = user.email;
-  res.redirect("/settings");
+  res.render("settings", {
+    userName: user.username,
+    email: user.email,
+    data: "emails",
+    showPopUp: true,
+  });
+  // res.redirect("/settings");
 });
 
 app.get("/password-change", async (req, res) => {
@@ -764,7 +783,13 @@ app.post("/update-password/:userId", async (req, res) => {
     { $set: { password: hashedPassword } }
   );
   console.log("password updated");
-  res.redirect("/settings");
+  res.render("settings", {
+    userName: user.username,
+    email: user.email,
+    data: "password",
+    showPopUp: true,
+  });
+  // res.redirect("/settings");
 });
 
 app.get("/logout", (req, res) => {
