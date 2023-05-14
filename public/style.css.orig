@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .navbar {
     background-color: #778251;
     color: white;
@@ -341,6 +342,8 @@ input:checked~label {
     padding: 5%;
 }
 
+=======
+>>>>>>> Olga_Settings_Page
 .dark-green {
     color: #7B8B50;
 }
@@ -357,10 +360,13 @@ input:checked~label {
     color: white;
 }
 
+<<<<<<< HEAD
 .faded-font {
     color: #9a9a9a;
 }
 
+=======
+>>>>>>> Olga_Settings_Page
 .dark-green-background {
     background-color: #7B8B50;
 }
@@ -369,10 +375,13 @@ input:checked~label {
     background-color: #EDF3DE;
 }
 
+<<<<<<< HEAD
 .white-background {
     background-color: white;
 }
 
+=======
+>>>>>>> Olga_Settings_Page
 .dark-green-border {
     border-color: #7B8B50;
 }
@@ -439,15 +448,17 @@ label {
     color: #25271C;
 }
 
+<<<<<<< HEAD
 .light-font {
     font-weight: 300;
 }
 
 .font-s {
     font-size: 0.8em;
-    ;
 }
 
+=======
+>>>>>>> Olga_Settings_Page
 .font-md {
     font-size: 1.1em;
 }
@@ -461,6 +472,7 @@ label {
     width: 100%;
 }
 
+<<<<<<< HEAD
 /* Log in */
 .b-radius {
     border-radius: 2%;
@@ -484,13 +496,9 @@ input[type=password]:focus {
 .form-floating label {
     display: inline-block;
 }
-s
 .to-the-right {
     text-decoration: none;
     text-align: right;
-<<<<<<< HEAD
-}
-=======
 }
 
 /* Forgot Password */
@@ -499,15 +507,27 @@ s
     text-align: left;
 }
 
+=======
+>>>>>>> Olga_Settings_Page
 .hover-white-f:hover {
     color: white;
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
 }
 
+<<<<<<< HEAD
+=======
+.hover-shadow:hover {
+    color:#7B8B50;
+    text-decoration: underline;
+}
+>>>>>>> Olga_Settings_Page
 
 /* Style the validation message tooltip */
 .custom-validation-message {
     color: #D88A63;
     font-size: 0.8em;
+<<<<<<< HEAD
 }
->>>>>>> Olga_Forgot_Password
+=======
+}
+>>>>>>> Olga_Settings_Page

@@ -10,12 +10,19 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 const ObjectId = require("mongodb").ObjectId;
+const { ObjectId } = require("mongodb");
 
 // Set up the port number to listen on
 const port = process.env.PORT || 3000;
 
 // Create the Express application
 const app = express();
+app.use(express.static("public"));
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.urlencoded({ extended: true }));
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 const Joi = require("joi");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -68,10 +75,11 @@ var mongoStore = MongoStore.create({
 const myGlobalVar = "Hello, world!";
 
 var userScore = 0;
-
 module.exports = userScore;
+const userCollection = database.db(mongodb_database).collection("users");
 
 var pageCount = 1;
+app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -79,16 +87,13 @@ app.use(
   mongoSanitize()
   //{replaceWith: '%'}
 );
-
-// app.use(
-//     mongoSanitize({
-//       onSanitize: ({ req, key }) => {
-//         console.warn(`This request[${key}] is sanitized`);
-//       },
-//     }),
-//   );
-
 app.use(bodyParser.urlencoded({ extended: true }));
+var mongoStore = MongoStore.create({
+  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+  crypto: {
+    secret: mongodb_session_secret,
+  },
+});
 
 app.use(
   session({
@@ -123,7 +128,6 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   res.redirect("/");
-});
 
 app.get("/signup", (req, res) => {
   res.render("signup", { errorMessage: "" });
@@ -230,8 +234,8 @@ app.post("/riskfactorquestions", async (req, res) => {
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/riskfactorquestions");
-    return;
-  }
+
+
 
   // retrieve the user ID from the session
   const userId = req.session.userId;
@@ -290,6 +294,7 @@ app.get("/mmse-object-recall", async (req, res) => {
     headerMessage: "MMSE Questionnaire",
     object: object,
     pageCount: pageCount++,
+
   });
 });
 
@@ -305,6 +310,8 @@ app.post("/mmse-object-recall", async (req, res) => {
     pageCount = 1;
     res.redirect("/mmse-sentence-recall");
   }
+
+
 });
 
 app.get("/mmse-sentence-recall", (req, res) => {
@@ -314,6 +321,8 @@ app.get("/mmse-sentence-recall", (req, res) => {
     sentence: sentence,
   });
 });
+
+
 
 app.post("/mmse-sentence-recall", async (req, res) => {
   const sentence = req.body.sentence;
@@ -330,6 +339,8 @@ app.get("/mmse-word-reversal", async (req, res) => {
     headerMessage: "MMSE Questionnaire",
     word: word,
     pageCount: pageCount++,
+
+
   });
 });
 
@@ -448,6 +459,7 @@ async function sendEmail(to, subject, message) {
   } catch (error) {
     console.log(error);
   }
+
 }
 
 app.get("/forgot-password", (req, res) => {
@@ -633,6 +645,147 @@ app.get("/messages", (req, res) => {
 });
 
 // End of forgot password API
+
+
+// Settings routes
+app.get("/settings", (req, res) => {
+  const username = req.session.username;
+  const email = req.session.email;
+  res.render("settings", { userName: username, email: email });
+});
+
+// User information update routes
+app.get("/user-name-edit", async (req, res) => {
+  const username = req.session.username;
+  const email = req.session.email;
+  const user = await userCollection
+    .find({ username: username })
+    .project({ username: 1, email: 1, password: 1, _id: 1 })
+    .toArray();
+  res.render("user-name-edit", { user: user, errorMsg: "" });
+});
+
+app.post("/update-user-name/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  var user = await userCollection
+    .find({ _id: new ObjectId(userId) })
+    .project({ username: 1, email: 1 })
+    .toArray();
+  const newUserName = req.body.userName;
+  const anyUser = await userCollection.findOne(
+    { username: newUserName },
+    { projection: { username: 1 } }
+  );
+  if (anyUser) {
+    res.render("user-name-edit", {
+      user: user,
+      errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
+    });
+    return;
+  }
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { username: newUserName } }
+  );
+  user = await userCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+
+  console.log("post user name - user: " + user.username);
+  req.session.username = user.username;
+  res.redirect("/settings");
+});
+
+app.get("/email-edit", async (req, res) => {
+  const email = req.session.email;
+  const user = await userCollection.findOne(
+    { email: email },
+    { projection: { username: 1, email: 1, is_admin: 1, _id: 1 } }
+  );
+
+  console.log("get email - user: " + user);
+  res.render("email-edit", {
+    userId: user._id,
+    userEmail: user.email,
+    errorMsg: "",
+  });
+});
+
+app.post("/update-email/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  const email = req.body.email;
+  // validate the input style for username, email and password using Joi
+  const schema = Joi.object({
+    email: Joi.string().max(50).required(),
+  });
+  // validate the input
+  const validationResult = schema.validate({ email });
+  if (validationResult.error != null) {
+    res.render("email-edit", {
+      userId: user._id,
+      userEmail: user.email,
+      errorMsg: validationResult.error.message,
+    });
+    return;
+  }
+  const anyUser = await userCollection.findOne(
+    { email: email },
+    { projection: { email: 1 } }
+  );
+  if (anyUser) {
+    res.render("email-edit", {
+      userId: user._id,
+      userEmail: user.email,
+      errorMsg: `User with email ${email} already exists. Please choose a different email address.`,
+    });
+    return;
+  }
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { email: email } }
+  );
+  user = await userCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+
+  req.session.email = user.email;
+  res.redirect("/settings");
+});
+
+app.get("/password-change", async (req, res) => {
+  const email = req.session.email;
+  const user = await userCollection
+    .find({ email: email })
+    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
+    .toArray();
+  res.render("password-change", { user: user });
+});
+
+app.post("/update-password/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  const newPassword = req.body.password;
+
+  console.log(newPassword);
+
+  // Hash the password and update it in the database
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  console.log(hashedPassword);
+  await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { password: hashedPassword } }
+  );
+  console.log("password updated");
+  res.redirect("/settings");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/index");
+});
+
+// End of Settings API
 
 app.get("*", (req, res) => {
   res.status(404);
