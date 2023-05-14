@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
-const ObjectId = require("mongodb").ObjectId;
+// const ObjectId = require("mongodb").ObjectId;
 const { ObjectId } = require("mongodb");
 
 // Set up the port number to listen on
@@ -76,7 +76,6 @@ const myGlobalVar = "Hello, world!";
 
 var userScore = 0;
 module.exports = userScore;
-const userCollection = database.db(mongodb_database).collection("users");
 
 var pageCount = 1;
 app.set("view engine", "ejs");
@@ -128,6 +127,7 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   res.redirect("/");
+});
 
 app.get("/signup", (req, res) => {
   res.render("signup", { errorMessage: "" });
@@ -158,7 +158,8 @@ app.post("/signup", async (req, res) => {
   const existingUser = await userCollection.findOne({ username });
   if (existingUser) {
     console.log("Username already exists");
-    const errorMessage = "Username already exists, please choose another username.";
+    const errorMessage =
+      "Username already exists, please choose another username.";
     res.render("signup", { errorMessage: errorMessage });
     return;
   }
@@ -191,12 +192,6 @@ app.post("/signup", async (req, res) => {
 
 app.get("/homepage", (req, res) => {
   res.render("homepage");
-});
-
-app.get("/logout", (req, res) => {
-  // kills the session when users click logout
-  req.session.destroy();
-  res.render("logout");
 });
 
 app.get("/riskfactorsurvey", (req, res) => {
@@ -234,8 +229,8 @@ app.post("/riskfactorquestions", async (req, res) => {
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/riskfactorquestions");
-
-
+    return;
+  }
 
   // retrieve the user ID from the session
   const userId = req.session.userId;
@@ -294,7 +289,6 @@ app.get("/mmse-object-recall", async (req, res) => {
     headerMessage: "MMSE Questionnaire",
     object: object,
     pageCount: pageCount++,
-
   });
 });
 
@@ -310,8 +304,6 @@ app.post("/mmse-object-recall", async (req, res) => {
     pageCount = 1;
     res.redirect("/mmse-sentence-recall");
   }
-
-
 });
 
 app.get("/mmse-sentence-recall", (req, res) => {
@@ -321,8 +313,6 @@ app.get("/mmse-sentence-recall", (req, res) => {
     sentence: sentence,
   });
 });
-
-
 
 app.post("/mmse-sentence-recall", async (req, res) => {
   const sentence = req.body.sentence;
@@ -339,8 +329,6 @@ app.get("/mmse-word-reversal", async (req, res) => {
     headerMessage: "MMSE Questionnaire",
     word: word,
     pageCount: pageCount++,
-
-
   });
 });
 
@@ -459,7 +447,6 @@ async function sendEmail(to, subject, message) {
   } catch (error) {
     console.log(error);
   }
-
 }
 
 app.get("/forgot-password", (req, res) => {
@@ -646,11 +633,11 @@ app.get("/messages", (req, res) => {
 
 // End of forgot password API
 
-
 // Settings routes
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
+  console.log(username, email);
   res.render("settings", { userName: username, email: email });
 });
 
@@ -782,7 +769,7 @@ app.post("/update-password/:userId", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.redirect("/index");
+  res.render("index");
 });
 
 // End of Settings API
