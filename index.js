@@ -64,6 +64,10 @@ app.use(express.json());
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users");
 
+const notificationsCollection = database
+  .db(mongodb_database)
+  .collection("notifications");
+
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
   crypto: {
@@ -142,7 +146,7 @@ app.post("/signup", async (req, res) => {
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().max(40).required(),
-    email: Joi.string().max(50).required(),
+    email: Joi.string().max(20).required(),
     password: Joi.string().max(20).required(),
   });
 
@@ -167,6 +171,8 @@ app.post("/signup", async (req, res) => {
   // hash the password
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+  // Set notification configuration
+  const currentDate = new Date();
   // insert the user into the database
   const result = await userCollection.insertOne({
     username: username,
@@ -177,6 +183,30 @@ app.post("/signup", async (req, res) => {
     smoke: null,
     diabetes: null,
     depression: null,
+    createdAt: currentDate.toISOString(),
+  });
+
+  // Set notification configuration
+  // default nextExercise notification in 2 weeks
+  const nextExerciseNotification = new Date(currentDate.getTime());
+  nextExerciseNotification.setHours(7 * 2 * 24);
+
+  // default nextMMSE notification in one week
+  const nextMMSENotification = new Date(currentDate.getTime());
+  nextMMSENotification.setHours(7 * 24);
+
+  const notificationSetResult = await notificationsCollection.insertOne({
+    userId: result.insertedId.toString(),
+    exercise: {
+      frequency: "daily", // default frequency
+      isActive: true, // default enabled
+      next: nextExerciseNotification.toISOString(), // default next 2 weeks
+    },
+    mmse: {
+      frequency: "every-other-week", // default frequency
+      isActive: true, // default enabled
+      next: nextMMSENotification.toISOString(), // default next 2 weeks
+    },
   });
 
   console.log("Inserted user through signup");
@@ -347,7 +377,7 @@ app.post("/mmse-word-reversal", async (req, res) => {
 });
 
 app.get("/mmse-results", (req, res) => {
-  var score = parseInt(Math.round((userScore / 18) * 100));
+  var score = parseInt(Math.round((userScore / 15) * 100));
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
     score: score,
@@ -497,7 +527,8 @@ app.post("/forgot-password", async (req, res) => {
   console.log("payload" + payload);
   const token = jwt.sign(payload, secret, { expiresIn: "1d" });
   //  TO DO
-  const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
+  const link = `https://recallrx.cyclic.app/reset-password/${user[0]._id}&auth=${token}`;
+  // const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
   console.log(link);
   //TO DO: send email
   fs.readFile(
@@ -798,6 +829,57 @@ app.get("/logout", (req, res) => {
 });
 
 // End of Settings API
+
+// Start notification API
+app.get("/notifications", async (req, res) => {
+  try {
+    const { userId } = req.session;
+
+    const notifications = await notificationsCollection.findOne({ userId });
+
+    const date = new Date(notifications.exercise.next);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    const options = {
+      exercise: {
+        isActive: notifications.exercise.isActive,
+        frequency: notifications.exercise.frequency,
+        time: `${hours}:${minutes}`,
+      },
+      mmse: {
+        isActive: notifications.mmse.isActive,
+        frequency: notifications.mmse.frequency,
+      },
+    };
+
+    res.render("notifications", options);
+  } catch (error) {
+    // handle error
+    console.log("/notifications ERROR:", error);
+
+    res.status(500).json({
+      message: "/notifications error occurred",
+    });
+  }
+});
+
+app.post("/notifications", async (req, res, next) => {
+  try {
+    const { userId } = req.session;
+    const exercise = req.body.exercise;
+    const mmse = req.body.mmse;
+    await notificationsCollection.updateOne(
+      { userId },
+      { $set: { exercise, mmse } }
+    );
+
+    res.status(200).json({ message: "Updated" });
+  } catch (error) {
+    res.status(500).json({ message: error?.message || "error" });
+  }
+});
+// End of Notifications API
 
 app.get("*", (req, res) => {
   res.status(404);
