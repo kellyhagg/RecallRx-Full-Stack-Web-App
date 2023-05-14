@@ -1,6 +1,6 @@
 <!-- Header -->
-<%- include("templates/header") %>
-    <div class="my-5 mx-auto">
+<%- include("templates/header-back", {headerMessage: "Notifications"}) %>
+    <div class="my-5 mx-3">
         <!-- Notifications Page -->
         <!-- Exercise notifications  -->
         <div class="card light-green-background dark-green-border">
@@ -13,7 +13,7 @@
                     </div>
                     <div class="ms-auto p-2 form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="exercise-frequency-toggle-switch"
-                            onchange="toggleNotification('exercise-frequency-toggle-switch')">
+                            onchange="toggleNotification('exercise-frequency-toggle-switch')"  <%= exercise.isActive ? 'checked' : ''%> >
                     </div>
                 </div>
 
@@ -23,31 +23,37 @@
 
                         <div class="radio-group-wrapper  white-transparent-background">
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-1" name="frequency" hidden />
-                                <label for="id-radio-1">Daily</label>
+                                <input type="radio" id="efr-daily" name="exerciseFrequency" hidden value="daily" <%=exercise.frequency==='daily'
+                                    ? 'checked' : '' %>
+                                />
+                                <label for="efr-daily">Daily</label>
                             </div>
-
+                            
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-2" name="frequency" hidden />
-                                <label for="id-radio-2">Every Other Day</label>
+                                <input type="radio" id="fr-two-days" name="exerciseFrequency" hidden value="every-other-day"
+                                    <%=exercise.frequency==='every-other-day' ? 'checked' : '' %>
+                                />
+                                <label for="fr-two-days">Every Other Day</label>
                             </div>
-
+                            
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-3" name="frequency" hidden />
-                                <label for="id-radio-3">Weekly</label>
+                                <input type="radio" id="efr-weekly" name="exerciseFrequency" hidden value="weekly" <%=exercise.frequency==='weekly'
+                                    ? 'checked' : '' %>
+                                />
+                                <label for="efr-weekly">Weekly</label>
                             </div>
                         </div>
+
                         <div class="d-flex" id="exercise-time">
 
                             <div class="p-2">
                                 <label class="form-label m-0">Time</label>
                             </div>
-                            <div class="ms-auto p-2 form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="exercise-time-toggle-switch"
-                                    onchange="toggleNotification('exercise-time-toggle-switch')">
+                            <div class="ms-auto p-2 form-check form-switch"  id="timePicker">
+                                <input type="time" class="light-green-background time-picker px-2 border-0" id="time-picker" name="time"
+                                    value="<%= exercise.time %>">
                             </div>
                         </div>
-                        <div id="exercise-time-additional-div" class="d-none"></div>
                     </div>
                 </div>
             </div>
@@ -64,7 +70,8 @@
                     </div>
                     <div class="ms-auto p-2 form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="checkup-toggle-switch"
-                            onchange="toggleNotification('checkup-toggle-switch')">
+                            onchange="toggleNotification('checkup-toggle-switch')" 
+                            <%= mmse.isActive ? 'checked' : ''%> >
                     </div>
                 </div>
 
@@ -74,18 +81,24 @@
 
                         <div class="radio-group-wrapper  white-transparent-background">
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-1" name="frequency" hidden />
-                                <label for="id-radio-1">Weekly</label>
+                                <input type="radio" id="qfr-weekly" name="mmseFrequency" hidden value="weekly" <%=mmse.frequency==='weekly' ? 'checked'
+                                    : '' %>
+                                />
+                                <label for="qfr-weekly">Weekly</label>
                             </div>
 
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-2" name="frequency" hidden />
-                                <label for="id-radio-2">Every Other Week</label>
+                                <input type="radio" id="qfr-two-weeks" name="mmseFrequency" hidden value="every-other-week"
+                                    <%=mmse.frequency==='every-other-week' ? 'checked' : '' %>
+                                />
+                                <label for="qfr-two-weeks">Every Other Week</label>
                             </div>
 
                             <div class="radio-wrapper">
-                                <input type="radio" id="id-radio-3" name="frequency" hidden />
-                                <label for="id-radio-3">Monthly</label>
+                                <input type="radio" id="qfr-monthly" name="mmseFrequency" hidden value="monthly" <%=mmse.frequency==='monthly'
+                                    ? 'checked' : '' %>
+                                />
+                                <label for="qfr-monthly">Monthly</label>
                             </div>
                         </div>
                     </div>
@@ -95,34 +108,9 @@
 
     </div>
 
-    <script>
-        function toggleNotification(purpose) {
-            var checkBox = document.getElementById(purpose);
-            var additionalDiv = document.getElementById("exercise-frequency-additional-div");
-            switch (purpose) {
-                case 'exercise-time-toggle-switch':
-                    additionalDiv = document.getElementById("exercise-time-additional-div");
-                case 'checkup-toggle-switch':
-                    console.log("Checkup");
-                    additionalDiv = document.getElementById("checkup-frequency-additional-div");
-            }
-            if (checkBox.checked == true) {
-                additionalDiv.classList.remove("d-none");
-            } else {
-                additionalDiv.classList.add("d-none");
-            }
-        }
+    <!-- Update notifications JS -->
+    <script src="scripts/update-notifications.js"></script>
 
-        const inputs = document.querySelectorAll('input[name="frequency"]');
-
-        if (inputs) {
-            inputs.forEach((input) => {
-                input.addEventListener('change', (event) => {
-                    console.log('Selected value:', event?.target?.value);
-                })
-            });
-        }
-    </script>
 
 
     <!-- Footer -->
