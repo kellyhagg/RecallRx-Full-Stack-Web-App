@@ -17,6 +17,15 @@ function getObjectScore(input, correctObject) {
     return score;
 }
 
+function getSentenceScore(input, correctSentence) {
+    var score = 0;
+    var cleaned = cleanAnswer(input);
+    console.log("correct: " + correctSentence);
+    console.log("cleaned: " + cleaned);
+    if (cleaned == correctSentence) { score++; }
+    return score;
+}
+
 function getReversalScore(input, correctWord) {
     var score = 0;
     var reversedWord = reverseWord(correctWord);
@@ -44,6 +53,17 @@ function getObject() {
 
     return randomObject;
 }
+
+function getSentence() {
+    const sentencesPair = JSON.parse(fs.readFileSync('public/resources/sentences.json', 'utf8'));
+    const sentences = sentencesPair.sentences;
+
+    const randomIndex = Math.floor(Math.random() * sentences.length);
+    const randomSentence = sentences[randomIndex];
+
+    return randomSentence;
+}
+
 
 function getWord() {
     const wordsPair = JSON.parse(fs.readFileSync('public/resources/words.json', 'utf8'));
@@ -83,4 +103,4 @@ function verifySentence(sentence) {
 }
 
 
-module.exports = { getObject, getWord, getOrientationScore, getObjectScore, getReversalScore };
+module.exports = { getObject, getSentence, getWord, getOrientationScore, getSentenceScore, getObjectScore, getReversalScore };
