@@ -9,7 +9,13 @@ function getOrientationScore(year, month, day) {
     return score;
 }
 
-
+function getObjectScore(input, correctObject) {
+    var score = 0;
+    var cleaned = cleanAnswer(input);
+    console.log("cleaned: " + cleaned);
+    if (cleaned == correctObject) { score++; }
+    return score;
+}
 
 function getReversalScore(input, correctWord) {
     var score = 0;
@@ -27,6 +33,16 @@ function getDayStr() {
     const dayOfWeek = daysOfWeek[now.getDay()];
 
     return `${dayOfWeek}`;
+}
+
+function getObject() {
+    const objectsPair = JSON.parse(fs.readFileSync('public/resources/objects.json', 'utf8'));
+    const objects = objectsPair.objects;
+
+    const randomIndex = Math.floor(Math.random() * objects.length);
+    const randomObject = objects[randomIndex];
+
+    return randomObject;
 }
 
 function getWord() {
@@ -67,4 +83,4 @@ function verifySentence(sentence) {
 }
 
 
-module.exports = { getOrientationScore, getWord, getReversalScore };
+module.exports = { getObject, getWord, getOrientationScore, getObjectScore, getReversalScore };
