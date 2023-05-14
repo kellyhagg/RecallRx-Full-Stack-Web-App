@@ -64,10 +64,12 @@ app.get("/", (req, res) => {
   res.render("login");
 });
 
+
 // Settings routes
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
+  console.log(email);
   console.log("settings");
   res.render("settings", { userName: username, email: email });
 });
@@ -80,16 +82,29 @@ app.get("/user-name-edit", async (req, res) => {
     .find({ email: email })
     .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
     .toArray();
-  res.render("user-name-edit", { user: user });
+  res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
 app.post("/update-user-name/:userId", async (req, res) => {
   const userId = req.params.userId;
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const newUserName = req.body.userName;
+  const anyUser = await userCollection.findOne(
+    { username: newUserName },
+    { projection: { username: 1 } }
+  );
+  if (anyUser) {
+    res.render("user-name-edit", {
+      user: user,
+      errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
+    });
+  }
+  // Hash the password and update it in the database
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  console.log(hashedPassword);
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
-    { $set: { username: newUserName } }
+    { $set: { username: hashedPassword } }
   );
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
@@ -100,17 +115,33 @@ app.post("/update-user-name/:userId", async (req, res) => {
 
 app.get("/email-edit", async (req, res) => {
   const email = req.session.email;
-  const user = await userCollection
-    .find({ email: email })
-    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
-    .toArray();
-  res.render("email-edit", { user: user });
+  const user = await userCollection.findOne(
+    { email: email },
+    { projection: { username: 1, email: 1, is_admin: 1, _id: 1 } }
+  );
+  console.log(user);
+  res.render("email-edit", {
+    userId: user._id,
+    userEmail: user.email,
+    errorMsg: "",
+  });
 });
 
 app.post("/update-email/:userId", async (req, res) => {
   const userId = req.params.userId;
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const newEmail = req.body.email;
+  const anyUser = await userCollection.findOne(
+    { email: newEmail },
+    { projection: { email: 1 } }
+  );
+  if (anyUser) {
+    res.render("email-edit", {
+      userId: user._id,
+      userEmail: user.email,
+      errorMsg: `User with email ${newEmail} already exists. Please choose a different email address.`,
+    });
+  }
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { email: newEmail } }
@@ -143,6 +174,11 @@ app.post("/update-password/:userId", async (req, res) => {
   );
   console.log("password updated");
   res.redirect("/settings");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/homepage");
 });
 
 app.listen(port, () => {
