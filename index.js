@@ -142,7 +142,7 @@ app.post("/signup", async (req, res) => {
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().max(40).required(),
-    email: Joi.string().max(20).required(),
+    email: Joi.string().max(50).required(),
     password: Joi.string().max(20).required(),
   });
 
@@ -459,7 +459,7 @@ app.post("/forgot-password", async (req, res) => {
 
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    email: Joi.string().max(20).required(),
+    email: Joi.string().max(50).required(),
   });
 
   // validate the input
