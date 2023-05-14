@@ -300,6 +300,10 @@ input:checked~label {
     height: 100vh;
 }
 
+.index-buttons {
+    padding-top: 5%;
+}
+
 .form-signup {
     margin: auto;
     width: 300px;
