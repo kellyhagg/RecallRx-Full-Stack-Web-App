@@ -155,6 +155,10 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+app.get("/homepage", (req, res) => {
+  res.render("homepage");
+});
+
 app.get("/logout", (req, res) => {
   // kills the session when users click logout
   req.session.destroy();
@@ -374,12 +378,8 @@ app.use("/loggedIn", validateSession);
 // Route to handle user session validation
 app.get("/loggedIn", (res, req) => {
   console.log("loggedin");
-  res.redirect("/home");
+  res.redirect("/homepage");
 });
-
-app.get("/home", (req, res) => {});
-
-// End of login API
 
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);

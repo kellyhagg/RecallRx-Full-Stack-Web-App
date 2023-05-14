@@ -1,0 +1,140 @@
+<%- include("templates/header", {headerMessage: "Homepage" }) %>
+<style>
+    .homepagestyle {
+        background-color: #f9fbf6;
+        background-size: cover;
+        height: 100%;
+        width: 100%;
+        padding-top: 5%;
+    }
+
+    .precom_homepage_card {
+        border-radius: 10px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        padding: 20px;
+        padding-top: 5%;
+        text-align: center;
+    }
+
+    .pact_tracking {
+        font-size: 36px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .hptracking {
+        margin: 20px;
+        padding: 2%;
+    }
+
+    .hpicon-container {
+        display: flex;
+        justify-content: space-between;
+        margin: 30px;
+    }
+
+    .hpiconset {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hpicon {
+        align-items: center;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        height: 80px;
+        justify-content: center;
+        text-align: center;
+        width: 80px;
+    }
+
+    .hpicon-text {
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 50px;
+        padding-bottom: 20%;
+    }
+
+    .material-symbols-outlined {
+        font-size: 60px;
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 200,
+            'opsz' 48
+    }
+
+    .hpbutton {
+        font-size: 2em;
+    }
+</style>
+
+<div class="homepagestyle">
+    <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
+    <div class="precom_homepage_card light-green-background">
+        <h1>Personal recommendation of the day</h1>
+    </div>
+    <!-- activity tracking section -->
+    <div class="hptracking light-green-background">
+        <!-- this part of code uses google material icon -->
+        <h1 class="pact_tracking">Activity Tracking</h1>
+        <div class="hpicon-container">
+            <!-- exercise tracking section -->
+            <div href="#" class="hpiconset">
+                <div class="hpicon">
+                    <span class="material-symbols-outlined dark-green">
+                        hiking
+                    </span>
+                </div>
+                <span class="hpicon-text">Exercise</span>
+            </div>
+            <!-- social tracking section -->
+            <div href="#" class="hpiconset">
+                <div class="hpicon">
+                    <span class="material-symbols-outlined dark-green">
+                        connect_without_contact
+                    </span>
+                </div>
+                <span class="hpicon-text">Social</span>
+            </div>
+            <!-- social tracking section -->
+            <div href="#" class="hpiconset">
+                <div class="hpicon">
+                    <span class="material-symbols-outlined dark-green">
+                        smoking_rooms
+                    </span>
+                </div>
+                <span class="hpicon-text">Smoking</span>
+            </div>
+            <!-- alcohol consumption tracking section -->
+            <div href="#" class="hpiconset">
+                <div class="hpicon">
+                    <span class="material-symbols-outlined dark-green">
+                        liquor
+                    </span>
+                </div>
+                <span class="hpicon-text">Alcohol</span>
+            </div>
+        </div>
+    </div>
+    <div class="button-container">
+        <!-- redirect to daily game page -->
+        <a href="#" class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Daily Game</a>
+        <!-- redirect to questionnaire page -->
+        <a href="mmse-landing-page"
+            class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Questionnaire</a>
+    </div>
+</div>
+<%- include("templates/footer") %>
