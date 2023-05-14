@@ -1,9 +1,12 @@
 
+
 const button = document.getElementById("sentenceSpeakBtn");
 
-button.addEventListener("click", function () {
-    button.disabled = true;
-});
+if (button) {
+    button.addEventListener("click", function () {
+        button.disabled = true;
+    });
+}
 
 // Function created by ChatGPT
 function speak(phrase) {
