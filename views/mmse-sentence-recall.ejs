@@ -1,18 +1,23 @@
 <%- include("templates/header-back", {headerMessage: headerMessage }) %>
     <br>
+
     <div class="card mx-auto rounded">
         <div class="card-body">
-            <h4>Press the listen <i class="material-icons">&#xe023;</i> button and type the sentence you hear into the
-                text
-                box below then press <span style="color: #778251;">Next</span>.</h4>
-            <br>
-            <div class="d-flex justify-content-center">
-                <button class="btn btn-lg btn-submit btn-block btn-speak btn-mmse" onclick="speak()">Listen <i
-                        class="material-icons">&#xe023;</i></button>
-            </div>
-            <br><br>
-            <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
-                id="mmse-input" placeholder="Type what you heard here">
+            <form method="POST" action="/mmse-sentence-recall">
+                <input type="hidden" name="sentence" value="<%= sentence %>">
+                <h4>Press the listen <i class="material-icons">&#xe023;</i> button and type the sentence you hear into
+                    the
+                    text
+                    box below then press <span style="color: #778251;">Next</span>.</h4>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-lg btn-submit btn-block btn-speak btn-mmse"
+                        id="sentenceSpeakBtn" onclick="speak(`<%= sentence %>`)">Listen <i
+                            class="material-icons">&#xe023;</i></button>
+                </div>
+                <br><br>
+                <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
+                    id="inputSentence" name="inputSentence" placeholder="Type what you heard here">
         </div>
     </div>
     <br><br>
