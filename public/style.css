@@ -92,12 +92,36 @@
     color: #EDF3DE;
 }
 
+.light-yellow {
+    color: #FFF4DD;
+}
+
+.light-pink {
+    color: #F5E6E8;
+}
+
 .white-font {
     color: white;
 }
 
+.light-yellow-background {
+    background-color: #FFF4DD;
+}
+
+.light-pink-background {
+    background-color: #FFE4D7;
+}
+
 .dark-green-background {
     background-color: #7B8B50;
+}
+
+.dark-pink-background {
+    background-color: #D88A63;
+}
+
+.dark-yellow-background {
+    background-color: #D0A449;
 }
 
 .light-green-background {
@@ -106,6 +130,14 @@
 
 .white-transparent-background {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.pink-less-transparent-background {
+    background-color: rgba(247, 189, 160, 0.402);
+}
+
+.white-less-transparent-background {
+    background-color: rgba(255, 255, 255, 0.551);
 }
 
 .dark-green-border {

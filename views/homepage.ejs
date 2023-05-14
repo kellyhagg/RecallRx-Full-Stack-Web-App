@@ -1,7 +1,7 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 <style>
     .homepagestyle {
-        background-color: #f9fbf6;
+        background-image: url('/homepage_background.jpg');
         background-size: cover;
         height: 100%;
         width: 100%;
@@ -9,29 +9,32 @@
     }
 
     .precom_homepage_card {
-        border-radius: 10px;
+        color: rgb(126, 47, 25);
+        border-radius: 5%;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 20px;
-        padding: 20px;
-        padding-top: 5%;
+        margin-left: 4%;
+        margin-right: 4%;
+        padding: 5%;
         text-align: center;
+        border-radius: 15px;
     }
 
     .pact_tracking {
-        font-size: 36px;
+        font-size: 28px;
         font-weight: bold;
-        margin-top: 10px;
+        margin-top: 5%;
     }
 
     .hptracking {
-        margin: 20px;
-        padding: 2%;
+        margin: 5%;
+        padding-top: 1%;
+        border-radius: 15px;
     }
 
     .hpicon-container {
         display: flex;
-        justify-content: space-between;
-        margin: 30px;
+        justify-content: center;
+        margin: 5%;
     }
 
     .hpiconset {
@@ -40,22 +43,23 @@
         flex-direction: column;
         justify-content: center;
         text-align: center;
+        margin: 5%;
     }
 
     .hpicon {
         align-items: center;
-        background-color: #fff;
         border-radius: 50%;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
         display: flex;
-        height: 80px;
+        height: 60px;
         justify-content: center;
         text-align: center;
-        width: 80px;
+        width: 60px;
     }
 
     .hpicon-text {
-        font-size: 20px;
+        color: #2f3c08;
+        font-size: 16px;
         margin-top: 10px;
     }
 
@@ -63,12 +67,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 50px;
+        margin-left: 50px;
+        margin-right: 50px;
         padding-bottom: 20%;
     }
 
     .material-symbols-outlined {
-        font-size: 60px;
+        font-size: 50px;
         font-variation-settings:
             'FILL' 0,
             'wght' 400,
@@ -77,24 +82,24 @@
     }
 
     .hpbutton {
-        font-size: 2em;
+        font-size: 30px;
     }
 </style>
 
 <div class="homepagestyle">
     <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
-    <div class="precom_homepage_card light-green-background">
-        <h1>Personal recommendation of the day</h1>
+    <div class="precom_homepage_card pink-less-transparent-background text-center">
+        <h4>This is a place holder for personal recommendation of the day generated based on user data.</h4>
     </div>
     <!-- activity tracking section -->
-    <div class="hptracking light-green-background">
+    <div class="hptracking white-less-transparent-background">
         <!-- this part of code uses google material icon -->
-        <h1 class="pact_tracking">Activity Tracking</h1>
+        <h2 class="pact_tracking text-center">Activity Tracking</h2>
         <div class="hpicon-container">
             <!-- exercise tracking section -->
             <div href="#" class="hpiconset">
-                <div class="hpicon">
-                    <span class="material-symbols-outlined dark-green">
+                <div class="hpicon dark-green-background">
+                    <span class="material-symbols-outlined white-font">
                         hiking
                     </span>
                 </div>
@@ -102,8 +107,8 @@
             </div>
             <!-- social tracking section -->
             <div href="#" class="hpiconset">
-                <div class="hpicon">
-                    <span class="material-symbols-outlined dark-green">
+                <div class="hpicon dark-green-background">
+                    <span class="material-symbols-outlined white-font">
                         connect_without_contact
                     </span>
                 </div>
@@ -111,8 +116,8 @@
             </div>
             <!-- social tracking section -->
             <div href="#" class="hpiconset">
-                <div class="hpicon">
-                    <span class="material-symbols-outlined dark-green">
+                <div class="hpicon dark-green-background">
+                    <span class="material-symbols-outlined white-font">
                         smoking_rooms
                     </span>
                 </div>
@@ -120,8 +125,8 @@
             </div>
             <!-- alcohol consumption tracking section -->
             <div href="#" class="hpiconset">
-                <div class="hpicon">
-                    <span class="material-symbols-outlined dark-green">
+                <div class="hpicon dark-green-background">
+                    <span class="material-symbols-outlined white-font">
                         liquor
                     </span>
                 </div>
