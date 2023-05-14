@@ -3,8 +3,6 @@
 
 <!-- Settings Page -->
 
-
-
 <div class="container my-3">
     <div class="d-flex align-items-center justify-content-center rounded-circle dark-green-background my- mx-auto">
         <i class="fas fa-user-cog light-green header-icon"></i>
@@ -79,3 +77,12 @@
 
 <!-- Footer -->
 <%- include("templates/footer") %>
+
+<!-- Popup -->
+<% if (showPopUp) { %>
+    <%- include("templates/popup", {data: data}) %>
+        <% console.log("show popup") %>
+            <% } %>
+
+<!-- Handle popup JS -->
+<script src="/scripts/handle-popup-on-settings.js"></script>
