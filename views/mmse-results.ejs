@@ -1,11 +1,21 @@
-<%- include("templates/header-back", {headerMessage: headerMessage }) %>
+<%- include("templates/header", {headerMessage: headerMessage }) %>
     <br>
     <div class="card mx-auto rounded">
         <div class="card-body">
-            <h4>Results:</h4>
-            <h5>You scored <%= score %>% on this test</h5>
+            <h3>Results:</h3>
+            <br>
+            <h4>You scored <%= score %>% on this test.</h4>
+            <br>
+            <% if(score){ %>
+                <h4 style="color: #778251;">Nicely done! Scores above 83% are considered normal.</h4>
+                <% } else { %>
+                    <h4 style="color: #825151;">You scored below 83% which is considered abnormal.</h4>
+                    <br>
+                    <div class="alert alert-danger" role="alert">
+                        <h3>We recommend you consult a healthcare professional.</h3>
+                    </div>
+                    <% } %>
         </div>
-
     </div>
     <br>
     <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Close" , reference : "/" }); %>
