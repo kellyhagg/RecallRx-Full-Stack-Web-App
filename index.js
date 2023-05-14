@@ -64,13 +64,10 @@ app.get("/", (req, res) => {
   res.render("login");
 });
 
-
 // Settings routes
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
-  console.log(email);
-  console.log("settings");
   res.render("settings", { userName: username, email: email });
 });
 
@@ -79,15 +76,18 @@ app.get("/user-name-edit", async (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
   const user = await userCollection
-    .find({ email: email })
-    .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
+    .find({ username: username })
+    .project({ username: 1, email: 1, password: 1, _id: 1 })
     .toArray();
   res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
 app.post("/update-user-name/:userId", async (req, res) => {
   const userId = req.params.userId;
-  var user = await userCollection.findOne({ _id: new ObjectId(userId) });
+  var user = await userCollection
+    .find({ _id: new ObjectId(userId) })
+    .project({ username: 1, email: 1 })
+    .toArray();
   const newUserName = req.body.userName;
   const anyUser = await userCollection.findOne(
     { username: newUserName },
@@ -98,17 +98,17 @@ app.post("/update-user-name/:userId", async (req, res) => {
       user: user,
       errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
     });
+    return;
   }
-  // Hash the password and update it in the database
-  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-  console.log(hashedPassword);
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
-    { $set: { username: hashedPassword } }
+    { $set: { username: newUserName } }
   );
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
+
+  console.log("post user name - user: " + user.username);
   req.session.username = user.username;
   res.redirect("/settings");
 });
@@ -119,7 +119,8 @@ app.get("/email-edit", async (req, res) => {
     { email: email },
     { projection: { username: 1, email: 1, is_admin: 1, _id: 1 } }
   );
-  console.log(user);
+
+  console.log("get email - user: " + user);
   res.render("email-edit", {
     userId: user._id,
     userEmail: user.email,
@@ -130,25 +131,41 @@ app.get("/email-edit", async (req, res) => {
 app.post("/update-email/:userId", async (req, res) => {
   const userId = req.params.userId;
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
-  const newEmail = req.body.email;
+  const email = req.body.email;
+  // validate the input style for username, email and password using Joi
+  const schema = Joi.object({
+    email: Joi.string().max(50).required(),
+  });
+  // validate the input
+  const validationResult = schema.validate({ email });
+  if (validationResult.error != null) {
+    res.render("email-edit", {
+      userId: user._id,
+      userEmail: user.email,
+      errorMsg: validationResult.error.message,
+    });
+    return;
+  }
   const anyUser = await userCollection.findOne(
-    { email: newEmail },
+    { email: email },
     { projection: { email: 1 } }
   );
   if (anyUser) {
     res.render("email-edit", {
       userId: user._id,
       userEmail: user.email,
-      errorMsg: `User with email ${newEmail} already exists. Please choose a different email address.`,
+      errorMsg: `User with email ${email} already exists. Please choose a different email address.`,
     });
+    return;
   }
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
-    { $set: { email: newEmail } }
+    { $set: { email: email } }
   );
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
+
   req.session.email = user.email;
   res.redirect("/settings");
 });
@@ -168,9 +185,13 @@ app.post("/update-password/:userId", async (req, res) => {
   const newPassword = req.body.password;
 
   console.log(newPassword);
+
+  // Hash the password and update it in the database
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  console.log(hashedPassword);
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
-    { $set: { password: newPassword } }
+    { $set: { password: hashedPassword } }
   );
   console.log("password updated");
   res.redirect("/settings");
@@ -178,8 +199,10 @@ app.post("/update-password/:userId", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.redirect("/homepage");
+  res.redirect("/index");
 });
+
+// End of login API
 
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);
