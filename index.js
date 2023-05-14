@@ -126,7 +126,7 @@ app.post("/", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  res.render("signup");
+  res.render("signup", { errorMessage: "" });
 });
 
 // post method for signup
@@ -146,7 +146,16 @@ app.post("/signup", async (req, res) => {
   const validationResult = schema.validate({ username, email, password });
   if (validationResult.error != null) {
     console.log(validationResult.error);
-    res.redirect("/signup");
+    res.redirect("/signup", { errorMessage: "" });
+    return;
+  }
+
+  // check if username already exists in databse
+  const existingUser = await userCollection.findOne({ username });
+  if (existingUser) {
+    console.log("Username already exists");
+    const errorMessage = "Username already exists, please choose another username.";
+    res.render("signup", { errorMessage: errorMessage });
     return;
   }
 
