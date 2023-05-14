@@ -107,12 +107,17 @@ function validateSession(req, res, next) {
 }
 
 app.get("/", (req, res) => {
-  res.render("index");
+  if (isValidSession(req)) {
+    res.redirect("/homepage");
+  } else {
+    res.render("index");
+  }
 });
 
 app.post("/", (req, res) => {
-  res.redirect('/');
+  res.redirect("/");
 });
+
 
 app.get("/signup", (req, res) => {
   res.render("signup");
@@ -126,7 +131,7 @@ app.post("/signup", async (req, res) => {
 
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    username: Joi.string().alphanum().max(20).required(),
+    username: Joi.string().alphanum().max(40).required(),
     email: Joi.string().max(20).required(),
     password: Joi.string().max(20).required(),
   });
@@ -158,6 +163,8 @@ app.post("/signup", async (req, res) => {
 
   // store the user ID in the session
   req.session.userId = result.insertedId;
+  // set authenticated to true
+  req.session.authenticated = true;
 
   // redirect to the risk factor survey page
   res.redirect("/riskfactorsurvey");
@@ -396,6 +403,7 @@ app.get("/loggedIn", (res, req) => {
   console.log("loggedin");
   res.redirect("/homepage");
 });
+// End of Login API
 
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);
