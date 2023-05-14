@@ -19,6 +19,13 @@
         </form>
     </div>
 
+    <!-- notify the user if the username is already taken -->
+    <!-- uses bootstrap alert to show the error message -->
+    <div class="alert alert-danger" role="alert">
+        <%= errorMessage %>
+    </div>
+
+
     <!-- Modified bootstrap modal, which is used to show the error message when users are missing fields when entering sign up information. -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
