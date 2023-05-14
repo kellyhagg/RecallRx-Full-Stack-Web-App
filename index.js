@@ -22,7 +22,9 @@ const mongoSanitize = require("express-mongo-sanitize");
 const { emit } = require("process");
 const { type } = require("os");
 const {
+  getObject,
   getOrientationScore,
+  getObjectScore,
   getWord,
   getReversalScore,
 } = require("./public/scripts/mmse.js");
@@ -108,8 +110,6 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   res.redirect('/');
-  userScore = 0;
-  pageCount = 1;
 });
 
 app.get("/signup", (req, res) => {
@@ -232,6 +232,8 @@ app.get("/surveyfinished", (req, res) => {
 });
 
 app.get("/mmse-landing-page", (req, res) => {
+  userScore = 0;
+  pageCount = 1;
   res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
 });
 
@@ -249,24 +251,26 @@ app.post("/mmse-orientation", async (req, res) => {
   var day = req.body.day;
 
   userScore = userScore + getOrientationScore(year, month, day);
-  res.render("mmse-object-recall.ejs", {
-    headerMessage: "MMSE Questionnaire",
-    objectName: "scissors",
-    pageCount: pageCount++,
-  });
   console.log("userScore: " + userScore);
+  res.redirect("/mmse-object-recall");
   return;
 });
 
-app.get("/mmse-object-recall", (req, res) => {
+app.get("/mmse-object-recall", async (req, res) => {
+  const object = getObject();
   res.render("mmse-object-recall.ejs", {
     headerMessage: "MMSE Questionnaire",
-    objectName: "scissors",
+    object: object,
     pageCount: pageCount++,
   });
 });
 
 app.post("/mmse-object-recall", async (req, res) => {
+  const object = req.body.object;
+  const inputObject = req.body.inputObject;
+  userScore = userScore + getObjectScore(inputObject, object);
+  console.log("userScore: " + userScore);
+
   if (pageCount <= 3) {
     res.redirect("/mmse-object-recall");
   } else {
@@ -297,8 +301,6 @@ app.get("/mmse-word-reversal", async (req, res) => {
 
 app.post("/mmse-word-reversal", async (req, res) => {
   const word = req.body.word;
-  console.log(req.body);
-  console.log("word in index: " + word);
   const inputWord = req.body.inputWord;
   userScore = userScore + getReversalScore(inputWord, word);
   console.log("userScore: " + userScore);
