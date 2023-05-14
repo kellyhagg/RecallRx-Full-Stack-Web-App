@@ -1,4 +1,4 @@
-.dark-green{
+.dark-green {
     color: #7B8B50;
 }
 
@@ -10,8 +10,8 @@
     color: #D88A63;
 }
 
-.white-font{
-    color:white;
+.white-font {
+    color: white;
 }
 
 .dark-green-background {
@@ -34,7 +34,7 @@ a.reset-style {
     text-decoration: none;
 }
 
-a.link  {
+a.link {
     font-weight: 500;
 }
 
@@ -52,7 +52,8 @@ div.form-group {
 }
 
 .group-height {
-    height: 36px;;
+    height: 36px;
+    ;
 }
 
 .block {
@@ -98,4 +99,10 @@ label {
 /* Button */
 .pill {
     width: 100%;
+}
+
+/* Style the validation message tooltip */
+.custom-validation-message {
+    color: #D88A63;
+    font-size: 0.8em;
 }

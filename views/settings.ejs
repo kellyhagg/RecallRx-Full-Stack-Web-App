@@ -1,22 +1,22 @@
 <!-- Header -->
-<%- include("templates/header") %>
+<%- include("templates/header", {headerMessage: "Settings"}) %>
 
 <!-- Settings Page -->
 
 
 
-<div class="container my-5">
-    <div class="d-flex align-items-center justify-content-center rounded-circle dark-green-background my-4 mx-auto">
+<div class="container my-2">
+    <div class="d-flex align-items-center justify-content-center rounded-circle dark-green-background my- mx-auto">
         <i class="fas fa-user-cog light-green header-icon"></i>
     </div>
-    <div class="dark-green">
+    <div class="dark-green text-center">
         <h2><%= userName %></h2>
         <p ><%= email %></p>
     </div>
 
     <div class="card my-2 dark-green-background border-0 ">
         <div class="card-body p-0 border-0 light-green-border ">
-            <div class="form-group border-bottom light-green-border group-height ">
+            <div class="form-group border-bottom light-green-border group-height mb-0 ">
                 <!-- add link to edit user name page -->
                 <a href="user-name-edit" class="reset-style white-font block active-btn">
                     <div class="d-flex justify-content-between align-items-center button-padding block">
@@ -25,7 +25,7 @@
                     </div>
                 </a>
             </div>
-            <div class="form-group border-bottom light-green-border group-height ">
+            <div class="form-group border-bottom light-green-border group-height  mb-0 ">
                 <!-- add link to edit email page -->
                 <a href="email-edit" class="reset-style white-font block active-btn">
                     <div class="d-flex justify-content-between align-items-center button-padding block">
@@ -34,7 +34,7 @@
                     </div>
                 </a>
             </div>
-            <div class="form-group group-height ">
+            <div class="form-group group-height  mb-0 ">
                 <!-- add link to change password page -->
                 <a href="password-change" class="reset-style white-font block active-btn">
                     <div class="d-flex justify-content-between align-items-center button-padding block">
@@ -46,18 +46,18 @@
         </div>
     </div>
 
-    <div class="card my-2 dark-green-background border-0 ">
+    <div class="card my-2 dark-green-background border-0">
         <div class="card-body p-0 border-0 light-green-border ">
-            <div class="form-group border-bottom light-green-border group-height ">
+            <div class="form-group border-bottom light-green-border group-height  mb-0 ">
                 <!-- add link to notifications page -->
-               <a href="#" class="reset-style white-font block active-btn">
+               <a href="notifications" class="reset-style white-font block active-btn">
                     <div class="d-flex justify-content-between align-items-center button-padding block">
                         <span>Notifications</span>
                         <i class='fas fa-chevron-right'></i>
                     </div>
                 </a>
             </div>
-            <div class="form-group group-height ">
+            <div class="form-group group-height  mb-0 ">
                 <!-- add link to Help and support page -->
                 <a href="#" class="reset-style white-font block active-btn">
                     <div class="d-flex justify-content-between align-items-center button-padding block">
@@ -68,13 +68,15 @@
             </div>
         </div>
     </div>
-
+    <!-- Sign out button -->
+    <div class="text-center my-5">
+        <a href="/logout" class="link reset-style dark-green ">
+            Sign Out
+        </a>
+    </div>
 </div>
 
 
-<!-- Sign out button -->
-<a href="/logout" class="link reset-style dark-green">
-    Sign Out
-</a>
+
 
 <!-- Footer -->
