@@ -1,7 +1,7 @@
 <!-- Header -->
 <%- include("templates/header-back", {headerMessage:  "User Name Edit" }) %>
 <!-- User name page  -->
-<form method="POST" action="/update-user-name/<%= user[0]._id %> " class="mx-2 px-1">
+<form method="POST" action="/update-user-name/<%= user[0]._id %> " class="mx-2 px-1" id="userNameEdit">
     <div class="container py-2"></div>
         <div class="form-group border-1 dark-green-border my-5">
             <label for="name" class="text-start font-md">User name</label>
@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <button type="submit" class="btn dark-green-background pill white-font font-lg">
+    <button type="submit" class="btn dark-green-background pill white-font hover-white-f font-lg">
             Save
     </button>
 </form>
