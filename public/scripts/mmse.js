@@ -6,7 +6,7 @@ function getOrientationScore(year, month, day) {
     if (year == now.getFullYear()) { score++; }
     if (month == now.getMonth() + 1) { score++; }
     if (day == getDayStr()) { score++; }
-    return score;
+    return score * (5 / 3);
 }
 
 function getObjectScore(input, correctObject) {
@@ -23,7 +23,7 @@ function getSentenceScore(input, correctSentence) {
     console.log("correct: " + correctSentence);
     console.log("cleaned: " + cleaned);
     if (cleaned == correctSentence) { score++; }
-    return score;
+    return score * 2;
 }
 
 function getReversalScore(input, correctWord) {
@@ -32,7 +32,7 @@ function getReversalScore(input, correctWord) {
     var cleaned = cleanAnswer(input);
     console.log("cleaned: " + cleaned);
     if (cleaned == reversedWord) { score++; }
-    return score;
+    return score * (5 / 3);
 }
 
 // Helper functions created with the assistance of ChatGPT
@@ -90,17 +90,5 @@ function cleanAnswer(answer) {
     let cleanStr = answer.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toLowerCase();
     return cleanStr;
 }
-
-
-function verifySentence(sentence) {
-    let cleanStr = sentence.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toLowerCase();
-    // let cleanAnswer = "the phone fell off of the shelf";
-    // if (cleanStr == cleanAnswer) {
-    //     console.log("Correct!");
-    //     userScore++;
-    // }
-    // console.log(userScore);
-}
-
 
 module.exports = { getObject, getSentence, getWord, getOrientationScore, getSentenceScore, getObjectScore, getReversalScore };
