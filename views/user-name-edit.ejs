@@ -1,12 +1,12 @@
 <!-- Header -->
-<%- include("templates/header", {headerMessage: "User Name Edit" }) %>
+<%- include("templates/header-back", {headerMessage:  "User Name Edit" }) %>
 <!-- User name page  -->
-<form method="POST" action="update-user-name/<%= user._id %> " class="mx-2 px-1">
+<form method="POST" action="/update-user-name/<%= user[0]._id %> " class="mx-2 px-1">
     <div class="container py-2"></div>
         <div class="form-group border-1 dark-green-border my-5">
             <label for="name" class="text-start font-md">User name</label>
             <input type="text" class="form-control border-0 light-green-background font-lg focus" id="name" name="userName"
-                placeholder="Enter your name" value="<%= user.username %>" required>
+                placeholder="Enter your name" value="<%= user[0].username %>" required>
             <span class="error-message dark-pink text-start font-s">
                 <%= errorMsg %>
             </span>
