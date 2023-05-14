@@ -76,6 +76,12 @@
     color: #333;
 }
 
+#sentenceSpeakBtn[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 .btn-back {
     padding: 0;
     padding-left: .25em;
@@ -300,6 +306,7 @@ input:checked~label {
     border-radius: 50px;
     padding: 5%;
 }
+
 .dark-green {
     color: #7B8B50;
 }
@@ -403,7 +410,8 @@ label {
 }
 
 .font-s {
-    font-size: 0.8em;;
+    font-size: 0.8em;
+    ;
 }
 
 .font-md {
@@ -440,7 +448,7 @@ input[type=password]:focus {
 }
 
 .form-floating label {
-   display: inline-block;
+    display: inline-block;
 }
 
 .to-the-right {
