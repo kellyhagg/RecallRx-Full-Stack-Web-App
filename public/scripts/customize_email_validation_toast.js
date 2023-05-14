@@ -1,6 +1,6 @@
-const input = document.querySelector('input[type="email"]');
+const emailInput = document.querySelector('input[type="email"]');
 
-input.addEventListener("invalid", function (event) {
+emailInput.addEventListener("invalid", function (event) {
   event.preventDefault();
   if (!event.target.validity.valid) {
     const validationMessage = event.target.validationMessage;
@@ -11,7 +11,7 @@ input.addEventListener("invalid", function (event) {
   }
 });
 
-input.addEventListener("input", function (event) {
+emailInput.addEventListener("input", function (event) {
   const toast = event.target.nextElementSibling;
   if (toast && toast.classList.contains("custom-validation-message")) {
     toast.remove();
