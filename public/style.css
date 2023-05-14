@@ -101,6 +101,16 @@ label {
     width: 100%;
 }
 
+.hover-white-f:hover {
+    color: white;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+.hover-shadow:hover {
+    color:#7B8B50;
+    text-decoration: underline;
+}
+
 /* Style the validation message tooltip */
 .custom-validation-message {
     color: #D88A63;
