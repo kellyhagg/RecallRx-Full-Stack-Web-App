@@ -80,8 +80,10 @@
 
 <!-- Popup -->
 <% if (showPopUp) { %>
+    <div id="backdrop" class="d-flex align-items-center justify-content-center">
     <%- include("templates/popup", {data: data}) %>
         <% console.log("show popup") %>
+        </div>
             <% } %>
 
 <!-- Handle popup JS -->
