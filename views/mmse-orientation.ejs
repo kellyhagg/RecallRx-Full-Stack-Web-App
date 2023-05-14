@@ -1,0 +1,60 @@
+<%- include("templates/header", {headerMessage: headerMessage }) %>
+
+    <br>
+
+    <div class="card mx-auto rounded">
+        <div class="card-body">
+            <form method="POST" action="/mmse-orientation">
+                <h4>What year is it (YYYY)?</h4>
+                <div class="text-boxes">
+                    <input type="number" id="year" name="year" maxlength="4">
+                </div>
+                <br>
+                <h4>What month is it (MM)?</h4>
+                <div class="text-boxes">
+                    <input type="number" id="month" name="month" maxlength="2">
+                </div>
+                <br>
+                <h4>What day of the week is it?</h4>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="spinner">
+                            <button class="down spinner-btn" type="button">&#9665;</button>
+                            <input type="text" class="spinner-value" id="day" name="day" value="Monday" readonly>
+                            <button class="up spinner-btn" type="button">&#9655;</button>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    // Spinner feature created by ChatGPT
+                    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                    let index = 0;
+
+                    const upButton = document.querySelector(".up");
+                    const downButton = document.querySelector(".down");
+                    const value = document.querySelector(".spinner-value");
+
+
+                    upButton.addEventListener("click", () => {
+                        index++;
+                        if (index >= days.length) {
+                            index = 0;
+                        }
+                        value.value = days[index];
+                    });
+
+                    downButton.addEventListener("click", () => {
+                        index--;
+                        if (index < 0) {
+                            index = days.length - 1;
+                        }
+                        value.value = days[index];
+                    });
+                </script>
+        </div>
+    </div>
+    <br><br>
+
+    <%- include("templates/mmse-footer", {questionType : "orientation" , mmseBtnText: "Next" , reference
+        : "/mmse-orientation" }) %>
+        </form>

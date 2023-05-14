@@ -1,0 +1,90 @@
+<%- include("templates/header", {headerMessage: "Risk Factor Survey Questions" }) %>
+
+<!-- risk factor survey for users to fill out so the app can have an initial assessment of their cognitive health. -->
+<!-- These questions are carefully selected based on article research results from pubmed, ncbi and Alzheimer's Association page. More details: https://docs.google.com/document/d/1OxY4iJ6J5bMsL8MlZ4JZrPZkv2_HqtU5h7j6wU8ggk8/edit?usp=sharing -->
+
+<div class="riskfactorquestion light-green-background">
+
+    <div class="container question-container bg-light p-5 rounded">
+        <h2 class="text-center mb-4">Risk Factor Survey</h2>
+        <!-- performs app.post so that the user's answers can be stored in the database -->
+        <form class="form-riskfactorquestion" action="/riskfactorquestions" method="post">
+            <div class="form-group mb-3">
+                <!-- asks the user to select their education level -->
+                <label for="educationLevel">1. Please select your education level:</label>
+                <select class="form-control" id="educationLevel" name="educationLevel">
+                    <option value="lessThanSecondary">Less than secondary (high) school graduation</option>
+                    <option value="secondary">Secondary (high) school diploma or equivalent</option>
+                    <option value="postSecondary">Postsecondary certificate, diploma or degree</option>
+                    <option value="graduate">Graduate school and higher</option>
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <!-- asks the user to select their age -->
+                <label for="age">2. What's your age?</label>
+                <select class="form-control" id="age" name="age">
+                    <option value="lessThan65">Less than 65</option>
+                    <option value="65-69">65 - 69</option>
+                    <option value="70-75">70 - 75</option>
+                    <option value="76-80">76 - 80</option>
+                    <option value="81-85">81 - 85</option>
+                    <option value="Over85">Over 85</option>
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <!-- asks the user if they smoke -->
+                <label>3. Do you smoke?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="smoke" id="smokeYes" value="yes">
+                    <label class="form-check-label" for="smokeYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="smoke" id="smokeNo" value="no">
+                    <label class="form-check-label" for="smokeNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label>4. Do you have diabetes?</label>
+                <!-- asks the user if they have diabetes -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="diabetes" id="diabetesYes" value="yes">
+                    <label class="form-check-label" for="diabetesYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="diabetes" id="diabetesNo" value="no">
+                    <label class="form-check-label" for="diabetesNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label>5. Do you have depression?</label>
+                <!-- asks the user if they have depression -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="depression" id="depression-yes" value="yes">
+                    <label class="form-check-label" for="depression-yes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="depression" id="depression-no" value="no">
+                    <label class="form-check-label" for="depression-no">
+                        No
+                    </label>
+                </div>
+            </div>
+            <!-- submit the form -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include("templates/footer") %>
