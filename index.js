@@ -60,7 +60,7 @@ var userScore = 0;
 
 module.exports = userScore;
 
-let pageCount = 1;
+var pageCount = 1;
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -104,6 +104,12 @@ function validateSession(req, res, next) {
 
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+app.post("/", (req, res) => {
+  res.redirect('/');
+  userScore = 0;
+  pageCount = 1;
 });
 
 app.get("/signup", (req, res) => {
@@ -377,7 +383,7 @@ app.get("/loggedIn", (res, req) => {
   res.redirect("/home");
 });
 
-app.get("/home", (req, res) => {});
+app.get("/home", (req, res) => { });
 
 // End of login API
 
