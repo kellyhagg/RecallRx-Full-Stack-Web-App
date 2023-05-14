@@ -30,6 +30,9 @@ const {
   getWord,
   getReversalScore,
 } = require("./public/scripts/mmse.js");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const fs = require("fs");
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
 
 /* secret information section */
@@ -39,12 +42,16 @@ const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
+const jwt_secret = process.env.JSON_WEB_TOKEN_SECRET;
+const app_email_address = process.env.EMAIL_ADDRESS;
+const app_email_password = process.env.EMAIL_PASSWORD;
 /* END secret section */
 
 const mmse = require("./public/scripts/mmse.js");
 // Set up the view engine and static files
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.json());
 
 // Connect to the database
 var { database } = include("databaseConnection");
@@ -340,6 +347,7 @@ app.get("/mmse-results", (req, res) => {
   });
   userScore = 0;
 });
+
 // Login API
 // This block of code is modified from COMP 2537 Assignment 2 by Olga Zimina.
 
@@ -371,11 +379,15 @@ app.post("/login", async (req, res) => {
     .find({ username: username })
     .project({ username: 1, email: 1, password: 1, is_admin: 1, _id: 1 })
     .toArray();
-  if (!user) {
+  if (!user[0]) {
     console.log("User not found");
-    res.redirect("/loginFailure");
+    res.render("login", {
+      errorMsg: "Invalid user name or password",
+      username: username,
+    });
     return;
   }
+  console.log(user);
   // Check password match and set session variables
   const passwordMatch = await bcrypt.compare(password, user[0].password);
   if (passwordMatch) {
@@ -383,7 +395,7 @@ app.post("/login", async (req, res) => {
     req.session.username = username;
     req.session.email = user[0].email;
     req.session.cookie.maxAge = expireTime;
-    res.redirect("/login");
+    res.redirect("/homepage");
     return;
   } else {
     console.log("Invalid user name or password");
@@ -410,6 +422,215 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
+
+// Forgot Password API
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: app_email_address,
+    pass: app_email_password,
+  },
+});
+
+async function sendEmail(to, subject, message) {
+  try {
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: app_email_address,
+      to: to,
+      subject: subject,
+      html: message,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.get("/forgot-password", (req, res) => {
+  res.render("forgot-password", { errorMsg: "" });
+});
+
+app.post("/forgot-password", async (req, res) => {
+  console.log("inside forgot password request");
+  const email = req.body.email;
+
+  // validate the input style for username, email and password using Joi
+  const schema = Joi.object({
+    email: Joi.string().max(20).required(),
+  });
+
+  // validate the input
+  const validationResult = schema.validate({ email });
+  if (validationResult.error != null) {
+    console.log("error" + validationResult.error);
+    res.render("forgot-password", {
+      errorMsg: validationResult.error.message,
+    });
+    return;
+  }
+  console.log("validated");
+
+  // Retrieve user information from database
+  const user = await userCollection
+    .find({ email: email })
+    .project({ username: 1, email: 1, _id: 1, password: 1 })
+    .toArray();
+  if (!user[0]) {
+    console.log("User not found");
+    res.render("forgot-password", {
+      errorMsg: `User with email ${email} is not found. Please, check your email address.`,
+    });
+    console.log("User not found");
+    return;
+  }
+  console.log(user);
+
+  // Create a onetime link valid for a day
+  const secret = jwt_secret + user[0].password;
+  const payload = {
+    email: user[0].email,
+    id: user[0]._id,
+  };
+  console.log("payload" + payload);
+  const token = jwt.sign(payload, secret, { expiresIn: "1d" });
+  //  TO DO
+  const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
+  console.log(link);
+  //TO DO: send email
+  fs.readFile(
+    __dirname + "/emails/reset-password-email.html",
+    "utf8",
+    (err, data) => {
+      // Replace the placeholder with the error message
+      var modifiedData = data.replace("{username}", user[0].username);
+      modifiedData = modifiedData.replace("{resetLink}", link);
+      modifiedData = modifiedData.replace("{appEmail}", app_email_address);
+      sendEmail(email, "Reset password for RecallRx", modifiedData);
+    }
+  );
+  req.session.messageData = {
+    message:
+      "Your reset password link is invalid or expired. Please, check your email for correct link or request a new reset password.",
+    action: "/login",
+    btnLabel: "Go to Sign In",
+    isError: false,
+  };
+  res.redirect("/messages");
+});
+
+app.get("/reset-password/:id&auth=:token", async (req, res) => {
+  try {
+    const { id, token } = req.params;
+    //  Verify token
+    // Check if id exists in database
+    const user = await userCollection.findOne(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        projection: { username: 1, email: 1, _id: 1, password: 1 },
+      }
+    );
+
+    // Handle case where provided id is invalid
+    if (!user) {
+      res.render("forgot-password", {
+        errorMsg: `User with is not found. Please, check your email address.`,
+      });
+      return;
+    }
+    console.log("user found");
+    // Handle reset password for user with provided id
+    const secret = jwt_secret + user.password;
+
+    const payload = jwt.verify(token, secret);
+    res.render("reset-password", { userName: user.username });
+  } catch (error) {
+    console.log(error.message);
+    req.session.messageData = {
+      message:
+        "Your reset password link is invalid or expired. Please, check your email for correct link or request a new reset password.",
+      action: "/forgot-password",
+      btnLabel: "Go to Forgot Password",
+      isError: true,
+    };
+    res.redirect("/messages");
+  }
+});
+
+app.post("/reset-password/:id&auth=:token", async (req, res) => {
+  // Extract the id, token, and password from the request
+  const { id, token } = req.params;
+  const { password } = req.body;
+  console.log("inside post reset password");
+  // Check if id exists in database
+  const user = await userCollection.findOne(
+    { _id: new ObjectId(id) },
+    { projection: { username: 1, email: 1, _id: 1, password: 1 } }
+  );
+  console.log(user);
+  // Handle case where provided id is invalid
+  if (!user) {
+    console.log("User not found");
+    // Set an error message in the session
+    req.session.messageData = {
+      message:
+        "Your reset password link is invalid. Please, check your email for correct link or request a new reset password.",
+      action: "/forgot-password",
+      btnLabel: "Go to Forgot Password",
+      isError: true,
+    };
+    res.redirect("/messages");
+    console.log("ID is not valid");
+    return;
+  }
+  // Handle reset password for user with provided id
+  const secret = jwt_secret + user.password;
+  try {
+    const payload = jwt.verify(token, secret);
+
+    // Hash the password and update it in the database
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    await userCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { password: hashedPassword } }
+    );
+    // Set a success message in the session
+    req.session.messageData = {
+      message: "Your password has been updated.",
+      action: "/login",
+      btnLabel: "Go to Sign In",
+      isError: false,
+    };
+    res.redirect("/messages");
+  } catch (error) {
+    console.log("inside try catch");
+    console.log(error.message);
+    // Set an error message in the session
+    req.session.messageData = {
+      message:
+        "Your reset password link is invalid. Please, check your email for correct link or request a new reset password.",
+      action: "/forgot-password",
+      btnLabel: "Go to Forgot Password",
+      isError: true,
+    };
+    res.redirect("/messages");
+  }
+});
+
+app.get("/messages", (req, res) => {
+  const messageData = req.session.messageData;
+  res.render("messages", {
+    message: messageData.message,
+    action: messageData.action,
+    btnLabel: messageData.btnLabel,
+    isError: messageData.isError,
+  });
+});
+
+// End of forgot password API
 
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 .navbar {
-    /* display: none; */
-    border-radius: 0 0 1.5em 1.5em;
     background-color: #778251;
     color: white;
 }
@@ -77,6 +74,12 @@
     color: #333;
 }
 
+#sentenceSpeakBtn[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 .btn-back {
     padding: 0;
     padding-left: .25em;
@@ -85,8 +88,6 @@
 }
 
 /* General */
-=======
->>>>>>> Olga_LogIn_Page
 .dark-green {
     color: #7B8B50;
 }
@@ -95,39 +96,52 @@
     color: #EDF3DE;
 }
 
-<<<<<<< HEAD
-=======
-.dark-pink {
-    color: #D88A63;
+.light-yellow {
+    color: #FFF4DD;
 }
 
->>>>>>> Olga_LogIn_Page
+.light-pink {
+    color: #F5E6E8;
+}
+
 .white-font {
     color: white;
 }
 
-<<<<<<< HEAD
-=======
-.faded-font {
-    color: #9a9a9a;
+.light-yellow-background {
+    background-color: #FFF4DD;
 }
 
->>>>>>> Olga_LogIn_Page
+.light-pink-background {
+    background-color: #FFE4D7;
+}
+
 .dark-green-background {
     background-color: #7B8B50;
+}
+
+.dark-pink-background {
+    background-color: #D88A63;
+}
+
+.dark-yellow-background {
+    background-color: #D0A449;
 }
 
 .light-green-background {
     background-color: #EDF3DE;
 }
 
-<<<<<<< HEAD
 .white-transparent-background {
     background-color: rgba(255, 255, 255, 0.2);
-=======
-.white-background {
-    background-color: white;
->>>>>>> Olga_LogIn_Page
+}
+
+.pink-less-transparent-background {
+    background-color: rgba(247, 189, 160, 0.402);
+}
+
+.white-less-transparent-background {
+    background-color: rgba(255, 255, 255, 0.551);
 }
 
 .dark-green-border {
@@ -138,7 +152,6 @@
     border-color: #EDF3DE;
 }
 
-<<<<<<< HEAD
 /* Notifications page */
 .form-label {
     font-weight: 600;
@@ -156,32 +169,6 @@
     background-color: #7B8B50;
     border-color: #7B8B50;
     box-shadow: none;
-=======
-a.reset-style {
-    text-decoration: none;
-}
-
-a.link {
-    font-weight: 500;
-}
-
-div.form-group {
-    border-bottom: 1px;
-}
-
-.transparent-background {
-    background-color: transparent;
-}
-
-.button-padding {
-    padding-left: 12px;
-    padding-right: 12px;
-}
-
-.group-height {
-    height: 36px;
-    ;
->>>>>>> Olga_LogIn_Page
 }
 
 .block {
@@ -190,7 +177,6 @@ div.form-group {
     width: 100%;
 }
 
-<<<<<<< HEAD
 .height {
     height: 100%;
 }
@@ -314,6 +300,10 @@ input:checked~label {
     height: 100vh;
 }
 
+.index-buttons {
+    padding-top: 5%;
+}
+
 .form-signup {
     margin: auto;
     width: 300px;
@@ -350,7 +340,79 @@ input:checked~label {
     border-radius: 50px;
     padding: 5%;
 }
-=======
+
+.dark-green {
+    color: #7B8B50;
+}
+
+.light-green {
+    color: #EDF3DE;
+}
+
+.dark-pink {
+    color: #D88A63;
+}
+
+.white-font {
+    color: white;
+}
+
+.faded-font {
+    color: #9a9a9a;
+}
+
+.dark-green-background {
+    background-color: #7B8B50;
+}
+
+.light-green-background {
+    background-color: #EDF3DE;
+}
+
+.white-background {
+    background-color: white;
+}
+
+.dark-green-border {
+    border-color: #7B8B50;
+}
+
+.light-green-border {
+    border-color: #EDF3DE;
+}
+
+a.reset-style {
+    text-decoration: none;
+}
+
+a.link {
+    font-weight: 500;
+}
+
+div.form-group {
+    border-bottom: 1px;
+}
+
+.transparent-background {
+    background-color: transparent;
+}
+
+.button-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.group-height {
+    height: 36px;
+    ;
+}
+
+.block {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
 .rounded-circle,
 .header-icon {
     height: 5em;
@@ -382,7 +444,8 @@ label {
 }
 
 .font-s {
-    font-size: 0.8em;;
+    font-size: 0.8em;
+    ;
 }
 
 .font-md {
@@ -419,11 +482,32 @@ input[type=password]:focus {
 }
 
 .form-floating label {
-   display: inline-block;
+    display: inline-block;
 }
-
+s
 .to-the-right {
     text-decoration: none;
     text-align: right;
+<<<<<<< HEAD
 }
->>>>>>> Olga_LogIn_Page
+=======
+}
+
+/* Forgot Password */
+
+.text-start {
+    text-align: left;
+}
+
+.hover-white-f:hover {
+    color: white;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+
+/* Style the validation message tooltip */
+.custom-validation-message {
+    color: #D88A63;
+    font-size: 0.8em;
+}
+>>>>>>> Olga_Forgot_Password

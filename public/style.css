@@ -445,7 +445,6 @@ label {
 
 .font-s {
     font-size: 0.8em;
-    ;
 }
 
 .font-md {
@@ -484,8 +483,25 @@ input[type=password]:focus {
 .form-floating label {
     display: inline-block;
 }
-
 .to-the-right {
     text-decoration: none;
     text-align: right;
+}
+
+/* Forgot Password */
+
+.text-start {
+    text-align: left;
+}
+
+.hover-white-f:hover {
+    color: white;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+
+/* Style the validation message tooltip */
+.custom-validation-message {
+    color: #D88A63;
+    font-size: 0.8em;
 }

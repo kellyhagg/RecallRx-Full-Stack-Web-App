@@ -1,0 +1,15 @@
+<%- include("templates/header", {headerMessage: "Messages" }) %>
+
+<form method="GET" action="<%= action %>">
+    <div class="container py-2">
+        <div class="text-center font-lg <% if (isError) { %> dark-pink <%} else { %> dark-green <%} %> my-4">
+                <%= message %>
+        </div>
+    
+    <button type="submit" class="btn dark-green-background pill white-font font-lg hover-white-f">
+        <%= btnLabel %>
+    </button>
+
+    </div>
+</form>
+
