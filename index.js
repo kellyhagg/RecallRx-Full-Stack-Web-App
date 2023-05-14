@@ -23,6 +23,8 @@ const { emit } = require("process");
 const { type } = require("os");
 const {
   getObject,
+  getSentence,
+  getSentenceScore,
   getOrientationScore,
   getObjectScore,
   getWord,
@@ -280,12 +282,18 @@ app.post("/mmse-object-recall", async (req, res) => {
 });
 
 app.get("/mmse-sentence-recall", (req, res) => {
+  const sentence = getSentence();
   res.render("mmse-sentence-recall.ejs", {
     headerMessage: "MMSE Questionnaire",
+    sentence: sentence,
   });
 });
 
 app.post("/mmse-sentence-recall", async (req, res) => {
+  const sentence = req.body.sentence;
+  const inputSentence = req.body.inputSentence;
+  userScore = userScore + getSentenceScore(inputSentence, sentence);
+  console.log("userScore: " + userScore);
   res.redirect("/mmse-word-reversal");
 });
 
