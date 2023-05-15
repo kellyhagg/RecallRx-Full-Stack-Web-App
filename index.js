@@ -211,8 +211,12 @@ app.post("/signup", async (req, res) => {
 
   console.log("Inserted user through signup");
 
-  // store the user ID in the session
+  // store the userId in the session
   req.session.userId = result.insertedId;
+  // store the user name in the session
+  req.session.username = username;
+  // store the user email in the session
+  req.session.email = email;
   // set authenticated to true
   req.session.authenticated = true;
 
