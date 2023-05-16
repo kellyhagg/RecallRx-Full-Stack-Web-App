@@ -74,6 +74,10 @@
     color: #333;
 }
 
+#nextQuestionBtn {
+    width: 90%;
+}
+
 #sentenceSpeakBtn[disabled] {
     background-color: #cccccc;
     color: #666666;
@@ -460,6 +464,7 @@ input[type=password]:focus {
 .form-floating label {
     display: inline-block;
 }
+
 .to-the-right {
     text-decoration: none;
     text-align: right;
@@ -482,6 +487,7 @@ input[type=password]:focus {
     color: #D88A63;
     font-size: 0.8em;
 }
+
 .dark-green {
     color: #7B8B50;
 }
@@ -591,7 +597,7 @@ label {
 }
 
 .hover-shadow:hover {
-    color:#7B8B50;
+    color: #7B8B50;
     text-decoration: underline;
 }
 
@@ -620,8 +626,7 @@ label {
     right: 0;
     background-color: rgba(0, 0, 0, .7);
 }
-    background-color: rgba(123, 139, 80, 0.2);
-}
+
 
 /* Weekday Spinner */
 
