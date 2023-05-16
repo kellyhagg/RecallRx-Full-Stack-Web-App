@@ -75,7 +75,8 @@
 }
 
 #nextQuestionBtn {
-    width: 90%;
+    width: 90% !important;
+    margin-left: 5% !important;
 }
 
 #sentenceSpeakBtn[disabled] {
