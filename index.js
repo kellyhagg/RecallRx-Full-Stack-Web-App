@@ -134,7 +134,11 @@ app.post("/", (req, res) => {
 
 // get method for signup, with default error message set to empty
 app.get("/signup", (req, res) => {
-  res.render("signup", { errorMessage: "" });
+  if (isValidSession(req)) {
+    res.redirect("/homepage");
+  } else {
+    res.render("signup", { errorMessage: "" });
+  }
 });
 
 // post method for signup
@@ -225,16 +229,20 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+// Middleware to validate user session before accessing homepage
+app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", (req, res) => {
   res.render("homepage");
 });
 
+app.use("/riskfactorsurvey", validateSession);
 // get method for risk factor survey
 app.get("/riskfactorsurvey", (req, res) => {
   res.render("riskfactorsurvey");
 });
 
+app.use("/riskfactorquestions", validateSession);
 // get method for risk factor survey
 app.get("/riskfactorquestions", (req, res) => {
   res.render("riskfactorquestions");
