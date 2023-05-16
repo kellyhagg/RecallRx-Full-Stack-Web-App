@@ -907,6 +907,14 @@ app.post("/notifications", async (req, res, next) => {
 });
 // End of Notifications API
 
+// validate user session before accessing daily recommendation page
+// app.use("/dailyrecommendation", validateSession);
+
+// get method for daily recommendation page
+app.get("/dailyrecommendation", (req, res) => {
+  res.render("dailyrecommendation");
+});
+
 // get method for 404 page
 app.get("*", (req, res) => {
   res.status(404);
