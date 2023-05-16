@@ -1,0 +1,64 @@
+<%- include("templates/header-back", {headerMessage: "Activity Tracking" }) %>
+
+<!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/4.0/components/carousel/ -->
+<div id="hero-carousel" class="carousel slide w-100 light-green-background" data-bs-ride="carousel">
+
+    <div class="carousel-inner">
+        <div class="carousel-item active c-item">
+            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+            <div class="carousel-caption top-0 mt-4 dark-green">
+                <p class="mt-5 fs-3 text-uppercase">Exercise</p>
+                <h1 class="display-1 fw-bolder text-capitalize">Place holder</h1>
+            </div>
+        </div>
+        <div class="carousel-item c-item">
+            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+            <div class="carousel-caption top-0 mt-4 dark-green">
+                <p class="text-uppercase fs-3 mt-5">Social</p>
+                <p class="display-1 fw-bolder text-capitalize">Place holder</p>
+            </div>
+        </div>
+        <div class="carousel-item c-item">
+            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+            <div class="carousel-caption top-0 mt-4 dark-green">
+                <p class="text-uppercase fs-3 mt-5">Alcohol</p>
+                <p class="display-1 fw-bolder text-capitalize">Place holder</p>
+            </div>
+        </div>
+        <div class="carousel-item c-item">
+            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+            <div class="carousel-caption top-0 mt-4 dark-green">
+                <p class="text-uppercase fs-3 mt-5">Smoke</p>
+                <p class="display-1 fw-bolder text-capitalize">Place holder</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+
+    <div class="recom-swipe-text text-center light-green-background dark-green">
+        Swipe to View Other Activites
+    </div>
+</div>
+
+<!-- Initialize the carousel with swipe functionality -->
+<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+
+<script>
+    $(document).ready(function () {
+        $("#hero-carousel").on("swiperight", function () {
+            $(this).carousel("prev");
+        });
+        $("#hero-carousel").on("swipeleft", function () {
+            $(this).carousel("next");
+        });
+    });
+</script>
+
+<%- include("templates/footer") %>

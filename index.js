@@ -908,6 +908,14 @@ app.get("/dailyrecommendation", (req, res) => {
   res.render("dailyrecommendation");
 });
 
+// validate user session before accessing daily activity tracking page
+app.use("/daily-activity-tracking", validateSession);
+
+// get method for daily activity tracking page
+app.get("/daily-activity-tracking", (req, res) => {
+  res.render("daily-activity-tracking");
+});
+
 // get method for 404 page
 app.get("*", (req, res) => {
   res.status(404);
