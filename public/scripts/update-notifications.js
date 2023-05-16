@@ -33,7 +33,7 @@ function findSelectedValue(...inputs) {
 }
 
 function updateNotifications() {
-  const isUpdate = confirm("Update?");
+  const isUpdate = confirm("Do you want to save the changes?");
 
   if (!isUpdate) {
     return;
@@ -70,8 +70,8 @@ function updateNotifications() {
       isActive: isMmseActive,
     },
   };
-  fetch("https://recallrx.cyclic.app//notifications", {
-    // fetch("http://localhost:3000/notifications", {
+  // fetch("https://recallrx.cyclic.app//notifications", {
+  fetch("http://localhost:3000/notifications", {
     method: "post",
     body: JSON.stringify(body),
     headers: {
