@@ -1,0 +1,88 @@
+<%- include("templates/header-back", {headerMessage: "Today's Recommendation" }) %>
+<!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0"></li>
+        <li data-target="#myCarousel" data-slide-to="1" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Three pictures with recommendation for different aspects -->
+    <div class="carousel-inner recom-carousel-inner">
+        <!-- recommendation on social -->
+        <div class="carousel-item recommendation-social">
+            <img src="recom-social.jpg" class="d-block w-100" alt="Image 3">
+            <div class="container">
+                <div class="carousel-caption text-start">
+                    <!-- text can be replaced through id -->
+                    <h1 style="font-size: 2rem;" id="social-title">Talk To Your Friends</h1>
+                    <p style="font-size: 1rem;" id="social-content">Embrace the joy of connection, cherish
+                        friendships, and engage in
+                        social activities that bring
+                        fulfillment - reach out
+                        to loved ones or join a community gathering to make lasting memories today.</p>
+                </div>
+            </div>
+        </div>
+        <!-- recommendation on study -->
+        <!-- set to active by default -->
+        <div class="carousel-item active recommendation-study">
+            <img src="recom-study.jpg" class="d-block w-100" alt="Image 1">
+            <div class="container">
+                <div class="carousel-caption">
+                    <!-- text can be replaced through id -->
+                    <h1 style="font-size: 2rem;" id="study-title">Learn Something New</h1>
+                    <p style="font-size: 1rem;" id="study-content">Nurture your curiosity, expand your knowledge, and
+                        stimulate your mind
+                        through lifelong learning
+                        - dedicate time today
+                        to explore new subjects and unlock your intellectual potential!</p>
+                </div>
+            </div>
+        </div>
+        <!-- recommendation on exercise -->
+        <div class="carousel-item recommendation-exercise">
+            <img src="recom-exercise.jpg" class="d-block w-100" alt="Image 2">
+            <div class="container">
+                <div class="carousel-caption text-end">
+                    <!-- text can be replaced through id -->
+                    <h1 style="font-size: 2rem;" id="exercise-title">Get Some Exercises</h1>
+                    <p style="font-size: 1rem;" id="exercise-content">Take care of your well-being, strengthen
+                        your body, and embrace an
+                        active lifestyle at any age -
+                        make today the day you
+                        prioritize exercise and feel the benefits.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel controls that allows switching pictures -->
+    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="recom-swipe-text text-center">
+    Swipe to View More
+</div>
+
+<!-- Initialize the carousel with swipe functionality -->
+<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+
+<script>
+    $(document).on("pagecreate", function () {
+        $("#myCarousel").swiperight(function () {
+            $(this).carousel("prev");
+        });
+        $("#myCarousel").swipeleft(function () {
+            $(this).carousel("next");
+        });
+    });
+</script>
+<%- include("templates/footer") %>
