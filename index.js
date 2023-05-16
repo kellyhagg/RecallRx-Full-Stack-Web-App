@@ -1,33 +1,31 @@
 // Import necessary modules and packages
 require("./utils.js");
-
 require("dotenv").config();
-const express = require("express");
-const session = require("express-session");
-const bodyParser = require("body-parser");
 
-const MongoStore = require("connect-mongo");
-const bcrypt = require("bcrypt");
-const saltRounds = 12;
-// const ObjectId = require("mongodb").ObjectId;
-const { ObjectId } = require("mongodb");
+const express = require("express"); // import express
+const session = require("express-session"); // import express-session
+const bodyParser = require("body-parser"); // import body-parser
+const MongoStore = require("connect-mongo"); // import connect-mongo
+const bcrypt = require("bcrypt"); // import bcrypt
+const saltRounds = 12; // set salt rounds for bcrypt
+const { ObjectId } = require("mongodb"); // import ObjectId from mongodb
 
 // Set up the port number to listen on
 const port = process.env.PORT || 3000;
 
 // Create the Express application
 const app = express();
-app.use(express.static("public"));
+app.use(express.static("public")); // set up the static files
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: true }));
 
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-const Joi = require("joi");
-const mongoSanitize = require("express-mongo-sanitize");
-const { emit } = require("process");
-const { type } = require("os");
+const Joi = require("joi"); // import Joi
+const mongoSanitize = require("express-mongo-sanitize"); // import express-mongo-sanitize
+const { emit } = require("process"); // import process
+const { type } = require("os"); // import os
 const {
   getObject,
   getSentence,
@@ -36,10 +34,10 @@ const {
   getObjectScore,
   getWord,
   getReversalScore,
-} = require("./public/scripts/mmse.js");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const fs = require("fs");
+} = require("./public/scripts/mmse.js"); // import mmse.js
+const jwt = require("jsonwebtoken"); // import jsonwebtoken
+const nodemailer = require("nodemailer"); // import nodemailer
+const fs = require("fs"); // import fs
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
 
 /* secret information section */
@@ -56,13 +54,12 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 
 const mmse = require("./public/scripts/mmse.js");
 // Set up the view engine and static files
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(express.json());
+app.set("view engine", "ejs");  // set up the view engine
+app.use(express.json()); // use express.json() to parse JSON bodies
 
 // Connect to the database
 var { database } = include("databaseConnection");
-const userCollection = database.db(mongodb_database).collection("users");
+const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
 
 const notificationsCollection = database
   .db(mongodb_database)
@@ -121,6 +118,7 @@ function validateSession(req, res, next) {
   }
 }
 
+// Validate user session, if valid, redirect to homepage
 app.get("/", (req, res) => {
   if (isValidSession(req)) {
     res.redirect("/homepage");
@@ -129,10 +127,12 @@ app.get("/", (req, res) => {
   }
 });
 
+// post method for login
 app.post("/", (req, res) => {
   res.redirect("/");
 });
 
+// get method for signup, with default error message set to empty
 app.get("/signup", (req, res) => {
   res.render("signup", { errorMessage: "" });
 });
@@ -195,6 +195,7 @@ app.post("/signup", async (req, res) => {
   const nextMMSENotification = new Date(currentDate.getTime());
   nextMMSENotification.setHours(7 * 24);
 
+  // insert the user's notification configuration into the database
   const notificationSetResult = await notificationsCollection.insertOne({
     userId: result.insertedId.toString(),
     exercise: {
@@ -224,17 +225,21 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+// get method for homepage
 app.get("/homepage", (req, res) => {
   res.render("homepage");
 });
 
+// get method for risk factor survey
 app.get("/riskfactorsurvey", (req, res) => {
   res.render("riskfactorsurvey");
 });
 
+// get method for risk factor survey
 app.get("/riskfactorquestions", (req, res) => {
   res.render("riskfactorquestions");
 });
+
 // post method for risk factor survey
 app.post("/riskfactorquestions", async (req, res) => {
   const educationLevel = req.body.educationLevel;
@@ -285,9 +290,11 @@ app.post("/riskfactorquestions", async (req, res) => {
 
   console.log("Inserted user survey");
 
+  // redirect to the homepage when user finishes survey
   res.redirect("/surveyfinished");
 });
 
+// get method for survey finished page
 app.get("/surveyfinished", (req, res) => {
   res.render("surveyfinished");
 });
@@ -885,11 +892,13 @@ app.post("/notifications", async (req, res, next) => {
 });
 // End of Notifications API
 
+// get method for 404 page
 app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
 
+// Initialize the server
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);
 });
