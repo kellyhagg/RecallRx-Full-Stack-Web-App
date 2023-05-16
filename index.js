@@ -54,7 +54,7 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 
 const mmse = require("./public/scripts/mmse.js");
 // Set up the view engine and static files
-app.set("view engine", "ejs");  // set up the view engine
+app.set("view engine", "ejs"); // set up the view engine
 app.use(express.json()); // use express.json() to parse JSON bodies
 
 // Connect to the database
@@ -145,6 +145,8 @@ app.get("/signup", (req, res) => {
 app.post("/signup", async (req, res) => {
   const username = req.body.username;
   const email = req.body.email;
+  const userId = req.body.userId;
+  console.log("userId: ", userId);
   const password = req.body.password;
 
   // validate the input style for username, email and password using Joi
@@ -433,7 +435,7 @@ app.post("/login", async (req, res) => {
   // Retrieve user information from database
   const user = await userCollection
     .find({ username: username })
-    .project({ username: 1, email: 1, password: 1, is_admin: 1, _id: 1 })
+    .project({ username: 1, email: 1, password: 1, _id: 1 })
     .toArray();
   if (!user[0]) {
     console.log("User not found");
@@ -448,8 +450,9 @@ app.post("/login", async (req, res) => {
   const passwordMatch = await bcrypt.compare(password, user[0].password);
   if (passwordMatch) {
     req.session.authenticated = true;
-    req.session.username = username;
-    req.session.email = user[0].email;
+    req.session.username = username; // store user name in the session
+    req.session.email = user[0].email; // store user email in the session
+    req.session.userId = user[0]._id; // store user id in the session
     req.session.cookie.maxAge = expireTime;
     res.redirect("/homepage");
     return;
@@ -910,4 +913,3 @@ app.get("*", (req, res) => {
 app.listen(port, () => {
   console.log(`Application is listening at http://localhost:${port}`);
 });
-
