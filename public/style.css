@@ -1117,6 +1117,14 @@ label {
 .recom-swipe-text {
     font-size: 20px;
     font-weight: bold;
-    padding-top: 3%;
-    padding-bottom: 5%;
+    padding-top: 15%;
+    padding-bottom: 20%;
+}
+
+.recom-carousel-background {
+    height: 500px;
+}
+
+.recom-carousel {
+    height: 100%;
 }
