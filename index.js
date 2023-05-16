@@ -687,6 +687,7 @@ app.get("/messages", (req, res) => {
 // End of forgot password API
 
 // Settings routes
+app.use("/settings", validateSession);
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
@@ -701,6 +702,7 @@ app.get("/settings", (req, res) => {
 });
 
 // User information update routes
+app.use("/user-name-edit", validateSession);
 app.get("/user-name-edit", async (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
@@ -749,6 +751,7 @@ app.post("/update-user-name/:userId", async (req, res) => {
   // res.redirect("/settings");
 });
 
+app.use("/email-edit", validateSession);
 app.get("/email-edit", async (req, res) => {
   const email = req.session.email;
   const user = await userCollection.findOne(
@@ -812,6 +815,7 @@ app.post("/update-email/:userId", async (req, res) => {
   // res.redirect("/settings");
 });
 
+app.use("/password-change", validateSession);
 app.get("/password-change", async (req, res) => {
   const email = req.session.email;
   const user = await userCollection
@@ -851,7 +855,7 @@ app.get("/logout", (req, res) => {
 });
 
 // End of Settings API
-
+app.use("/notifications", validateSession);
 // Start notification API
 app.get("/notifications", async (req, res) => {
   try {
