@@ -84,5 +84,25 @@ audio.addEventListener("timeupdate", (e) => {
   }
   currentTimeText.innerText = currentMinutes + ":" + currentSeconds;
 
+  // Looping Logic
+  if (isLooping && currentTime >= duration - 0.5) {
+    // Restart the melody when it's about to finish
+    console.log(isLooping);
+    audio.currentTime = 0;
+    audio.play();
+  }
+});
 
+// Loop button
+loopBtn.addEventListener("click", () => {
+  isLooping = !isLooping;
+  const loopBtnContainer = document.querySelector(".loop");
+  if (isLooping) {
+    loopBtnContainer.classList.remove("deactivated");
+    console.log("loop is deactivated");
+  } else {
+    loopBtnContainer.classList.add("deactivated");
+    console.log("loop is activated");
+  }
+  loopBtn.classList.toggle("active");
 });
