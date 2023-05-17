@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const smokingRiskIncrease = 0.37;
+function getSlope(x1, y1, x2, y2) {
+    return (y2 - y1) / (x2 - x1);
+}
 
 // Provided by ChatGPT
 function calculateAverageByKey(data, key) {
@@ -13,32 +15,48 @@ function calculateAverageByKey(data, key) {
 }
 
 // Made with the assistance of ChatGPT
-function readJSONFile(filename, callback) {
+function readJSONFile(filename) {
     const filePath = path.join(__dirname, '..', filename);
-    fs.readFile(filePath, 'utf8', (error, data) => {
-        if (error) {
-            console.log('Error occurred while reading the JSON file:', error);
-            return;
-        }
-        const jsonData = JSON.parse(data);
-        callback(jsonData);
+    return new Promise((resolve, reject) => {
+        fs.readFile(filePath, 'utf8', (error, data) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            const jsonData = JSON.parse(data);
+            resolve(jsonData);
+        });
     });
 }
 
-function getSlope(x1, y1, x2, y2) {
-    return (y2 - y1) / (x2 - x1);
+function getSmokingRisk(numberSmoked) {
+    const filename = 'resources/cigarette_relative_risk_data.json';
+    const smokingRiskIncrease = 0.37;
+    const averageSmokerCigarettesPerDay = 12.5;
+
+    return readJSONFile(filename)
+        .then(data => {
+            const average1 = calculateAverageByKey(data, "1");
+            const average20 = calculateAverageByKey(data, "20");
+
+            const riskPerCigaretteSlope = getSlope(1, average1, 20, average20);
+            const smokingRiskAdjustment = smokingRiskIncrease / (riskPerCigaretteSlope * averageSmokerCigarettesPerDay);
+            const adjustedRiskPerCigarette = riskPerCigaretteSlope * smokingRiskAdjustment;
+
+            return adjustedRiskPerCigarette * numberSmoked;
+        })
+        .catch(error => {
+            console.log('Error occurred while reading the JSON file:', error);
+            throw error;
+        });
 }
 
 function runAlgorithm() {
-    const filename = 'resources/cigarette_relative_risk_data.json';
-
-    readJSONFile(filename, (data) => {
-        const average1 = calculateAverageByKey(data, "1");
-        const average20 = calculateAverageByKey(data, "20");
-
-        const riskPerCigarette = smokingRiskIncrease * getSlope(1, average1, 20, average20);
-        console.log(riskPerCigarette);
-    });
+    getSmokingRisk(10)
+        .then(result => {
+            console.log(result);
+        });;
 }
 
 runAlgorithm();
+
