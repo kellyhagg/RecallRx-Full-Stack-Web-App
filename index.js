@@ -2,6 +2,11 @@
 require("./utils.js");
 require("dotenv").config();
 
+const EXERCISE_TIME_GOAL = 150; // minutes per week, default exercise time goal
+const ALCOHOL_CONSUMPTION_LIMIT = 340 // ml per week, default alcohol consumption limit
+const SMOKE_COUNT_LIMIT = 70 // cigarette per week, default smoke count limit
+const SOCIAL_TIME_GOAL = 150 // minutes per week, default social time goal
+
 const express = require("express"); // import express
 const session = require("express-session"); // import express-session
 const bodyParser = require("body-parser"); // import body-parser
@@ -187,10 +192,10 @@ app.post("/signup", async (req, res) => {
     smoke: null,
     diabetes: null,
     depression: null,
-    alcoholConsumption: null,
-    exerciseTime: null,
-    smokeCount: null,
-    socialTime: null,
+    alcoholConsumption: 0,
+    exerciseTime: 0,
+    smokeCount: 0,
+    socialTime: 0,
     createdAt: currentDate.toISOString(),
   });
 
@@ -288,7 +293,7 @@ app.post("/riskfactorquestions", async (req, res) => {
 
   // insert the user's risk factor survey results into the database and save it to the same document
   await userCollection.updateOne(
-    { _id: ObjectId(userId) },
+    { _id: userId },
     {
       $set: {
         educationLevel: educationLevel,
@@ -916,20 +921,52 @@ app.get("/dailyrecommendation", (req, res) => {
 app.use("/daily-activity-tracking", validateSession);
 
 // get method for daily activity tracking page
-app.get("/daily-activity-tracking", (req, res) => {
-  const exerciseProgressRatio = 0.5;
-  const socialProgressRatio = 0.3;
-  const alcoholProgressRatio = 0.8;
-  const smokeProgressRatio = 0.2;
+app.get("/daily-activity-tracking", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const user = await userCollection.findOne(
+      { _id: new ObjectId(userId) },
+      { projection: { exerciseTime: 1, socialTime: 1, alcoholConsumption: 1, smokeCount: 1 } }
+    );
 
-  res.render("daily-activity-tracking", {
-    exerciseProgressRatio: exerciseProgressRatio,
-    socialProgressRatio: socialProgressRatio,
-    alcoholProgressRatio: alcoholProgressRatio,
-    smokeProgressRatio: smokeProgressRatio,
-  });
+    const {
+      exerciseTime,
+      socialTime,
+      alcoholConsumption,
+      smokeCount
+    } = user;
+
+    console.log("Exercise Time:", exerciseTime);
+    console.log("Social Time:", socialTime);
+    console.log("Alcohol Consumption:", alcoholConsumption);
+    console.log("Smoke Count:", smokeCount);
+
+    // Calculate the progress ratios based on the retrieved data
+    const exerciseProgressRatio = exerciseTime ? exerciseTime / EXERCISE_TIME_GOAL : 0;
+    const socialProgressRatio = socialTime ? socialTime / SOCIAL_TIME_GOAL : 0;
+    const alcoholProgressRatio = alcoholConsumption ? alcoholConsumption / ALCOHOL_CONSUMPTION_LIMIT : 0;
+    const smokeProgressRatio = smokeCount ? smokeCount / SMOKE_COUNT_LIMIT : 0;
+    const exerciseMinLeft = EXERCISE_TIME_GOAL - exerciseTime;
+    const socialMinLeft = SOCIAL_TIME_GOAL - socialTime;
+    const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholConsumption;
+    const smokeLeft = SMOKE_COUNT_LIMIT - smokeCount;
+
+    // Render the EJS template with the updated progress ratios
+    res.render("daily-activity-tracking", {
+      exerciseProgressRatio: exerciseProgressRatio,
+      socialProgressRatio: socialProgressRatio,
+      alcoholProgressRatio: alcoholProgressRatio,
+      smokeProgressRatio: smokeProgressRatio,
+      exerciseMinLeft: exerciseMinLeft,
+      socialMinLeft: socialMinLeft,
+      alcoholLeft: alcoholLeft,
+      smokeLeft: smokeLeft
+    });
+
+  } catch (error) {
+    console.error("Error retrieving user data:", error);
+  }
 });
-
 
 // get method for 404 page
 app.get("*", (req, res) => {
