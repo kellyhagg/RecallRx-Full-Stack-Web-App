@@ -147,12 +147,18 @@
         // Update text value
         numberText.text(formatText(end));
     }
+</script>
 
-    // Call drawProgress for each progress bar
-    drawProgress('exercise-progress-bar', 0.5);
-    drawProgress('social-progress-bar', 0.3);
-    drawProgress('alcohol-progress-bar', 0.8);
-    drawProgress('smoke-progress-bar', 0.2);
+<script>
+    // Note: this warning can be ignored
+    // eslint-disable-next-line
+    drawProgress('exercise-progress-bar', <%= exerciseProgressRatio %>);
+    // eslint-disable-next-line
+    drawProgress('social-progress-bar', <%= socialProgressRatio %>);
+    // eslint-disable-next-line
+    drawProgress('alcohol-progress-bar', <%= alcoholProgressRatio %>);
+    // eslint-disable-next-line
+    drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
 </script>
 
 <%- include("templates/footer") %>

@@ -187,6 +187,10 @@ app.post("/signup", async (req, res) => {
     smoke: null,
     diabetes: null,
     depression: null,
+    alcoholConsumption: null,
+    exerciseTime: null,
+    smokeCount: null,
+    socialTime: null,
     createdAt: currentDate.toISOString(),
   });
 
@@ -913,8 +917,19 @@ app.use("/daily-activity-tracking", validateSession);
 
 // get method for daily activity tracking page
 app.get("/daily-activity-tracking", (req, res) => {
-  res.render("daily-activity-tracking");
+  const exerciseProgressRatio = 0.5;
+  const socialProgressRatio = 0.3;
+  const alcoholProgressRatio = 0.8;
+  const smokeProgressRatio = 0.2;
+
+  res.render("daily-activity-tracking", {
+    exerciseProgressRatio: exerciseProgressRatio,
+    socialProgressRatio: socialProgressRatio,
+    alcoholProgressRatio: alcoholProgressRatio,
+    smokeProgressRatio: smokeProgressRatio,
+  });
 });
+
 
 // get method for 404 page
 app.get("*", (req, res) => {
