@@ -1134,3 +1134,55 @@ label {
 .recom-carousel {
     height: 100%;
 }
+
+/* Music player */
+.control {
+    cursor:pointer;
+    width: 3em;
+    height: 3em;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+.music-image img{
+    width: 60%;
+    height: 60%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+    border-radius: 3%;
+}
+
+.progress-details {
+    height: 6px;
+    background-color: #ccc;
+    border-radius: 15px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: inherit;
+    border-radius: inherit;
+    background-color: #7B8B50;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-bar span {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #7B8B50;
+    border-radius: inherit;
+    transform: translateY(-25%);
+    right: -5px;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.progress-details:hover .progress-bar span {
+    opacity: 1;
+}
+
+.control-btn span:active {
+    box-shadow: inset 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+        inset -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
