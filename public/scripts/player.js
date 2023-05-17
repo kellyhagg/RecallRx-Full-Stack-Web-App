@@ -44,4 +44,45 @@ function pause() {
   audio.pause();
 }
 
+// Time bar
+audio.addEventListener("timeupdate", (e) => {
+  const currentTime = e.target.currentTime; // get current melody timestamp
+  const duration = e.target.duration; // get melody duration
+  let progressBarWidth = (currentTime / duration) * 100; // calculate progress width
+  progressBar.style.width = progressBarWidth + "%";
 
+  // Update time bar UI
+  progressInfo.addEventListener("click", (e) => {
+    let progressValue = progressInfo.clientWidth; // get width of Progress Bar
+    let clickedOffsetX = e.offsetX; // get offset x value
+    let melodyDuration = audio.duration; // get total music duration
+
+    audio.currentTime = (clickedOffsetX / progressValue) * melodyDuration;
+  });
+
+  //Timer Logic
+  audio.addEventListener("loadeddata", () => {
+    let durationTimeText = content.querySelector(".duration");
+
+    //Update finalDuration
+    let durationValue = audio.duration;
+    let durationMinutes = Math.floor(durationValue / 60);
+    let durationSeconds = Math.floor(durationValue % 60);
+    if (durationSeconds < 10) {
+      durationSeconds = "0" + finalSeconds;
+    }
+    durationTimeText.innerText = durationMinutes + ":" + durationSeconds;
+  });
+
+  //Update Current Duration
+  let currentTimeText = content.querySelector(".current-time");
+  let currentTimeValue = audio.currentTime;
+  let currentMinutes = Math.floor(currentTimeValue / 60);
+  let currentSeconds = Math.floor(currentTimeValue % 60);
+  if (currentSeconds < 10) {
+    currentSeconds = "0" + currentSeconds;
+  }
+  currentTimeText.innerText = currentMinutes + ":" + currentSeconds;
+
+
+});
