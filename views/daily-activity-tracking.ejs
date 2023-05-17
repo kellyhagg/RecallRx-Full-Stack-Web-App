@@ -89,6 +89,7 @@
 
 
 <!-- Script to create progress bar -->
+<!-- modified and adapted from code from https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the by G_S -->
 <script>
     function drawProgress(elementClass, end) {
         var wrapper = d3.select('.' + elementClass);
@@ -166,7 +167,7 @@
 </script>
 
 <script>
-    // Note: this warning can be ignored
+    // Note: this warning does not affect functionality, and can be ignored (confirmed with supervisor)
     // eslint-disable-next-line
     drawProgress('exercise-progress-bar', <%= exerciseProgressRatio %>);
     // eslint-disable-next-line
