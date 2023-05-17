@@ -915,6 +915,16 @@ app.get("/dailyrecommendation", (req, res) => {
   res.render("dailyrecommendation");
 });
 
+// Meditation page
+// verify the active session before allowing access to meditation page
+// app.use("/meditation", validateSession);
+
+app.get("/meditation", (req, res) => {
+  res.render("meditation");
+});
+
+// End of meditation API
+
 // get method for 404 page
 app.get("*", (req, res) => {
   res.status(404);
