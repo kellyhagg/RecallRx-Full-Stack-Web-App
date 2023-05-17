@@ -44,9 +44,16 @@ function getDayStr() {
     return `${dayOfWeek}`;
 }
 
-function getObject() {
+function getObject(retrievedObjects) {
     const objectsPair = JSON.parse(fs.readFileSync('public/resources/objects.json', 'utf8'));
-    const objects = objectsPair.objects;
+    var objects = objectsPair.objects;
+
+    retrievedObjects.forEach(function (object) {
+        objects = objects.filter(function (item) {
+            return item !== object;
+        });
+        console.log("removed " + object);
+    });
 
     const randomIndex = Math.floor(Math.random() * objects.length);
     const randomObject = objects[randomIndex];
@@ -65,9 +72,16 @@ function getSentence() {
 }
 
 
-function getWord() {
+function getWord(retrievedWords) {
     const wordsPair = JSON.parse(fs.readFileSync('public/resources/words.json', 'utf8'));
-    const words = wordsPair.words;
+    var words = wordsPair.words;
+
+    retrievedWords.forEach(function (word) {
+        words = words.filter(function (item) {
+            return item !== word;
+        });
+        console.log("removed " + word);
+    });
 
     const randomIndex = Math.floor(Math.random() * words.length);
     const randomWord = words[randomIndex];

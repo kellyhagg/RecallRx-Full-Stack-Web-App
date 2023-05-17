@@ -77,8 +77,11 @@ const myGlobalVar = "Hello, world!";
 
 var userScore = 0;
 module.exports = userScore;
-
 var pageCount = 1;
+var retrievedObjects = [];
+var retrievedObjects = [];
+var retrievedWords = [];
+
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
@@ -312,6 +315,8 @@ app.get("/surveyfinished", (req, res) => {
 app.get("/mmse-landing-page", (req, res) => {
   userScore = 0;
   pageCount = 1;
+  retrievedObjects = [];
+  retrievedWords = [];
   res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
 });
 
@@ -335,7 +340,8 @@ app.post("/mmse-orientation", async (req, res) => {
 });
 
 app.get("/mmse-object-recall", async (req, res) => {
-  const object = getObject();
+  const object = getObject(retrievedObjects);
+  retrievedObjects.push(object);
   res.render("mmse-object-recall.ejs", {
     headerMessage: "MMSE Questionnaire",
     object: object,
@@ -374,7 +380,8 @@ app.post("/mmse-sentence-recall", async (req, res) => {
 });
 
 app.get("/mmse-word-reversal", async (req, res) => {
-  var word = getWord();
+  const word = getWord(retrievedWords);
+  retrievedWords.push(word);
   console.log("word: " + word);
   res.render("mmse-word-reversal.ejs", {
     headerMessage: "MMSE Questionnaire",
