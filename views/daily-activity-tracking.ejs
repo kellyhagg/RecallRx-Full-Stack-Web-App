@@ -137,7 +137,7 @@
             <p id="Exercise-action">Exercise: + 0 mins</p>
             <p id="Social-action">Social: + 0 mins</p>
             <p id="Alcohol-action">Alcohol: + 0 drink</p>
-            <p id="Smoke-action">Smoke: + 0 cigarettes</p>
+            <p id="Smoke-action">Smoke: + 0 cigarette</p>
         </div>
     </div>
 
@@ -339,12 +339,12 @@
             alert('Warning: Smoke amount cannot be negative');
             smokeAmount = 0;
         }
-        updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
+        updateActionDuration('Smoke', smokeAmount + ' Cigarette(s)');
     });
 
     $('#addSmokeAmount').click(function () {
         smokeAmount += 1;
-        updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
+        updateActionDuration('Smoke', smokeAmount + ' Cigarette(s)');
     });
 </script>
 
