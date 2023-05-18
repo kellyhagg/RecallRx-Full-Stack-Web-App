@@ -918,8 +918,12 @@ app.post("/notifications", async (req, res, next) => {
 // app.use("/dailyrecommendation", validateSession);
 
 // get method for daily recommendation page
-app.get("/dailyrecommendation", (req, res) => {
-  res.render("dailyrecommendation");
+app.get("/dailyrecommendation", async (req, res) => {
+  const userData = await userCollection.find({}).toArray();
+  userData.forEach((user) => {
+    console.log(userData);
+  });
+  res.render("dailyrecommendation", { recommendation1: 'exercise', recommendation2: 'social' });
 });
 
 // get method for 404 page
