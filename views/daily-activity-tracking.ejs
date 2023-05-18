@@ -17,13 +17,16 @@
                     <br>
                     <div class="radialprogress exercise-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <!-- when user reaches their exercise goal -->
                         <% if (isExerciseGoalReached) { %>
                         <p>You have reached your exercise goal today!</p>
                         <% } else { %>
+                        <!-- when user has not reached their goal yet -->
                         <p>You are <%= exerciseMinLeft %> minute(s) away from your goal!</p>
                         <% } %>
                     </div>
                     <div>
+                        <!-- buttons to add and subtract exercise -->
                         <button class="btn btn-startrisksurvey" id="subtractExerciseTime">- 5 mins</button>
                         <button class="btn btn-startrisksurvey" id="addExerciseTime">+ 10 mins</button>
                     </div>
@@ -39,13 +42,16 @@
                     <br>
                     <div class="radialprogress social-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <!-- when user reaches their social goal -->
                         <% if (isSocialGoalReached) { %>
                         <p>You have reached your social goal today!</p>
                         <% } else { %>
+                        <!-- when user has not reached their goal yet -->
                         <p>You are <%= socialMinLeft %> minute(s) away from your goal!</p>
                         <% } %>
                     </div>
                     <div>
+                        <!-- buttons to add and subtract social -->
                         <button class="btn btn-startrisksurvey" id="subtractSocialTime">- 5 mins</button>
                         <button class="btn btn-startrisksurvey" id="addSocialTime">+ 10 mins</button>
                     </div>
@@ -61,12 +67,15 @@
                     <div class="radialprogress alcohol-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
                         <% if (isAlcoholGoalReached) { %>
+                        <!-- when user reaches their alcohol limit -->
                         <p>Oh no! You have reached your daily alcohol limit!</p>
                         <% } else { %>
+                        <!-- when user has not reached their limit yet -->
                         <p>You have <%= alcoholLeft %> ml low alcohol drink left for the day!</p>
                         <% } %>
                     </div>
                     <div>
+                        <!-- buttons to add and subtract alcohol -->
                         <button class="btn btn-startrisksurvey" id="subtractAlcoholAmount">- 5 ml</button>
                         <button class="btn btn-startrisksurvey" id="addAlcoholAmount">+ 10 ml</button>
                     </div>
@@ -81,13 +90,16 @@
                     <br>
                     <div class="radialprogress smoke-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <!-- when user reaches their smoke limit -->
                         <% if (isSmokeGoalReached) { %>
                         <p>Oh no! You have reached your daily cigarettes limit!</p>
                         <% } else { %>
+                        <!-- when user has not reached their limit yet -->
                         <p>You have <%= smokeLeft %> cigarette(s) left for the day!</p>
                         <% } %>
                     </div>
                     <div>
+                        <!-- buttons to add and subtract smoke -->
                         <button class="btn btn-startrisksurvey" id="subtractSmokeAmount">- 1 Cigarette</button>
                         <button class="btn btn-startrisksurvey" id="addSmokeAmount">+ 1 Cigarette</button>
                     </div>
@@ -107,10 +119,12 @@
         </div>
     </div>
 
+    <!-- when users scroll down, they can view and submit their changes -->
     <div class="activity-scroll-down-text text-center light-green-background dark-green">
         Scroll Down to Submit Your Changes
     </div>
 
+    <!-- when users scroll up, they can add or subtract their activities -->
     <div class="activity-scroll-up-text text-center light-green-background dark-green">
         Scroll Up to Make Activity Changes
     </div>
@@ -119,6 +133,7 @@
             <h1>Confirm Your Changes: </h1>
             <br>
             <br>
+            <!-- all activity changes made are shown here -->
             <p id="Exercise-action">Exercise: + 0 mins</p>
             <p id="Social-action">Social: + 0 mins</p>
             <p id="Alcohol-action">Alcohol: + 0 ml</p>
@@ -138,6 +153,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
+<!-- swiping functions -->
 <script>
     var carousel = document.getElementById('hero-carousel');
     var mc = new Hammer(carousel);
@@ -154,6 +170,7 @@
 
 <!-- Script to create progress bar -->
 <!-- modified and adapted from code from https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the by G_S -->
+<!-- modification: populate dynamically on different activities, added colours, changed size, changed text, changed progress ratio -->
 <script>
     function drawProgress(elementClass, end) {
         var wrapper = d3.select('.' + elementClass);
@@ -166,6 +183,7 @@
             stroke: '#FFFFFF',
         };
 
+        // set the dimensions and margins of the graph
         var radius = 90;
         var border = 30;
         var strokeSpacing = 4;
@@ -251,9 +269,13 @@
 
     // Function to update the user action duration in the div
     function updateActionDuration(action, duration) {
+        // Update the user action duration in the div
+        // When duration is negative, it means the user has subtracted time
         if (duration.startsWith('-')) {
             $('#' + action + '-action').text(action + ': ' + duration);
             $('#' + action + '-action-change').text(action + ': ' + duration);
+
+            // When duration is positive, it means the user has added time
         } else {
             $('#' + action + '-action').text(action + ': +' + duration);
             $('#' + action + '-action-change').text(action + ': +' + duration);
@@ -261,8 +283,10 @@
     }
 
     // Button click event handlers
+    // subtract and add exercise time
     $('#subtractExerciseTime').click(function () {
         exerciseDuration -= 5;
+        // triggers warning when user tries to subtract more than 0
         if (exerciseDuration < 0) {
             alert('Warning: Exercise duration cannot be negative');
             exerciseDuration = 0;
@@ -275,8 +299,10 @@
         updateActionDuration('Exercise', exerciseDuration + ' mins');
     });
 
+    // subtract and add social time
     $('#subtractSocialTime').click(function () {
         socialDuration -= 5;
+        // triggers warning when user tries to subtract more than 0
         if (socialDuration < 0) {
             alert('Warning: Social duration cannot be negative');
             socialDuration = 0;
@@ -289,8 +315,10 @@
         updateActionDuration('Social', socialDuration + ' mins');
     });
 
+    // subtract and add alcohol amount
     $('#subtractAlcoholAmount').click(function () {
         alcoholAmount -= 5;
+        // triggers warning when user tries to subtract more than 0
         if (alcoholAmount < 0) {
             alert('Warning: Alcohol amount cannot be negative');
             alcoholAmount = 0;
@@ -303,8 +331,10 @@
         updateActionDuration('Alcohol', alcoholAmount + ' ml');
     });
 
+    // subtract and add smoke amount
     $('#subtractSmokeAmount').click(function () {
         smokeAmount -= 1;
+        // triggers warning when user tries to subtract more than 0
         if (smokeAmount < 0) {
             alert('Warning: Smoke amount cannot be negative');
             smokeAmount = 0;
@@ -319,6 +349,7 @@
 </script>
 
 <script>
+    // written with assistance of chatGPT
     // Function to handle the submit button click event
     $('#submitActivityChange').click(function () {
         // Extract the numbers from the text content of the <p> elements
@@ -327,6 +358,7 @@
         var alcoholAmountText = $('#Alcohol-action').text();
         var smokeAmountText = $('#Smoke-action').text();
 
+        // parse the numbers from the text content, including negative sign
         var exerciseDuration = parseFloat(exerciseDurationText.match(/-?\d+/)[0]);
         var socialDuration = parseFloat(socialDurationText.match(/-?\d+/)[0]);
         var alcoholAmount = parseFloat(alcoholAmountText.match(/-?\d+/)[0]);
