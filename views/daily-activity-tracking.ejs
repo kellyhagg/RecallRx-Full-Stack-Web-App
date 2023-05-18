@@ -133,8 +133,8 @@
     </div>
 </div>
 
-<!-- Include the necessary D3 library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+<!-- Include D3 library -->
+<script src="https://d3js.org/d3.v3.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
@@ -241,6 +241,7 @@
     // eslint-disable-next-line
     drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
 </script>
+
 <script>
     // Variables to store user action durations
     var exerciseDuration = 0;
@@ -300,5 +301,47 @@
         updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
     });
 </script>
+
+<script>
+    // Function to handle the submit button click event
+    // Function to handle the submit button click event
+    $('#submitActivityChange').click(function () {
+        // Extract the numbers from the text content of the <p> elements
+        var exerciseDurationText = $('#Exercise-action').text();
+        var socialDurationText = $('#Social-action').text();
+        var alcoholAmountText = $('#Alcohol-action').text();
+        var smokeAmountText = $('#Smoke-action').text();
+
+        var exerciseDuration = parseFloat(exerciseDurationText.match(/\d+/)[0]);
+        var socialDuration = parseFloat(socialDurationText.match(/\d+/)[0]);
+        var alcoholAmount = parseFloat(alcoholAmountText.match(/\d+/)[0]);
+        var smokeAmount = parseFloat(smokeAmountText.match(/\d+/)[0]);
+
+        // Create an object with the data to be sent in the request
+        var data = {
+            exerciseDuration: exerciseDuration,
+            socialDuration: socialDuration,
+            alcoholAmount: alcoholAmount,
+            smokeAmount: smokeAmount
+        };
+
+        // Make the POST request using jQuery's $.post method
+        $.post('/daily-activity-tracking', data, function (response) {
+            // Handle the response from the server if needed
+            console.log(response);
+        })
+            .done(function () {
+                // if the request is successful
+                console.log('POST request successful');
+            })
+            .fail(function () {
+                // if the request fails
+                console.log('POST request failed');
+            });
+    });
+
+</script>
+
+
 
 <%- include("templates/footer") %>
