@@ -66,6 +66,7 @@ app.use(express.json()); // use express.json() to parse JSON bodies
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
 const activityCollection = database.db(mongodb_database).collection("activities"); // get the activity collection
+const mmseScoresCollection = database.db(mongodb_database).collection("mmseScores"); // get the mmseScores collection
 
 const notificationsCollection = database
   .db(mongodb_database)
@@ -410,8 +411,24 @@ app.post("/mmse-word-reversal", async (req, res) => {
   }
 });
 
-app.get("/mmse-results", (req, res) => {
+app.get("/mmse-results", async (req, res) => {
   var score = parseInt(Math.round((userScore / 15) * 100));
+
+  try {
+    const username = req.session.username;
+    const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+
+    // Find a document with the current username and today's date
+    const user = await mmseScoresCollection.insertOne({
+      username: username,
+      date: currentDate,
+      score: score,
+    });
+
+  } catch (error) {
+    console.error("Error retrieving user data:", error);
+  }
+
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
     score: score,
