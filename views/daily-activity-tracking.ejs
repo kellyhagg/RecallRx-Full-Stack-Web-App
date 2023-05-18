@@ -12,7 +12,11 @@
                 <div class="radialprogress exercise-progress-bar"></div>
                 <br>
                 <div class="fs-3 mt-5 " style="font-size: 10px;">
+                    <% if (isExerciseGoalReached) { %>
+                    <p>You have reached your exercise goal today!</p>
+                    <% } else { %>
                     <p>You are <%= exerciseMinLeft %> minute(s) away from your goal!</p>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -24,7 +28,11 @@
                 <br>
                 <div class="radialprogress social-progress-bar"></div>
                 <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <p>You are <span><%= socialMinLeft %></span> minute(s) away from your goal!</p>
+                    <% if (isSocialGoalReached) { %>
+                    <p>You have reached your social goal today!</p>
+                    <% } else { %>
+                    <p>You are <%= socialMinLeft %> minute(s) away from your goal!</p>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -37,7 +45,11 @@
                 <div class="radialprogress alcohol-progress-bar"></div>
                 <br>
                 <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <p>You have <%= alcoholLeft %> mL left for the day!</p>
+                    <% if (isAlcoholGoalReached) { %>
+                    <p>Oh no! You have reached your daily alcohol limit!</p>
+                    <% } else { %>
+                    <p>You have <%= alcoholLeft %> ml low alcohol drink left for the day!</p>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -50,132 +62,135 @@
                 <div class="radialprogress smoke-progress-bar"></div>
                 <br>
                 <div class="fs-3 mt-5 " style="font-size: 10px;">
+                    <% if (isSmokeGoalReached) { %>
+                    <p>Oh no! You have reached your daily cigarettes limit!</p>
+                    <% } else { %>
                     <p>You have <%= smokeLeft %> cigarette(s) left for the day!</p>
+                    <% } %>
                 </div>
             </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+        <div class="recom-swipe-text text-center light-green-background dark-green">
+            Swipe to View Other Activities
+        </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
 
-    <div class="recom-swipe-text text-center light-green-background dark-green">
-        Swipe to View Other Activities
-    </div>
-</div>
+    <!-- Include the necessary D3 library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
 
-<!-- Include the necessary D3 library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script>
+        var carousel = document.getElementById('hero-carousel');
+        var mc = new Hammer(carousel);
 
-<script>
-    var carousel = document.getElementById('hero-carousel');
-    var mc = new Hammer(carousel);
+        mc.on('swipeleft', function () {
+            $('#hero-carousel').carousel('next');
+        });
 
-    mc.on('swipeleft', function () {
-        $('#hero-carousel').carousel('next');
-    });
-
-    mc.on('swiperight', function () {
-        $('#hero-carousel').carousel('prev');
-    });
-</script>
+        mc.on('swiperight', function () {
+            $('#hero-carousel').carousel('prev');
+        });
+    </script>
 
 
-<!-- Script to create progress bar -->
-<!-- modified and adapted from code from https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the by G_S -->
-<script>
-    function drawProgress(elementClass, end) {
-        var wrapper = d3.select('.' + elementClass);
-        var start = 0;
+    <!-- Script to create progress bar -->
+    <!-- modified and adapted from code from https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the by G_S -->
+    <script>
+        function drawProgress(elementClass, end) {
+            var wrapper = d3.select('.' + elementClass);
+            var start = 0;
 
-        var colours = {
-            fill: '#D88A63', // Finished part color: #D0A449
-            track: '#7B8B50', // Unfinished part color: #7B8B50
-            text: '#7B8B50', // Text color: #7B8B50
-            stroke: '#FFFFFF',
-        };
+            var colours = {
+                fill: '#D88A63', // Finished part color: #D0A449
+                track: '#7B8B50', // Unfinished part color: #7B8B50
+                text: '#7B8B50', // Text color: #7B8B50
+                stroke: '#FFFFFF',
+            };
 
-        var radius = 90;
-        var border = 30;
-        var strokeSpacing = 4;
-        var endAngle = Math.PI * 2;
-        var formatText = d3.format('.0%');
-        var boxSize = radius * 2;
-        var count = end;
-        var progress = start;
-        var step = end < start ? -0.01 : 0.01;
+            var radius = 90;
+            var border = 30;
+            var strokeSpacing = 4;
+            var endAngle = Math.PI * 2;
+            var formatText = d3.format('.0%');
+            var boxSize = radius * 2;
+            var count = end;
+            var progress = start;
+            var step = end < start ? -0.01 : 0.01;
 
-        // Define the circle
-        var circle = d3.svg.arc()
-            .startAngle(0)
-            .innerRadius(radius)
-            .outerRadius(radius - border);
+            // Define the circle
+            var circle = d3.svg.arc()
+                .startAngle(0)
+                .innerRadius(radius)
+                .outerRadius(radius - border);
 
-        // Setup SVG wrapper
-        var svg = wrapper.append('svg')
-            .attr('width', boxSize)
-            .attr('height', boxSize);
+            // Setup SVG wrapper
+            var svg = wrapper.append('svg')
+                .attr('width', boxSize)
+                .attr('height', boxSize);
 
-        // ADD Group container
-        var g = svg.append('g')
-            .attr('transform', 'translate(' + boxSize / 2 + ',' + boxSize / 2 + ')');
+            // ADD Group container
+            var g = svg.append('g')
+                .attr('transform', 'translate(' + boxSize / 2 + ',' + boxSize / 2 + ')');
 
-        // Setup track
-        var track = g.append('g').attr('class', elementClass);
-        track.append('path')
-            .attr('fill', colours.track)
-            .attr('stroke', colours.stroke)
-            .attr('stroke-width', strokeSpacing + 'px')
-            .attr('d', circle.endAngle(endAngle));
+            // Setup track
+            var track = g.append('g').attr('class', elementClass);
+            track.append('path')
+                .attr('fill', colours.track)
+                .attr('stroke', colours.stroke)
+                .attr('stroke-width', strokeSpacing + 'px')
+                .attr('d', circle.endAngle(endAngle));
 
-        // Add color fill for unfinished part
-        var unfinished = track.append('path')
-            .attr('fill', colours.fill)
-            .attr('stroke', colours.stroke)
-            .attr('stroke-width', strokeSpacing + 'px');
+            // Add color fill for unfinished part
+            var unfinished = track.append('path')
+                .attr('fill', colours.fill)
+                .attr('stroke', colours.stroke)
+                .attr('stroke-width', strokeSpacing + 'px');
 
-        // Add color fill for finished part
-        var finished = track.append('path')
-            .attr('fill', colours.fill)
-            .attr('stroke', colours.stroke)
-            .attr('stroke-width', strokeSpacing + 'px');
+            // Add color fill for finished part
+            var finished = track.append('path')
+                .attr('fill', colours.fill)
+                .attr('stroke', colours.stroke)
+                .attr('stroke-width', strokeSpacing + 'px');
 
-        // Add text value
-        var numberText = track.append('text')
-            .attr('class', 'value-text')
-            .attr('fill', colours.text)
-            .attr('text-anchor', 'middle')
-            .attr('dy', '.5rem')
-            .style('font-size', '27px');
+            // Add text value
+            var numberText = track.append('text')
+                .attr('class', 'value-text')
+                .attr('fill', colours.text)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '.5rem')
+                .style('font-size', '27px');
 
-        // Update position of endAngle for unfinished part
-        unfinished.attr('d', circle.endAngle(endAngle * start));
+            // Update position of endAngle for unfinished part
+            unfinished.attr('d', circle.endAngle(endAngle * start));
 
-        // Update position of endAngle for finished part
-        finished.attr('d', circle.endAngle(endAngle * end));
+            // Update position of endAngle for finished part
+            finished.attr('d', circle.endAngle(endAngle * end));
 
-        // Update text value
-        numberText.text(formatText(end));
-    }
-</script>
+            // Update text value
+            numberText.text(formatText(end));
+        }
+    </script>
 
-<script>
-    // Note: this warning does not affect functionality, and can be ignored (confirmed with supervisor)
-    // eslint-disable-next-line
-    drawProgress('exercise-progress-bar', <%= exerciseProgressRatio %>);
-    // eslint-disable-next-line
-    drawProgress('social-progress-bar', <%= socialProgressRatio %>);
-    // eslint-disable-next-line
-    drawProgress('alcohol-progress-bar', <%= alcoholProgressRatio %>);
-    // eslint-disable-next-line
-    drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
-</script>
+    <script>
+        // Note: this warning does not affect functionality, and can be ignored (confirmed with supervisor)
+        // eslint-disable-next-line
+        drawProgress('exercise-progress-bar', <%= exerciseProgressRatio %>);
+        // eslint-disable-next-line
+        drawProgress('social-progress-bar', <%= socialProgressRatio %>);
+        // eslint-disable-next-line
+        drawProgress('alcohol-progress-bar', <%= alcoholProgressRatio %>);
+        // eslint-disable-next-line
+        drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
+    </script>
 
-<%- include("templates/footer") %>
+    <%- include("templates/footer") %>

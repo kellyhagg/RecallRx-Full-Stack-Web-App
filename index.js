@@ -956,6 +956,10 @@ app.get("/daily-activity-tracking", async (req, res) => {
     const socialMinLeft = SOCIAL_TIME_GOAL - socialTime;
     const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholConsumption;
     const smokeLeft = SMOKE_COUNT_LIMIT - smokeCount;
+    const isExerciseGoalReached = exerciseMinLeft <= 0;
+    const isSocialGoalReached = socialMinLeft <= 0;
+    const isAlcoholGoalReached = alcoholLeft <= 0;
+    const isSmokeGoalReached = smokeLeft <= 0;
 
     // Render the EJS template with the updated progress ratios
     res.render("daily-activity-tracking", {
@@ -966,7 +970,11 @@ app.get("/daily-activity-tracking", async (req, res) => {
       exerciseMinLeft: exerciseMinLeft,
       socialMinLeft: socialMinLeft,
       alcoholLeft: alcoholLeft,
-      smokeLeft: smokeLeft
+      smokeLeft: smokeLeft,
+      isExerciseGoalReached: isExerciseGoalReached,
+      isSocialGoalReached: isSocialGoalReached,
+      isAlcoholGoalReached: isAlcoholGoalReached,
+      isSmokeGoalReached: isSmokeGoalReached
     });
 
   } catch (error) {
