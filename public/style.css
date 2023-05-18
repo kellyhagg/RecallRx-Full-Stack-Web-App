@@ -1144,6 +1144,10 @@ label {
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
 }
 
+.music-card {
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
 .music-image img{
     width: 60%;
     height: 60%;
@@ -1221,7 +1225,6 @@ label {
         background-size: 100% 100%;
     }
 }
-
 
 .scrolling-wrapper {
     overflow-x: auto;
