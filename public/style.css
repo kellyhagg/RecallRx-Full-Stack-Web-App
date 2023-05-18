@@ -1151,7 +1151,7 @@ label {
     border-radius: 3%;
 }
 
-.progress-details {
+.progress-info {
     height: 6px;
     background-color: #ccc;
     border-radius: 15px;
@@ -1182,7 +1182,11 @@ label {
     opacity: 1;
 }
 
-.control-btn span:active {
-    box-shadow: inset 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
-        inset -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+.deactivated {
+    background-color: rgba(119, 130, 81, 0.1);
+    box-shadow: 0 0 10px rgba(237, 243, 222, 0.2);
+}
+
+.t-shadow {
+    text-shadow: 2px 2px 4px #7B8B50;
 }
