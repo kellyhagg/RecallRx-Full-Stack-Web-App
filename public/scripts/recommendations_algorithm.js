@@ -29,6 +29,11 @@ function readJSONFile(filename) {
     });
 }
 
+function getDrinkingRisk(numberDrinks) {
+    const riskIncreasePerDrinkOver2 = 0.0242857;
+    return numberDrinks > 2 ? (numberDrinks - 2) * riskIncreasePerDrinkOver2 : 0;
+}
+
 function getSmokingRisk(numberSmoked) {
     const filename = 'resources/cigarette_relative_risk_data.json';
     const smokingRiskIncrease = 0.37;
@@ -51,11 +56,12 @@ function getSmokingRisk(numberSmoked) {
         });
 }
 
-function runAlgorithm() {
-    getSmokingRisk(10)
+async function runAlgorithm() {
+    await getSmokingRisk(10)
         .then(result => {
             console.log(result);
         });;
+    console.log(getDrinkingRisk(10));
 }
 
 runAlgorithm();
