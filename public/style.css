@@ -1198,13 +1198,13 @@ label {
     height: 150px;
     box-shadow: 0 0 20px rgba(119, 130, 81, 0.5);
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-    /* animation: liquid 7s ease-in-out infinite; */
 }
 
 .animated {
     animation: liquid 7s ease-in-out infinite;
 }
 
+/* The border-radius change is implemented with chatGPT assistance */
 @keyframes liquid {
     0% {
         border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
@@ -1220,4 +1220,38 @@ label {
         border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
         background-size: 100% 100%;
     }
+}
+
+
+.scrolling-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none;  /* For Firefox */
+
+}
+
+/* Hide the scrollbar for WebKit browsers (Chrome, Safari) */
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none;
+} 
+
+.card-block {
+    height: 100px;
+    border: none;
+    background-position: center;
+    background-size: cover;
+    transition: transform 0.3s ease;
+    border-radius: 5%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.8);
+    font-size: 1.2em;
+    &:hover {
+        transform: scale(0.95);
+    }
+}
+
+.white-icon {
+    color: white;
+}
+
+.placeholder{
+    height: 3em;
 }
