@@ -1,6 +1,6 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
-<div class="homepagestyle">
+<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>">
     <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
     <div class="precom_homepage_card pink-less-transparent-background text-center">
         <h4>This is a place holder for personal recommendation of the day generated based on user data.</h4>
@@ -48,12 +48,45 @@
             </div>
         </div>
     </div>
-    <div class="button-container">
+    <!-- <div class="button-container"> -->
+        <!-- redirect to meditation music page -->
+        <!-- <a href="meditation" class="hpbutton easter-egg w-100 btn btn-lg dark-green-background white-font mt-3 mb-3 d-none">Meditation</a> -->
         <!-- redirect to daily game page -->
-        <a href="#" class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Daily Game</a>
+        <!-- <a href="#" class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Daily Game</a> -->
         <!-- redirect to questionnaire page -->
-        <a href="mmse-landing-page"
+        <!-- <a href="mmse-landing-page"
             class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Questionnaire</a>
-    </div>
+    </div>  -->
+     <div class="container-fluid  mb-5 pb-2">
+        <div class="scrolling-wrapper row flex-row flex-nowrap pb-2 d-flex align-items-center justify-content-center">
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5 btn-shadow easter-egg d-none">
+                <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                    <i class="fa fa-music white-icon"></i>
+                    <a href="meditation" class="white-font reset-style pt-1">Meditation</a>
+                </div>
+                
+            </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+                <div class="col-5">
+                    <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                        <i class="fa fa-question white-icon"></i>
+                        <a href="mmse-landing-page" class="white-font reset-style pt-1">Questionnaire</a>
+                    </div>
+                
+            </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5">
+                <div class="card card-block dark-green-background  d-flex align-items-center justify-content-center">
+                    <i class="fa fa-puzzle-piece white-icon"></i>
+                    <a href="#" class="white-font reset-style pt-1">Daily Game</a>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="placeholder mb-2"></div>
 </div>
 <%- include("templates/footer") %>
+
+<!-- Reval hidden elements JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>
