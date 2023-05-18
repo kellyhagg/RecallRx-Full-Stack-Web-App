@@ -71,7 +71,7 @@
                         <p>Oh no! You have reached your daily alcohol limit!</p>
                         <% } else { %>
                         <!-- when user has not reached their limit yet -->
-                        <p>You have <%= alcoholLeft %> ml low alcohol drink left for the day!</p>
+                        <p>You have <%= alcoholLeft %> drink(s) left for the day!</p>
                         <% } %>
                     </div>
                     <div>
@@ -136,7 +136,7 @@
             <!-- all activity changes made are shown here -->
             <p id="Exercise-action">Exercise: + 0 mins</p>
             <p id="Social-action">Social: + 0 mins</p>
-            <p id="Alcohol-action">Alcohol: + 0 ml</p>
+            <p id="Alcohol-action">Alcohol: + 0 drink</p>
             <p id="Smoke-action">Smoke: + 0 cigarettes</p>
         </div>
     </div>
@@ -317,18 +317,18 @@
 
     // subtract and add alcohol amount
     $('#subtractAlcoholAmount').click(function () {
-        alcoholAmount -= 5;
+        alcoholAmount -= 1;
         // triggers warning when user tries to subtract more than 0
         if (alcoholAmount < 0) {
             alert('Warning: Alcohol amount cannot be negative');
             alcoholAmount = 0;
         }
-        updateActionDuration('Alcohol', alcoholAmount + ' ml');
+        updateActionDuration('Alcohol', alcoholAmount + ' drink(s)');
     });
 
     $('#addAlcoholAmount').click(function () {
-        alcoholAmount += 10;
-        updateActionDuration('Alcohol', alcoholAmount + ' ml');
+        alcoholAmount += 1;
+        updateActionDuration('Alcohol', alcoholAmount + ' drink(s)');
     });
 
     // subtract and add smoke amount
