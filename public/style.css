@@ -276,6 +276,14 @@ input:checked~label {
     font-size: 24px;
 }
 
+.index-page-container {
+    min-height: 90vh;
+}
+
+.index-pic-container {
+    height: 65vh;
+}
+
 .riskfactorquestion {
     height: 100vh;
     display: flex;
@@ -313,10 +321,6 @@ input:checked~label {
     background-size: cover;
     background-position: top center;
     height: 100vh;
-}
-
-.index-buttons {
-    padding-top: 5%;
 }
 
 .form-signup {
@@ -1132,7 +1136,6 @@ label {
 .recom-swipe-text {
     font-size: 20px;
     font-weight: bold;
-    padding-top: 15%;
     padding-bottom: 20%;
 }
 
@@ -1148,12 +1151,12 @@ label {
     height: 100%;
     width: 100%;
     padding-top: 5%;
-    padding-bottom: 30%;
+    padding-bottom: 20%;
     margin-bottom: 5%;
 }
 
 .activity-tracking-carousel-background {
-    height: 580px;
+    height: 500px;
 }
 
 .activity-caption {
@@ -1197,4 +1200,16 @@ label {
     font-size: 20px;
     font-weight: bold;
     padding-bottom: 45%;
+}
+
+.recom-caption {
+    padding-top: 25%;
+    margin-top: 0%;
+    height: 60vh;
+    padding-bottom: 0%;
+    margin-bottom: 0%;
+}
+
+.recom-slide {
+    height: 100%;
 }
