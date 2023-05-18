@@ -29,6 +29,18 @@ function readJSONFile(filename) {
     });
 }
 
+function getSocializationReduction(minutesOfSocialization) {
+    const targetSocialization = 30;
+    const riskDecreaseAtTarget = 0.12;
+    return ((targetSocialization - minutesOfSocialization) / targetSocialization) * riskDecreaseAtTarget;
+}
+
+function getExerciseReduction(minutesOfExercise) {
+    const targetExercise = 150 / 7;
+    const riskDecreaseAtTarget = 0.3;
+    return ((targetExercise - minutesOfExercise) / targetExercise) * riskDecreaseAtTarget;
+}
+
 function getDrinkingRisk(numberDrinks) {
     const riskIncreasePerDrinkOver2 = 0.0242857;
     return numberDrinks > 2 ? (numberDrinks - 2) * riskIncreasePerDrinkOver2 : 0;
@@ -56,11 +68,17 @@ async function getSmokingRisk(numberSmoked) {
         });
 }
 
-async function runAlgorithm() {
-    const smokingRisk = await getSmokingRisk(10);
-    console.log(smokingRisk);
-    console.log(getDrinkingRisk(10));
+async function runAlgorithm(numberOfCigarettes, numberOfDrinks, minutesOfExercise, minutesOfSocialization) {
+    var values = [];
+    const smokingRisk = await getSmokingRisk(numberOfCigarettes);
+    values.push(smokingRisk);
+    values.push(getDrinkingRisk(numberOfDrinks));
+    values.push(getExerciseReduction(minutesOfExercise));
+    values.push(getSocializationReduction(minutesOfSocialization));
+    console.log(values);
+    values.sort((a, b) => b - a);
+    console.log(values);
 }
 
-runAlgorithm();
+runAlgorithm(12.5, 2, 0, 0);
 
