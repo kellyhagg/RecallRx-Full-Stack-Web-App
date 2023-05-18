@@ -1,95 +1,228 @@
-<%- include("templates/header-back", {headerMessage: "Today's Recommendation" }) %>
-<!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0"></li>
-        <li data-target="#myCarousel" data-slide-to="1" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
+<%- include("templates/header-back", {headerMessage: "Tips and Trends" }) %>
+    <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
 
-    <!-- Three pictures with recommendation for different aspects -->
-    <div class="carousel-inner recom-carousel-inner light-green-background">
-        <!-- recommendation on social -->
-        <div class="carousel-item recommendation-social">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption text-start dark-green">
-                    <!-- text can be replaced through id -->
-                    <h1 style="font-size: 2rem;" id="social-title">Talk To Your Friends</h1>
-                    <p style="font-size: 1rem;" id="social-content">Embrace the joy of connection, cherish
-                        friendships, and engage in
-                        social activities that bring
-                        fulfillment - reach out
-                        to loved ones or join a community gathering to make lasting memories today.</p>
+        <!-- Three pictures with recommendation for different aspects -->
+        <div class="carousel-inner recom-carousel-inner light-green-background">
+            <!-- recommendation on study -->
+            <!-- set to active by default -->
+            <div class="carousel-item active recommendation-graph">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption dark-green">
+                        <!-- text can be replaced through id -->
+
+                        <h1 style="font-size: 2rem;" id="study-title">Your Trends</h1>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- recommendation on social -->
+            <div class="carousel-item recommendation-social">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption text-start dark-green">
+                        <!-- text can be replaced through id -->
+                        <h3 id="recommendation-1">Don't feel like it? You could
+                            always...</h3>
+                        <br><br>
+                        <h1 style="font-size: 2rem;" id="recommendation-1">Talk To Your Friends</h1>
+                        <p style="font-size: 1rem;" id="recommendation-1-content">Embrace the joy of connection,
+                            cherish
+                            friendships, and engage in
+                            social activities that bring
+                            fulfillment - reach out
+                            to loved ones or join a community gathering to make lasting memories today.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- recommendation on exercise -->
+            <div class="carousel-item recommendation-exercise">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption text-end dark-green">
+                        <!-- text can be replaced through id -->
+                        <h3 id="recommendation-1">Today's Recommendation</h3>
+                        <br><br>
+                        <h1 style="font-size: 2rem;" id="recommendation-2">Get Some Exercise</h1>
+                        <p style="font-size: 1rem;" id="recommendation-2-content">Take care of your well-being,
+                            strengthen
+                            your body, and embrace an
+                            active lifestyle at any age -
+                            make today the day you
+                            prioritize exercise and feel the benefits.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- recommendation on study -->
-        <!-- set to active by default -->
-        <div class="carousel-item active recommendation-study">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption dark-green">
-                    <!-- text can be replaced through id -->
-                    <h1 style="font-size: 2rem;" id="study-title">Learn Something New</h1>
-                    <p style="font-size: 1rem;" id="study-content">Nurture your curiosity, expand your knowledge, and
-                        stimulate your mind
-                        through lifelong learning
-                        - dedicate time today
-                        to explore new subjects and unlock your intellectual potential!</p>
-                </div>
-            </div>
-        </div>
-        <!-- recommendation on exercise -->
-        <div class="carousel-item recommendation-exercise">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption text-end dark-green">
-                    <!-- text can be replaced through id -->
-                    <h1 style="font-size: 2rem;" id="exercise-title">Get Some Exercises</h1>
-                    <p style="font-size: 1rem;" id="exercise-content">Take care of your well-being, strengthen
-                        your body, and embrace an
-                        active lifestyle at any age -
-                        make today the day you
-                        prioritize exercise and feel the benefits.</p>
-                </div>
-            </div>
-        </div>
+
+        <!-- Carousel controls that allows switching pictures -->
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
-    <!-- Carousel controls that allows switching pictures -->
-    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
+    <div class="recom-swipe-text text-center light-green-background dark-green">
+        Swipe to View More
+    </div>
 
-<div class="recom-swipe-text text-center light-green-background dark-green">
-    Swipe to View More
-</div>
+    <!-- Initialize the carousel with swipe functionality -->
+    <!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
 
-<!-- Initialize the carousel with swipe functionality -->
-<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
 
-<script>
-    $(document).on("pagecreate", function () {
-        $("#myCarousel").swiperight(function () {
-            $(this).carousel("prev");
+        // Get the canvas element
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        // Define the data for the trendlines
+        var data = {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [
+                {
+                    label: 'Exercise',
+                    data: [10, 20, 30, 40, 50],
+                    borderColor: 'rgba(255, 137, 127, 1)',
+                    backgroundColor: 'rgba(255, 137, 127, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Social',
+                    data: [50, 40, 40, 50, 10],
+                    borderColor: 'rgba(118, 130, 80, 1)',
+                    backgroundColor: 'rgba(118, 130, 80, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Smoking',
+                    data: [25, 35, 45, 55, 65],
+                    borderColor: 'rgba(128, 128, 128, 1)',
+                    backgroundColor: 'rgba(128, 128, 128, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Alcohol',
+                    data: [60, 50, 40, 30, 20],
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                }
+            ]
+        };
+
+        // Set the desired height for the graph
+        var chartHeight = 400;
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // Set to false to allow height adjustments
+                aspectRatio: 1, // Adjust the aspect ratio (e.g., 1.5 for taller graph)
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'This Month',
+                            font: {
+                                size: 24
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Progress',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            // Customize the legend labels
+                            usePointStyle: true, // Use point style for the legend markers
+                            pointStyle: 'circle', // Set the point style to circle
+                            generateLabels: function (chart) {
+                                var data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.datasets.map(function (dataset, i) {
+                                        return {
+                                            text: dataset.label,
+                                            fillStyle: dataset.backgroundColor,
+                                            strokeStyle: dataset.borderColor,
+                                            lineWidth: 0,
+                                            hidden: !chart.isDatasetVisible(i),
+                                            pointStyle: 'circle', // Set the point style to circle
+                                            pointRadius: .5 // Reduce the point radius to make it smaller
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        },
+
+                    }
+                }
+            }
         });
-        $("#myCarousel").swipeleft(function () {
-            $(this).carousel("next");
+
+
+
+        $(document).on("pagecreate", function () {
+            $("#myCarousel").swiperight(function () {
+                $(this).carousel("prev");
+            });
+            $("#myCarousel").swipeleft(function () {
+                $(this).carousel("next");
+            });
         });
-    });
-</script>
+    </script>
 
-<!-- jQuery Mobile library -->
-<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- jQuery Mobile library -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 
-<!-- jQuery Mobile library -->
-<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <!-- jQuery Mobile library -->
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
-<%- include("templates/footer") %>
+    <%- include("templates/footer") %>
