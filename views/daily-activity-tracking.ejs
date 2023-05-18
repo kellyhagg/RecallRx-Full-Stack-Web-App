@@ -1,123 +1,137 @@
 <%- include("templates/header-back-JQuery-Mobile", {headerMessage: "Activity Tracking" }) %>
 
 <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/4.0/components/carousel/ -->
-<div class="activity-swipe-text text-center light-green-background dark-green">
-    Swipe to View Other Activities
-</div>
 
-<div id="hero-carousel" class="carousel slide w-100 light-green-background activity-tracking-container"
-    data-bs-ride="carousel">
-    <div class="carousel-inner activity-container">
-        <div class="carousel-item active c-item">
-            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
-            <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
-                <p class="mt-5 fs-3">Today's Progress on:</p>
-                <h1 class="display-1 fw-bolder text-capitalize">Exercise</h1>
-                <br>
-                <div class="radialprogress exercise-progress-bar"></div>
-                <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <% if (isExerciseGoalReached) { %>
-                    <p>You have reached your exercise goal today!</p>
-                    <% } else { %>
-                    <p>You are <%= exerciseMinLeft %> minute(s) away from your goal!</p>
-                    <% } %>
+<div class="activity-tracking-page light-green-background">
+    <div class="activity-swipe-text text-center light-green-background dark-green">
+        Swipe to View Other Activities
+    </div>
+
+    <div id="hero-carousel" class="carousel slide w-100 light-green-background activity-tracking-container"
+        data-bs-ride="carousel">
+        <div class="carousel-inner activity-container">
+            <div class="carousel-item active c-item">
+                <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+                <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
+                    <h1 class="display-1 fw-bolder text-capitalize">Exercise</h1>
+                    <br>
+                    <div class="radialprogress exercise-progress-bar"></div>
+                    <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <% if (isExerciseGoalReached) { %>
+                        <p>You have reached your exercise goal today!</p>
+                        <% } else { %>
+                        <p>You are <%= exerciseMinLeft %> minute(s) away from your goal!</p>
+                        <% } %>
+                    </div>
+                    <div>
+                        <button class="btn btn-startrisksurvey" id="subtractExerciseTime">- 5 mins</button>
+                        <button class="btn btn-startrisksurvey" id="addExerciseTime">+ 10 mins</button>
+                    </div>
+                    <br>
+                    <div id="Exercise-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Exercise: + 0 mins
+                    </div>
                 </div>
-                <div>
-                    <button class="btn btn-startrisksurvey" id="subtractExerciseTime">- 5 mins</button>
-                    <button class="btn btn-startrisksurvey" id="addExerciseTime">+ 10 mins</button>
-                </div>
-                <br>
-                <div id="Exercise-action-change" style="font-size: 20px;">Exercise: + 0 mins</div>
             </div>
-        </div>
-        <div class="carousel-item c-item">
-            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
-            <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
-                <p class="fs-3 mt-5">Today's Progress on:</p>
-                <p class="display-1 fw-bolder text-capitalize">Social</p>
-                <br>
-                <div class="radialprogress social-progress-bar"></div>
-                <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <% if (isSocialGoalReached) { %>
-                    <p>You have reached your social goal today!</p>
-                    <% } else { %>
-                    <p>You are <%= socialMinLeft %> minute(s) away from your goal!</p>
-                    <% } %>
+            <div class="carousel-item c-item">
+                <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+                <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
+                    <p class="display-1 fw-bolder text-capitalize">Social</p>
+                    <br>
+                    <div class="radialprogress social-progress-bar"></div>
+                    <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <% if (isSocialGoalReached) { %>
+                        <p>You have reached your social goal today!</p>
+                        <% } else { %>
+                        <p>You are <%= socialMinLeft %> minute(s) away from your goal!</p>
+                        <% } %>
+                    </div>
+                    <div>
+                        <button class="btn btn-startrisksurvey" id="subtractSocialTime">- 5 mins</button>
+                        <button class="btn btn-startrisksurvey" id="addSocialTime">+ 10 mins</button>
+                    </div>
+                    <br>
+                    <div id="Social-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Social: + 0 mins</div>
                 </div>
-                <div>
-                    <button class="btn btn-startrisksurvey" id="subtractSocialTime">- 5 mins</button>
-                    <button class="btn btn-startrisksurvey" id="addSocialTime">+ 10 mins</button>
-                </div>
-                <br>
-                <div id="Social-action-change" style="font-size: 20px;">Social: + 0 mins</div>
             </div>
-        </div>
-        <div class=" carousel-item c-item">
-            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
-            <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
-                <p class="fs-3 mt-5">Today's Limit on:</p>
-                <p class="display-1 fw-bolder text-capitalize">Alcohol</p>
-                <br>
-                <div class="radialprogress alcohol-progress-bar"></div>
-                <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <% if (isAlcoholGoalReached) { %>
-                    <p>Oh no! You have reached your daily alcohol limit!</p>
-                    <% } else { %>
-                    <p>You have <%= alcoholLeft %> ml low alcohol drink left for the day!</p>
-                    <% } %>
+            <div class=" carousel-item c-item">
+                <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+                <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
+                    <p class="display-1 fw-bolder text-capitalize">Alcohol</p>
+                    <br>
+                    <div class="radialprogress alcohol-progress-bar"></div>
+                    <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <% if (isAlcoholGoalReached) { %>
+                        <p>Oh no! You have reached your daily alcohol limit!</p>
+                        <% } else { %>
+                        <p>You have <%= alcoholLeft %> ml low alcohol drink left for the day!</p>
+                        <% } %>
+                    </div>
+                    <div>
+                        <button class="btn btn-startrisksurvey" id="subtractAlcoholAmount">- 5 ml</button>
+                        <button class="btn btn-startrisksurvey" id="addAlcoholAmount">+ 10 ml</button>
+                    </div>
+                    <br>
+                    <div id="Alcohol-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Alcohol: + 0 mL</div>
                 </div>
-                <div>
-                    <button class="btn btn-startrisksurvey" id="subtractAlcoholAmount">- 5 ml</button>
-                    <button class="btn btn-startrisksurvey" id="addAlcoholAmount">+ 10 ml</button>
-                </div>
-                <br>
-                <div id="Alcohol-action-change" style="font-size: 20px;">Alcohol: + 0 mL</div>
             </div>
-        </div>
-        <div class="carousel-item c-item">
-            <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
-            <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
-                <p class="fs-3 mt-5">Today's Limit on:</p>
-                <p class="display-1 fw-bolder text-capitalize">Smoke</p>
-                <br>
-                <div class="radialprogress smoke-progress-bar"></div>
-                <div class="fs-3 mt-5 " style="font-size: 10px;">
-                    <% if (isSmokeGoalReached) { %>
-                    <p>Oh no! You have reached your daily cigarettes limit!</p>
-                    <% } else { %>
-                    <p>You have <%= smokeLeft %> cigarette(s) left for the day!</p>
-                    <% } %>
+            <div class="carousel-item c-item">
+                <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
+                <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
+                    <p class="display-1 fw-bolder text-capitalize">Smoke</p>
+                    <br>
+                    <div class="radialprogress smoke-progress-bar"></div>
+                    <div class="fs-3 mt-5 " style="font-size: 10px;">
+                        <% if (isSmokeGoalReached) { %>
+                        <p>Oh no! You have reached your daily cigarettes limit!</p>
+                        <% } else { %>
+                        <p>You have <%= smokeLeft %> cigarette(s) left for the day!</p>
+                        <% } %>
+                    </div>
+                    <div>
+                        <button class="btn btn-startrisksurvey" id="subtractSmokeAmount">- 1 Cigarette</button>
+                        <button class="btn btn-startrisksurvey" id="addSmokeAmount">+ 1 Cigarette</button>
+                    </div>
+                    <br>
+                    <div id="Smoke-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Smoke: + 0 Cigarette(s)
+                    </div>
                 </div>
-                <div>
-                    <button class="btn btn-startrisksurvey" id="subtractSmokeAmount">- 1 Cigarette</button>
-                    <button class="btn btn-startrisksurvey" id="addSmokeAmount">+ 1 Cigarette</button>
-                </div>
-                <br>
-                <div id="Smoke-action-change" style="font-size: 20px;">Smoke: + 0 Cigarette(s)</div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#hero-carousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+    </div>
+
+    <div class="activity-scroll-down-text text-center light-green-background dark-green">
+        Scroll Down to Submit Your Changes
+    </div>
+
+    <div class="activity-scroll-up-text text-center light-green-background dark-green">
+        Scroll Up to Make Activity Changes
+    </div>
+    <div id="user-actions" class="activity-swipe-text text-center light-green-background dark-green">
+        <div class="activity-confirmation-text">
+            <h1>Confirm Your Changes: </h1>
+            <br>
+            <br>
+            <p id="Exercise-action">Exercise: + 0 mins</p>
+            <p id="Social-action">Social: + 0 mins</p>
+            <p id="Alcohol-action">Alcohol: + 0 ml</p>
+            <p id="Smoke-action">Smoke: + 0 cigarettes</p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn btn-lg btn-primary btn-block rounded-pill px-4 py-2 mx-auto"
+            style="background-color: #778251; width: 250px; border-color: #778251; font-size: 1.5rem;"
+            id="submitActivityChange">Submit</button>
     </div>
 </div>
-
-<div class="activity-scroll-text text-center light-green-background dark-green">
-    Scroll Down to Submit Your Changes
-</div>
-
-<div id="user-actions" class="recom-swipe-text text-center light-green-background dark-green">
-    <p id="Exercise-action">Exercise: + 0 mins</p>
-    <p id="Social-action">Social: + 0 mins</p>
-    <p id="Alcohol-action">Alcohol: + 0 ml</p>
-    <p id="Smoke-action">Smoke: + 0 cigarettes</p>
-</div>
-
 
 <!-- Include the necessary D3 library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
