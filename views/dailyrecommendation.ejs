@@ -22,40 +22,35 @@
                     </div>
                 </div>
             </div>
-            <!-- recommendation on social -->
-            <div class="carousel-item recommendation-social">
-                <div class="carousel-background recom-carousel-background light-green-background"></div>
-                <div class="container">
-                    <div class="carousel-caption text-start dark-green">
-                        <!-- text can be replaced through id -->
-                        <h3 id="recommendation-1">Don't feel like it? You could
-                            always...</h3>
-                        <br><br>
-                        <h1 style="font-size: 2rem;" id="recommendation-1">Talk To Your Friends</h1>
-                        <p style="font-size: 1rem;" id="recommendation-1-content">Embrace the joy of connection,
-                            cherish
-                            friendships, and engage in
-                            social activities that bring
-                            fulfillment - reach out
-                            to loved ones or join a community gathering to make lasting memories today.</p>
-                    </div>
-                </div>
-            </div>
             <!-- recommendation on exercise -->
             <div class="carousel-item recommendation-exercise">
                 <div class="carousel-background recom-carousel-background light-green-background"></div>
                 <div class="container">
                     <div class="carousel-caption text-end dark-green">
                         <!-- text can be replaced through id -->
-                        <h3 id="recommendation-1">Today's Recommendation</h3>
+                        <h3>Today's Recommendation</h3>
                         <br><br>
-                        <h1 style="font-size: 2rem;" id="recommendation-2">Get Some Exercise</h1>
-                        <p style="font-size: 1rem;" id="recommendation-2-content">Take care of your well-being,
-                            strengthen
-                            your body, and embrace an
-                            active lifestyle at any age -
-                            make today the day you
-                            prioritize exercise and feel the benefits.</p>
+                        <h1 style="font-size: 2rem;" id="recommendation-1"></h1>
+                        <p style="font-size: 1rem;" id="recommendation-1-content"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- recommendation on social -->
+            <div class="carousel-item recommendation-social">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption text-start dark-green">
+                        <!-- text can be replaced through id -->
+                        <h3>Don't feel like it? You could
+                            always...</h3>
+                        <br><br>
+                        <h1 style="font-size: 2rem;" id="recommendation-2">Talk To Your Friends</h1>
+                        <p style="font-size: 1rem;" id="recommendation-2-content">Embrace the joy of connection,
+                            cherish
+                            friendships, and engage in
+                            social activities that bring
+                            fulfillment - reach out
+                            to loved ones or join a community gathering to make lasting memories today.</p>
                     </div>
                 </div>
             </div>
@@ -134,6 +129,11 @@
 
         // Set the desired height for the graph
         var chartHeight = 400;
+
+        if (`<%= recommendation1 %>` == 'exercise') {
+            $('#recommendation-1').text('Get Some Exercise');
+            $('#recommendation-1-content').text('Take care of your well-being, strengthen your body, and embrace an active lifestyle at any age - make today the day you prioritize exercise and feel the benefits.');
+        }
 
         // Create the chart
         var myChart = new Chart(ctx, {
