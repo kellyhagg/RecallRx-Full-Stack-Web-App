@@ -70,7 +70,7 @@ audio.addEventListener("timeupdate", (e) => {
     let durationMinutes = Math.floor(durationValue / 60);
     let durationSeconds = Math.floor(durationValue % 60);
     if (durationSeconds < 10) {
-      durationSeconds = "0" + finalSeconds;
+      durationSeconds = "0" + durationSeconds;
     }
     durationTimeText.innerText = durationMinutes + ":" + durationSeconds;
   });
