@@ -2,6 +2,11 @@
 require("./utils.js");
 require("dotenv").config();
 
+const EXERCISE_TIME_GOAL = 25; // minutes per day, default exercise time goal
+const ALCOHOL_CONSUMPTION_LIMIT = 50 // ml per day low alcohol drink, default alcohol consumption limit
+const SMOKE_COUNT_LIMIT = 10 // cigarette per day, default smoke count limit
+const SOCIAL_TIME_GOAL = 25 // minutes per day, default social time goal
+
 const express = require("express"); // import express
 const session = require("express-session"); // import express-session
 const bodyParser = require("body-parser"); // import body-parser
@@ -60,6 +65,7 @@ app.use(express.json()); // use express.json() to parse JSON bodies
 // Connect to the database
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
+const activityCollection = database.db(mongodb_database).collection("activities"); // get the activity collection
 
 const notificationsCollection = database
   .db(mongodb_database)
@@ -289,7 +295,7 @@ app.post("/riskfactorquestions", async (req, res) => {
 
   // insert the user's risk factor survey results into the database and save it to the same document
   await userCollection.updateOne(
-    { _id: ObjectId(userId) },
+    { _id: userId },
     {
       $set: {
         educationLevel: educationLevel,
@@ -921,6 +927,166 @@ app.post("/notifications", async (req, res, next) => {
 app.get("/dailyrecommendation", (req, res) => {
   res.render("dailyrecommendation");
 });
+
+// validate user session before accessing daily activity tracking page
+app.use("/daily-activity-tracking", validateSession);
+
+// get method for daily activity tracking page
+app.get("/daily-activity-tracking", async (req, res) => {
+  try {
+    const username = req.session.username;
+    const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+
+    // Find a document with the current username and today's date
+    const user = await activityCollection.findOne(
+      {
+        username: username,
+        date: currentDate,
+      },
+      {
+        projection: {
+          exerciseDuration: 1,
+          socialDuration: 1,
+          alcoholAmount: 1,
+          smokeAmount: 1,
+        },
+      }
+    );
+
+    let exerciseDuration, socialDuration, alcoholAmount, smokeAmount;
+
+    if (user) {
+      // Data exists in the database, use the retrieved values
+      exerciseDuration = user.exerciseDuration;
+      socialDuration = user.socialDuration;
+      alcoholAmount = user.alcoholAmount;
+      smokeAmount = user.smokeAmount;
+    } else {
+      // Data doesn't exist in the database, set default values
+      exerciseDuration = 0;
+      socialDuration = 0;
+      alcoholAmount = 0;
+      smokeAmount = 0;
+    }
+
+    console.log("Exercise Time:", exerciseDuration);
+    console.log("Social Time:", socialDuration);
+    console.log("Alcohol Consumption:", alcoholAmount);
+    console.log("Smoke Count:", smokeAmount);
+
+    // Calculate the progress ratios based on the retrieved data
+    const exerciseProgressRatio = exerciseDuration ? exerciseDuration / EXERCISE_TIME_GOAL : 0;
+    const socialProgressRatio = socialDuration ? socialDuration / SOCIAL_TIME_GOAL : 0;
+    const alcoholProgressRatio = alcoholAmount ? alcoholAmount / ALCOHOL_CONSUMPTION_LIMIT : 0;
+    const smokeProgressRatio = smokeAmount ? smokeAmount / SMOKE_COUNT_LIMIT : 0;
+    const exerciseMinLeft = EXERCISE_TIME_GOAL - exerciseDuration;
+    const socialMinLeft = SOCIAL_TIME_GOAL - socialDuration;
+    const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholAmount;
+    const smokeLeft = SMOKE_COUNT_LIMIT - smokeAmount;
+    const isExerciseGoalReached = exerciseMinLeft <= 0;
+    const isSocialGoalReached = socialMinLeft <= 0;
+    const isAlcoholGoalReached = alcoholLeft <= 0;
+    const isSmokeGoalReached = smokeLeft <= 0;
+
+    // Render the EJS template with the updated progress ratios
+    res.render("daily-activity-tracking", {
+      exerciseProgressRatio: exerciseProgressRatio,
+      socialProgressRatio: socialProgressRatio,
+      alcoholProgressRatio: alcoholProgressRatio,
+      smokeProgressRatio: smokeProgressRatio,
+      exerciseMinLeft: exerciseMinLeft,
+      socialMinLeft: socialMinLeft,
+      alcoholLeft: alcoholLeft,
+      smokeLeft: smokeLeft,
+      isExerciseGoalReached: isExerciseGoalReached,
+      isSocialGoalReached: isSocialGoalReached,
+      isAlcoholGoalReached: isAlcoholGoalReached,
+      isSmokeGoalReached: isSmokeGoalReached
+    });
+
+  } catch (error) {
+    console.error("Error retrieving user data:", error);
+  }
+});
+
+app.post("/daily-activity-tracking", async (req, res) => {
+  try {
+    const username = req.session.username;
+    const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+
+    // Extract the variables from the req.body object
+    let {
+      exerciseDuration,
+      socialDuration,
+      alcoholAmount,
+      smokeAmount
+    } = req.body;
+
+    console.log("Received exerciseDuration:", exerciseDuration);
+    console.log("Received socialDuration:", socialDuration);
+    console.log("Received alcoholAmount:", alcoholAmount);
+    console.log("Received smokeAmount:", smokeAmount);
+
+    // Parse the values as floats and fallback to 0 if they are NaN
+    exerciseDuration = parseFloat(exerciseDuration) || 0;
+    socialDuration = parseFloat(socialDuration) || 0;
+    alcoholAmount = parseFloat(alcoholAmount) || 0;
+    smokeAmount = parseFloat(smokeAmount) || 0;
+
+    // Find a document with the current username and today's date
+    const existingDocument = await activityCollection.findOne({
+      username: username,
+      date: currentDate,
+    });
+
+    console.log("found:" + username + currentDate);
+
+    if (existingDocument) {
+      // Document exists, update all the fields by adding the new values to the existing values
+      const updatedExerciseDuration = existingDocument.exerciseDuration + parseFloat(exerciseDuration);
+      const updatedSocialDuration = existingDocument.socialDuration + parseFloat(socialDuration);
+      const updatedAlcoholAmount = existingDocument.alcoholAmount + parseFloat(alcoholAmount);
+      const updatedSmokeAmount = existingDocument.smokeAmount + parseFloat(smokeAmount);
+
+      console.log("Existing document:", existingDocument);
+      console.log("Existing document ID:", existingDocument._id);
+
+      await activityCollection.updateOne(
+        { _id: existingDocument._id },
+        {
+          $set: {
+            exerciseDuration: updatedExerciseDuration,
+            socialDuration: updatedSocialDuration,
+            alcoholAmount: updatedAlcoholAmount,
+            smokeAmount: updatedSmokeAmount,
+          },
+        }
+      );
+      console.log("Today's activity updated");
+      console.log("updatedExerciseDuration:" + updatedExerciseDuration);
+      console.log("updatedSocialDuration:" + updatedSocialDuration);
+      console.log("updatedAlcoholAmount:" + updatedAlcoholAmount);
+      console.log("updatedSmokeAmount:" + updatedSmokeAmount);
+    } else {
+      // Document does not exist, create a new one
+      await activityCollection.insertOne({
+        username: username,
+        date: currentDate,
+        exerciseDuration: exerciseDuration,
+        socialDuration: socialDuration,
+        alcoholAmount: alcoholAmount,
+        smokeAmount: smokeAmount,
+      });
+      console.log("Today's activity created");
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.redirect("/daily-activity-tracking");
+});
+
 
 // get method for 404 page
 app.get("*", (req, res) => {
