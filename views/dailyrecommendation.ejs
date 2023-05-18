@@ -30,8 +30,12 @@
                         <!-- text can be replaced through id -->
                         <h3>Today's Recommendation</h3>
                         <br><br>
-                        <h1 style="font-size: 2rem;" id="recommendation-1"></h1>
-                        <p style="font-size: 1rem;" id="recommendation-1-content"></p>
+                        <h1 style="font-size: 2rem;" id="recommendation-1">Get Some Exercise</h1>
+                        <p style="font-size: 1rem;" id="recommendation-1-content">Take care of your well-being,
+                            strengthen your body, and embrace an
+                            active lifestyle at any age - make today the day you prioritize exercise and feel the
+                            benefits.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -130,9 +134,42 @@
         // Set the desired height for the graph
         var chartHeight = 400;
 
+        const exerciseTitle = 'Get Some Exercise';
+        const exerciseContent = 'Take care of your well-being, strengthen your body, and embrace an active lifestyle at any age - make today the day you prioritize exercise and feel the benefits.';
+        const socialTitle = 'Talk To Your Friends';
+        const socialContent = 'Embrace the joy of connection, cherish friendships, and engage in social activities that bring fulfillment - reach out to loved ones or join a community gathering to make lasting memories today.';
+        const smokingTitle = 'Smoke Fewer Cigarettes';
+        const smokingContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on smoking and feel the benefits.';
+        const alcoholTitle = 'Drink Less Alcohol';
+        const alcoholContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on drinking and feel the benefits.';
+
+
         if (`<%= recommendation1 %>` == 'exercise') {
-            $('#recommendation-1').text('Get Some Exercise');
-            $('#recommendation-1-content').text('Take care of your well-being, strengthen your body, and embrace an active lifestyle at any age - make today the day you prioritize exercise and feel the benefits.');
+            $('#recommendation-1').text(exerciseTitle);
+            $('#recommendation-1-content').text(exerciseContent);
+        } else if (`<%= recommendation1 %>` == 'social') {
+            $('#recommendation-1').text(socialTitle);
+            $('#recommendation-1-content').text(socialContent);
+        } else if (`<%= recommendation1 %>` == 'smoking') {
+            $('#recommendation-1').text(smokingTitle);
+            $('#recommendation-1-content').text(smokingContent);
+        } else if (`<%= recommendation1 %>` == 'alcohol') {
+            $('#recommendation-1').text(alcoholTitle);
+            $('#recommendation-1-content').text(alcoholContent);
+        }
+
+        if (`<%= recommendation2 %>` == 'exercise') {
+            $('#recommendation-2').text(exerciseTitle);
+            $('#recommendation-2-content').text(exerciseContent);
+        } else if (`<%= recommendation2 %>` == 'social') {
+            $('#recommendation-2').text(socialTitle);
+            $('#recommendation-2-content').text(socialContent);
+        } else if (`<%= recommendation2 %>` == 'smoking') {
+            $('#recommendation-2').text(smokingTitle);
+            $('#recommendation-2-content').text(smokingContent);
+        } else if (`<%= recommendation2 %>` == 'alcohol') {
+            $('#recommendation-2').text(alcoholTitle);
+            $('#recommendation-2-content').text(alcoholContent);
         }
 
         // Create the chart
