@@ -263,6 +263,10 @@
     // Button click event handlers
     $('#subtractExerciseTime').click(function () {
         exerciseDuration -= 5;
+        if (exerciseDuration < 0) {
+            alert('Warning: Exercise duration cannot be negative');
+            exerciseDuration = 0;
+        }
         updateActionDuration('Exercise', exerciseDuration + ' mins');
     });
 
@@ -273,6 +277,10 @@
 
     $('#subtractSocialTime').click(function () {
         socialDuration -= 5;
+        if (socialDuration < 0) {
+            alert('Warning: Social duration cannot be negative');
+            socialDuration = 0;
+        }
         updateActionDuration('Social', socialDuration + ' mins');
     });
 
@@ -283,6 +291,10 @@
 
     $('#subtractAlcoholAmount').click(function () {
         alcoholAmount -= 5;
+        if (alcoholAmount < 0) {
+            alert('Warning: Alcohol amount cannot be negative');
+            alcoholAmount = 0;
+        }
         updateActionDuration('Alcohol', alcoholAmount + ' ml');
     });
 
@@ -293,6 +305,10 @@
 
     $('#subtractSmokeAmount').click(function () {
         smokeAmount -= 1;
+        if (smokeAmount < 0) {
+            alert('Warning: Smoke amount cannot be negative');
+            smokeAmount = 0;
+        }
         updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
     });
 
@@ -311,10 +327,11 @@
         var alcoholAmountText = $('#Alcohol-action').text();
         var smokeAmountText = $('#Smoke-action').text();
 
-        var exerciseDuration = parseFloat(exerciseDurationText.match(/\d+/)[0]);
-        var socialDuration = parseFloat(socialDurationText.match(/\d+/)[0]);
-        var alcoholAmount = parseFloat(alcoholAmountText.match(/\d+/)[0]);
-        var smokeAmount = parseFloat(smokeAmountText.match(/\d+/)[0]);
+        var exerciseDuration = parseFloat(exerciseDurationText.match(/-?\d+/)[0]);
+        var socialDuration = parseFloat(socialDurationText.match(/-?\d+/)[0]);
+        var alcoholAmount = parseFloat(alcoholAmountText.match(/-?\d+/)[0]);
+        var smokeAmount = parseFloat(smokeAmountText.match(/-?\d+/)[0]);
+
 
         // Create an object with the data to be sent in the request
         var data = {
