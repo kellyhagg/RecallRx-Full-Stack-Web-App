@@ -2,22 +2,21 @@
 
 <div class="homepagestyle">
     <!-- hidden notification toasts for mmse questionnaire and exercise -->
-    <div class="toast-container w-100 d-flex align-items-center justify-content-center">
-        <div class="toast toast-border" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+    <div aria-live="polite" aria-atomic="true" class="toast-container w-100">
+        <div class="toast toast-border mx-auto mb-2" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
             <div class="toast-header toast-bottom-border">
                 <i class="fa fa-question"></i>
                 <strong class="me-auto px-2">Checkup reminder</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
                 Please take a moment to complete the MMSE questionnaire.
             </div>
         </div>
-    
-        <div class="toast toast-border" id="puzzle-notification" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast toast-border mx-auto mb-2 pt-1" id="puzzle-notification" role="alert" aria-live="assertive" aria-atomic="true"  data-autohide="false">
             <div class="toast-header toast-bottom-border">
                 <i class="fa fa-puzzle-piece"></i>
-                <strong class="me-auto">Exercise reminder</strong>
+                <strong class="me-auto px-2">Exercise reminder</strong>
                 <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
