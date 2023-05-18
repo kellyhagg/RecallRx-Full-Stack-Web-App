@@ -304,7 +304,6 @@
 
 <script>
     // Function to handle the submit button click event
-    // Function to handle the submit button click event
     $('#submitActivityChange').click(function () {
         // Extract the numbers from the text content of the <p> elements
         var exerciseDurationText = $('#Exercise-action').text();
@@ -329,6 +328,9 @@
         $.post('/daily-activity-tracking', data, function (response) {
             // Handle the response from the server if needed
             console.log(response);
+
+            // Reload the page after submitting changes
+            window.location.href = window.location.href;
         })
             .done(function () {
                 // if the request is successful
