@@ -1,6 +1,30 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
 <div class="homepagestyle">
+    <!-- hidden notification toasts for mmse questionnaire and exercise -->
+    <div class="toast-container w-100 d-flex align-items-center justify-content-center">
+        <div class="toast toast-border" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-question"></i>
+                <strong class="me-auto px-2">Checkup reminder</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Please take a moment to complete the MMSE questionnaire.
+            </div>
+        </div>
+    
+        <div class="toast toast-border" id="puzzle-notification" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-puzzle-piece"></i>
+                <strong class="me-auto">Exercise reminder</strong>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                It's time for a daily challenge.
+            </div>
+        </div>
+    </div>
     <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
     <div class="precom_homepage_card pink-less-transparent-background text-center">
         <h4>This is a place holder for personal recommendation of the day generated based on user data.</h4>
@@ -57,3 +81,6 @@
     </div>
 </div>
 <%- include("templates/footer") %>
+
+<!-- Notifications toasts handlers JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>

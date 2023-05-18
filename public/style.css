@@ -1143,3 +1143,27 @@ label {
 .recom-carousel {
     height: 100%;
 }
+
+/* Notifications toasts */
+.toast-container {
+    position: static;
+}
+
+.toast,
+.toast-header {
+    background-color: rgba(208, 164, 73, 0);
+    color:#25271C;
+    border: none;
+}
+
+.btn-close {
+    font-size:ß 20px;
+}
+
+.toast-border {
+    border: 1px solid rgba(208, 164, 73, 1);
+}
+
+.toast-bottom-border {
+    border-bottom: 1px solid rgba(208, 164, 73, 1);
+}
