@@ -2,10 +2,10 @@
 require("./utils.js");
 require("dotenv").config();
 
-const EXERCISE_TIME_GOAL = 150; // minutes per week, default exercise time goal
-const ALCOHOL_CONSUMPTION_LIMIT = 340 // ml per week, default alcohol consumption limit
-const SMOKE_COUNT_LIMIT = 70 // cigarette per week, default smoke count limit
-const SOCIAL_TIME_GOAL = 150 // minutes per week, default social time goal
+const EXERCISE_TIME_GOAL = 25; // minutes per day, default exercise time goal
+const ALCOHOL_CONSUMPTION_LIMIT = 50 // ml per day low alcohol drink, default alcohol consumption limit
+const SMOKE_COUNT_LIMIT = 10 // cigarette per day, default smoke count limit
+const SOCIAL_TIME_GOAL = 25 // minutes per day, default social time goal
 
 const express = require("express"); // import express
 const session = require("express-session"); // import express-session
