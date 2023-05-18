@@ -1,5 +1,4 @@
 const content = document.querySelector(".content"),
-  musicImage = content.querySelector(".music-image img"),
   musicTitle = content.querySelector(".music-title"),
   audio = content.querySelector(".audio"),
   playBtn = content.querySelector(".play-pause"),
@@ -7,6 +6,7 @@ const content = document.querySelector(".content"),
   progressBar = content.querySelector(".progress-bar"),
   progressInfo = content.querySelector(".progress-info"),
   loopBtn = content.querySelector("#loop");
+drop = content.querySelector(".drop");
 
 let index = 1;
 let isLooping = false;
@@ -16,7 +16,6 @@ window.addEventListener("load", () => {
 });
 
 function loadData(index) {
-  musicImage.src = "images/objects/book.jpg";
   musicTitle.innerHTML = music[index - 1].purpose;
   //   musicImage.src = "images/" + music[indexValue - 1].img + ".jpg";
   audio.src = "music/" + music[index - 1].audio + ".mp3";
@@ -35,12 +34,14 @@ playBtn.addEventListener("click", () => {
 function play() {
   content.classList.add("paused");
   playBtnIcon.innerHTML = "pause";
+  drop.classList.add("animated");
   audio.play();
 }
 
 function pause() {
   content.classList.remove("paused");
   playBtnIcon.innerHTML = "play_arrow";
+  drop.classList.remove("animated");
   audio.pause();
 }
 

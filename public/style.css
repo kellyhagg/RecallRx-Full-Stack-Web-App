@@ -1190,3 +1190,34 @@ label {
 .t-shadow {
     text-shadow: 2px 2px 4px #7B8B50;
 }
+
+/* Drop animation */
+.drop {
+    background: linear-gradient(45deg, #D0A449 0%, #B9C886 100%);
+    width: 150px;
+    height: 150px;
+    box-shadow: 0 0 20px rgba(119, 130, 81, 0.5);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    /* animation: liquid 7s ease-in-out infinite; */
+}
+
+.animated {
+    animation: liquid 7s ease-in-out infinite;
+}
+
+@keyframes liquid {
+    0% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+
+    50% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+        background-size: 300% 150%;
+    }
+
+    100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+}
