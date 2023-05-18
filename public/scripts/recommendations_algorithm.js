@@ -34,7 +34,7 @@ function getDrinkingRisk(numberDrinks) {
     return numberDrinks > 2 ? (numberDrinks - 2) * riskIncreasePerDrinkOver2 : 0;
 }
 
-function getSmokingRisk(numberSmoked) {
+async function getSmokingRisk(numberSmoked) {
     const filename = 'resources/cigarette_relative_risk_data.json';
     const smokingRiskIncrease = 0.37;
     const averageSmokerCigarettesPerDay = 12.5;
@@ -57,10 +57,8 @@ function getSmokingRisk(numberSmoked) {
 }
 
 async function runAlgorithm() {
-    await getSmokingRisk(10)
-        .then(result => {
-            console.log(result);
-        });;
+    const smokingRisk = await getSmokingRisk(10);
+    console.log(smokingRisk);
     console.log(getDrinkingRisk(10));
 }
 
