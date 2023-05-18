@@ -1,9 +1,13 @@
 <%- include("templates/header-back-JQuery-Mobile", {headerMessage: "Activity Tracking" }) %>
 
 <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/4.0/components/carousel/ -->
+<div class="activity-swipe-text text-center light-green-background dark-green">
+    Swipe to View Other Activities
+</div>
+
 <div id="hero-carousel" class="carousel slide w-100 light-green-background activity-tracking-container"
     data-bs-ride="carousel">
-    <div class="carousel-inner">
+    <div class="carousel-inner activity-container">
         <div class="carousel-item active c-item">
             <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
             <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
@@ -22,6 +26,8 @@
                     <button class="btn btn-startrisksurvey" id="subtractExerciseTime">- 5 mins</button>
                     <button class="btn btn-startrisksurvey" id="addExerciseTime">+ 10 mins</button>
                 </div>
+                <br>
+                <div id="Exercise-action-change" style="font-size: 20px;">Exercise: + 0 mins</div>
             </div>
         </div>
         <div class="carousel-item c-item">
@@ -42,6 +48,8 @@
                     <button class="btn btn-startrisksurvey" id="subtractSocialTime">- 5 mins</button>
                     <button class="btn btn-startrisksurvey" id="addSocialTime">+ 10 mins</button>
                 </div>
+                <br>
+                <div id="Social-action-change" style="font-size: 20px;">Social: + 0 mins</div>
             </div>
         </div>
         <div class=" carousel-item c-item">
@@ -62,6 +70,8 @@
                     <button class="btn btn-startrisksurvey" id="subtractAlcoholAmount">- 5 ml</button>
                     <button class="btn btn-startrisksurvey" id="addAlcoholAmount">+ 10 ml</button>
                 </div>
+                <br>
+                <div id="Alcohol-action-change" style="font-size: 20px;">Alcohol: + 0 mL</div>
             </div>
         </div>
         <div class="carousel-item c-item">
@@ -82,6 +92,8 @@
                     <button class="btn btn-startrisksurvey" id="subtractSmokeAmount">- 1 Cigarette</button>
                     <button class="btn btn-startrisksurvey" id="addSmokeAmount">+ 1 Cigarette</button>
                 </div>
+                <br>
+                <div id="Smoke-action-change" style="font-size: 20px;">Smoke: + 0 Cigarette(s)</div>
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
@@ -94,8 +106,16 @@
         </button>
     </div>
 </div>
-<div class="recom-swipe-text text-center light-green-background dark-green">
-    Swipe to View Other Activities
+
+<div class="activity-scroll-text text-center light-green-background dark-green">
+    Scroll Down to Submit Your Changes
+</div>
+
+<div id="user-actions" class="recom-swipe-text text-center light-green-background dark-green">
+    <p id="Exercise-action">Exercise: + 0 mins</p>
+    <p id="Social-action">Social: + 0 mins</p>
+    <p id="Alcohol-action">Alcohol: + 0 ml</p>
+    <p id="Smoke-action">Smoke: + 0 cigarettes</p>
 </div>
 
 
@@ -206,6 +226,65 @@
     drawProgress('alcohol-progress-bar', <%= alcoholProgressRatio %>);
     // eslint-disable-next-line
     drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
+</script>
+<script>
+    // Variables to store user action durations
+    var exerciseDuration = 0;
+    var socialDuration = 0;
+    var alcoholAmount = 0;
+    var smokeAmount = 0;
+
+    // Function to update the user action duration in the div
+    function updateActionDuration(action, duration) {
+        if (duration.startsWith('-')) {
+            $('#' + action + '-action').text(action + ': ' + duration);
+            $('#' + action + '-action-change').text(action + ': ' + duration);
+        } else {
+            $('#' + action + '-action').text(action + ': +' + duration);
+            $('#' + action + '-action-change').text(action + ': +' + duration);
+        }
+    }
+
+    // Button click event handlers
+    $('#subtractExerciseTime').click(function () {
+        exerciseDuration -= 5;
+        updateActionDuration('Exercise', exerciseDuration + ' mins');
+    });
+
+    $('#addExerciseTime').click(function () {
+        exerciseDuration += 10;
+        updateActionDuration('Exercise', exerciseDuration + ' mins');
+    });
+
+    $('#subtractSocialTime').click(function () {
+        socialDuration -= 5;
+        updateActionDuration('Social', socialDuration + ' mins');
+    });
+
+    $('#addSocialTime').click(function () {
+        socialDuration += 10;
+        updateActionDuration('Social', socialDuration + ' mins');
+    });
+
+    $('#subtractAlcoholAmount').click(function () {
+        alcoholAmount -= 5;
+        updateActionDuration('Alcohol', alcoholAmount + ' ml');
+    });
+
+    $('#addAlcoholAmount').click(function () {
+        alcoholAmount += 10;
+        updateActionDuration('Alcohol', alcoholAmount + ' ml');
+    });
+
+    $('#subtractSmokeAmount').click(function () {
+        smokeAmount -= 1;
+        updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
+    });
+
+    $('#addSmokeAmount').click(function () {
+        smokeAmount += 1;
+        updateActionDuration('Smoke', smokeAmount + ' Cigarettes');
+    });
 </script>
 
 <%- include("templates/footer") %>

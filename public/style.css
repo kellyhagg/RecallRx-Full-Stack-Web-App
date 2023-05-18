@@ -1137,6 +1137,10 @@ label {
     height: 80%;
 }
 
+.activity-container {
+    height: 30%;
+}
+
 .radialprogress {
     width: 100%;
     height: 30%;
@@ -1144,4 +1148,14 @@ label {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.activity-swipe-text {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.activity-scroll-text {
+    font-size: 20px;
+    font-weight: bold;
 }
