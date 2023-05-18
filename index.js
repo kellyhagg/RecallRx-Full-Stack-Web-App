@@ -923,18 +923,24 @@ app.use("/daily-activity-tracking", validateSession);
 // get method for daily activity tracking page
 app.get("/daily-activity-tracking", async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const username = req.session.username;
     const user = await userCollection.findOne(
-      { _id: new ObjectId(userId) },
+      { username: username }, // Search for the user by username
       { projection: { exerciseTime: 1, socialTime: 1, alcoholConsumption: 1, smokeCount: 1 } }
     );
 
+    if (!user) {
+      // Handle the case when the user is not found or empty
+      res.status(404).send("User not found");
+      return;
+    }
+
     const {
-      exerciseTime,
-      socialTime,
-      alcoholConsumption,
-      smokeCount
-    } = user;
+      exerciseTime = 0,
+      socialTime = 0,
+      alcoholConsumption = 0,
+      smokeCount = 0
+    } = user || {};
 
     console.log("Exercise Time:", exerciseTime);
     console.log("Social Time:", socialTime);
