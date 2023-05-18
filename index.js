@@ -235,7 +235,9 @@ app.post("/signup", async (req, res) => {
 app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", (req, res) => {
-  res.render("homepage");
+  // TO DO: add function to decide whether to show easter egg
+  var isEasterEggActivated = true;
+  res.render("homepage", { isEasterEggActivated: isEasterEggActivated });
 });
 
 app.use("/riskfactorsurvey", validateSession);
@@ -917,7 +919,7 @@ app.get("/dailyrecommendation", (req, res) => {
 
 // Meditation page
 // verify the active session before allowing access to meditation page
-// app.use("/meditation", validateSession);
+app.use("/meditation", validateSession);
 
 app.get("/meditation", (req, res) => {
   res.render("meditation");
