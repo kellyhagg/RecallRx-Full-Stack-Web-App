@@ -198,6 +198,7 @@ app.post("/signup", async (req, res) => {
     smoke: null,
     diabetes: null,
     depression: null,
+    wasEasterEggAnnounced: false,
     createdAt: currentDate.toISOString(),
   });
 
@@ -271,16 +272,44 @@ async function checkChallengeTrend(username) {
   }
 }
 
+async function showEasterEggAnnounced(userId, isEasterEggActivated) {
+  const user = await userCollection.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { wasEasterEggAnnounced: 1 } }
+  );
+  const showPopUp = !user.wasEasterEggAnnounced;
+  if (showPopUp && isEasterEggActivated) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Middleware to validate user session before accessing homepage
 app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", async (req, res) => {
+  var data = "";
   var isEasterEggActivated = await checkChallengeTrend(req.session.username);
-  console.log(isEasterEggActivated);
+  var showEasterEggPopup = await showEasterEggAnnounced(
+    req.session.userId,
+    isEasterEggActivated
+  );
+  console.log("showEasterEggPopup", showEasterEggPopup);
+  if (showEasterEggPopup) {
+    data = `You were doing great these last ${CHALLENGE_PERIOD} days. 
+      So RecallRx team decided to add something special for you.`;
+    await userCollection.updateOne(
+      { _id: new ObjectId(req.session.userId) },
+      { $set: { wasEasterEggAnnounced: true } }
+    );
+  }
   console.log("render home");
-  // TO DO: add function to decide whether to show easter egg
-  // var isEasterEggActivated = true;
-  res.render("homepage", { isEasterEggActivated: isEasterEggActivated });
+  res.render("homepage", {
+    isEasterEggActivated: isEasterEggActivated,
+    data: data,
+    showPopUp: showEasterEggPopup,
+  });
 });
 
 app.use("/riskfactorsurvey", validateSession);
