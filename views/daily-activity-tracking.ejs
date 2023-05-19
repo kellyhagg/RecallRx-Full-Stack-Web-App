@@ -1,4 +1,4 @@
-<%- include("templates/header-back-JQuery-Mobile", {headerMessage: "Daily Activity Tracking" }) %>
+<%- include("templates/header-back", {headerMessage: "Daily Activity Tracking" }) %>
 
 <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/4.0/components/carousel/ -->
 
@@ -27,11 +27,11 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract exercise -->
-                        <button class="btn btn-startrisksurvey" id="subtractExerciseTime">- 5 mins</button>
-                        <button class="btn btn-startrisksurvey" id="addExerciseTime">+ 10 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractExerciseTime">- 5 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="addExerciseTime">+ 10 mins</button>
                     </div>
-                    <br>
-                    <div id="Exercise-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Exercise: + 0 mins
+                    <div id="Exercise-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Exercise: + 0
+                        mins
                     </div>
                 </div>
             </div>
@@ -52,11 +52,11 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract social -->
-                        <button class="btn btn-startrisksurvey" id="subtractSocialTime">- 5 mins</button>
-                        <button class="btn btn-startrisksurvey" id="addSocialTime">+ 10 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractSocialTime">- 5 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="addSocialTime">+ 10 mins</button>
                     </div>
-                    <br>
-                    <div id="Social-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Social: + 0 mins</div>
+                    <div id="Social-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Social: + 0 mins
+                    </div>
                 </div>
             </div>
             <div class=" carousel-item c-item">
@@ -76,11 +76,11 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract alcohol -->
-                        <button class="btn btn-startrisksurvey" id="subtractAlcoholAmount">- 1 drink</button>
-                        <button class="btn btn-startrisksurvey" id="addAlcoholAmount">+ 1 drink</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractAlcoholAmount">- 1 drink</button>
+                        <button class="btn btn-pink-button btn-danger" id="addAlcoholAmount">+ 1 drink</button>
                     </div>
-                    <br>
-                    <div id="Alcohol-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Alcohol: + 0 drink</div>
+                    <div id="Alcohol-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Alcohol: + 0
+                        drink</div>
                 </div>
             </div>
             <div class="carousel-item c-item">
@@ -100,11 +100,11 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract smoke -->
-                        <button class="btn btn-startrisksurvey" id="subtractSmokeAmount">- 1 Cigarette</button>
-                        <button class="btn btn-startrisksurvey" id="addSmokeAmount">+ 1 Cigarette</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractSmokeAmount">- 1 Cigarette</button>
+                        <button class="btn btn-pink-button btn-danger" id="addSmokeAmount">+ 1 Cigarette</button>
                     </div>
-                    <br>
-                    <div id="Smoke-action-change" class="fs-3 mt-5 " style="font-size: 20px;">Smoke: + 0 Cigarette(s)
+                    <div id="Smoke-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Smoke: + 0
+                        Cigarette(s)
                     </div>
                 </div>
             </div>
@@ -118,12 +118,14 @@
             </button>
         </div>
     </div>
-
     <!-- when users scroll down, they can view and submit their changes -->
     <div class="activity-scroll-down-text text-center light-green-background dark-green">
         Scroll Down to Submit Your Changes
     </div>
-
+    <br>
+    <br>
+    <br>
+    <br>
     <!-- when users scroll up, they can add or subtract their activities -->
     <div class="activity-scroll-up-text text-center light-green-background dark-green">
         Scroll Up to Make Activity Changes
@@ -154,6 +156,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
 <!-- swiping functions -->
+<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+
 <script>
     var carousel = document.getElementById('hero-carousel');
     var mc = new Hammer(carousel);
@@ -234,7 +238,7 @@
             .attr('class', 'value-text')
             .attr('fill', colours.text)
             .attr('text-anchor', 'middle')
-            .attr('dy', '.5rem')
+            .attr('dy', '1.2rem')
             .style('font-size', '27px');
 
         // Update position of endAngle for unfinished part

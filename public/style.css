@@ -276,6 +276,14 @@ input:checked~label {
     font-size: 24px;
 }
 
+.index-page-container {
+    min-height: 90vh;
+}
+
+.index-pic-container {
+    height: 65vh;
+}
+
 .riskfactorquestion {
     height: 100vh;
     display: flex;
@@ -289,6 +297,12 @@ input:checked~label {
 .btn-startrisksurvey {
     background-color: #7B8B50;
     border-color: #7B8B50;
+    color: #edf3de;
+}
+
+.btn-pink-button {
+    background-color: #D88A63;
+    border-color: #D88A63;
     color: #edf3de;
 }
 
@@ -313,10 +327,6 @@ input:checked~label {
     background-size: cover;
     background-position: top center;
     height: 100vh;
-}
-
-.index-buttons {
-    padding-top: 5%;
 }
 
 .form-signup {
@@ -1050,6 +1060,7 @@ label {
     height: 100%;
     width: 100%;
     padding-top: 5%;
+    padding-bottom: 20%;
 }
 
 .precom_homepage_card {
@@ -1073,21 +1084,6 @@ label {
     margin: 5%;
     padding-top: 1%;
     border-radius: 15px;
-}
-
-.hpicon-container {
-    display: flex;
-    justify-content: center;
-    margin: 5%;
-}
-
-.hpiconset {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    margin: 5%;
 }
 
 .hpicon {
@@ -1132,8 +1128,7 @@ label {
 .recom-swipe-text {
     font-size: 20px;
     font-weight: bold;
-    padding-top: 15%;
-    padding-bottom: 20%;
+    padding-bottom: 30%;
 }
 
 .recom-carousel-background {
@@ -1148,12 +1143,12 @@ label {
     height: 100%;
     width: 100%;
     padding-top: 5%;
-    padding-bottom: 30%;
+    padding-bottom: 20%;
     margin-bottom: 5%;
 }
 
 .activity-tracking-carousel-background {
-    height: 580px;
+    height: 500px;
 }
 
 .activity-caption {
@@ -1169,7 +1164,7 @@ label {
 
 .radialprogress {
     width: 100%;
-    height: 30%;
+    height: 35%;
     position: relative;
     display: flex;
     justify-content: center;
@@ -1197,4 +1192,62 @@ label {
     font-size: 20px;
     font-weight: bold;
     padding-bottom: 45%;
+}
+
+.recom-caption {
+    padding-top: 25%;
+    margin-top: 0%;
+    height: 60vh;
+    padding-bottom: 0%;
+    margin-bottom: 0%;
+}
+
+.recom-slide {
+    height: 100%;
+}
+
+.value-text {
+    transform: translateY(0.5rem);
+}
+
+.hp-circle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 25vh;
+}
+
+.activity-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 10px solid #7B8B50;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7B8B50;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.running-man-circle {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #7B8B50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.hp-running-man {
+    font-size: 80px;
 }

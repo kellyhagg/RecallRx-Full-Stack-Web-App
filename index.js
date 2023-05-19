@@ -206,7 +206,7 @@ app.post("/signup", async (req, res) => {
     password: hashedPassword,
     educationLevel: null,
     age: null,
-    smoke: null,
+    obesity: null,
     diabetes: null,
     depression: null,
     createdAt: currentDate.toISOString(),
@@ -274,15 +274,15 @@ app.get("/riskfactorquestions", (req, res) => {
 app.post("/riskfactorquestions", async (req, res) => {
   const educationLevel = req.body.educationLevel;
   const age = req.body.age;
-  const smoke = req.body.smoke;
+  const obesity = req.body.obesity;
   const diabetes = req.body.diabetes;
   const depression = req.body.depression;
 
-  // validate the input style for educationLevel, age, smoke, diabetes and depression using Joi
+  // validate the input style for educationLevel, age, obesity, diabetes and depression using Joi
   const schema = Joi.object({
     educationLevel: Joi.string().required(),
     age: Joi.string().required(),
-    smoke: Joi.string().required(),
+    obesity: Joi.string().required(),
     diabetes: Joi.string().required(),
     depression: Joi.string().required(),
   });
@@ -291,7 +291,7 @@ app.post("/riskfactorquestions", async (req, res) => {
   const validationResult = schema.validate({
     educationLevel,
     age,
-    smoke,
+    obesity,
     diabetes,
     depression,
   });
@@ -311,7 +311,7 @@ app.post("/riskfactorquestions", async (req, res) => {
       $set: {
         educationLevel: educationLevel,
         age: age,
-        smoke: smoke,
+        obesity: obesity,
         diabetes: diabetes,
         depression: depression,
       },
