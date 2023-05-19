@@ -2,6 +2,12 @@
 require("./utils.js");
 require("dotenv").config();
 
+const EXERCISE_TIME_GOAL = 25; // minutes per day, default exercise time goal
+const ALCOHOL_CONSUMPTION_LIMIT = 2; // drinks per day low alcohol drink, default alcohol consumption limit
+const SMOKE_COUNT_LIMIT = 10; // cigarette per day, default smoke count limit
+const SOCIAL_TIME_GOAL = 25; // minutes per day, default social time goal
+const CHALLENGE_PERIOD = 4; // day we check the trend of
+
 const express = require("express"); // import express
 const session = require("express-session"); // import express-session
 const bodyParser = require("body-parser"); // import body-parser
@@ -53,6 +59,7 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 /* END secret section */
 
 const mmse = require("./public/scripts/mmse.js");
+const { start } = require("repl");
 // Set up the view engine and static files
 app.set("view engine", "ejs"); // set up the view engine
 app.use(express.json()); // use express.json() to parse JSON bodies
@@ -60,10 +67,12 @@ app.use(express.json()); // use express.json() to parse JSON bodies
 // Connect to the database
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
-
+const activityCollection = database
+  .db(mongodb_database)
+  .collection("activities"); // get the activity collection
 const notificationsCollection = database
   .db(mongodb_database)
-  .collection("notifications");
+  .collection("notifications"); // get the notifications collection
 
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -231,12 +240,46 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+async function checkChallengeTrend(username) {
+  const currentDate = new Date();
+  var checkingTs = currentDate.setHours(0, 0, 0, 0);
+  var challengePeriod = []; // prepare array for challenge period
+  for (let i = 1; i < CHALLENGE_PERIOD; i++) {
+    var day = new Date(currentDate); // Create a new Date object with the current date
+    day.setDate(currentDate.getDate() - i); // Subtract i days from the current date
+    day = day.toISOString().slice(0, 10); // Format the date as YYYY-MM-DD
+    challengePeriod.push(day);
+    console.log(day);
+  }
+  // Query the activityCollection to get the challenge trend for the specified username and challengePeriod
+  const challengeTrend = await activityCollection
+    .find({
+      username: username,
+      date: { $in: challengePeriod },
+    })
+    .project({ isOnTrack: 1 })
+    .toArray();
+  if (
+    challengeTrend.length === 3 &&
+    challengeTrend.every((day) => day.isOnTrack === true)
+  ) {
+    console.log("All challenge trend days are on track");
+    return true;
+  } else {
+    console.log("Challenge trend days do not meet the condition");
+    return false;
+  }
+}
+
 // Middleware to validate user session before accessing homepage
 app.use("/homepage", validateSession);
 // get method for homepage
-app.get("/homepage", (req, res) => {
+app.get("/homepage", async (req, res) => {
+  var isEasterEggActivated = await checkChallengeTrend(req.session.username);
+  console.log(isEasterEggActivated);
+  console.log("render home");
   // TO DO: add function to decide whether to show easter egg
-  var isEasterEggActivated = true;
+  // var isEasterEggActivated = true;
   res.render("homepage", { isEasterEggActivated: isEasterEggActivated });
 });
 
@@ -920,7 +963,6 @@ app.get("/dailyrecommendation", (req, res) => {
 // Meditation page
 // verify the active session before allowing access to meditation page
 app.use("/meditation", validateSession);
-
 app.get("/meditation", (req, res) => {
   res.render("meditation");
 });
