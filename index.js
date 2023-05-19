@@ -3,9 +3,10 @@ require("./utils.js");
 require("dotenv").config();
 
 const EXERCISE_TIME_GOAL = 25; // minutes per day, default exercise time goal
-const ALCOHOL_CONSUMPTION_LIMIT = 2 // drinks per day low alcohol drink, default alcohol consumption limit
-const SMOKE_COUNT_LIMIT = 10 // cigarette per day, default smoke count limit
-const SOCIAL_TIME_GOAL = 25 // minutes per day, default social time goal
+const ALCOHOL_CONSUMPTION_LIMIT = 2; // drinks per day low alcohol drink, default alcohol consumption limit
+const SMOKE_COUNT_LIMIT = 10; // cigarette per day, default smoke count limit
+const SOCIAL_TIME_GOAL = 25; // minutes per day, default social time goal
+const CHALLENGE_PERIOD = 4; // day we check the trend of
 
 const express = require("express"); // import express
 const session = require("express-session"); // import express-session
@@ -40,16 +41,15 @@ const {
   getWord,
   getReversalScore,
 } = require("./public/scripts/mmse.js"); // import mmse.js
-const ss = require('simple-statistics'); // import simple-statistics
+const ss = require("simple-statistics"); // import simple-statistics
 const {
   runAlgorithm,
-  train
+  train,
 } = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
-
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -65,6 +65,7 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 
 const mmse = require("./public/scripts/mmse.js");
 const { format } = require("path");
+const { start } = require("repl");
 // Set up the view engine and static files
 app.set("view engine", "ejs"); // set up the view engine
 app.use(express.json()); // use express.json() to parse JSON bodies
@@ -72,15 +73,25 @@ app.use(express.json()); // use express.json() to parse JSON bodies
 // Connect to the database
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
-const activityCollection = database.db(mongodb_database).collection("activities"); // get the activity collection
-const mmseScoresCollection = database.db(mongodb_database).collection("mmseScores"); // get the mmseScores collection
-const resultsCorrelationData = database.db(mongodb_database).collection("resultsCorrelationData"); // get the resultsCorrelationData collection
-const resultsCorrelationValues = database.db(mongodb_database).collection("resultsCorrelationValues"); // get the resultsCorrelationData collection
-const dailyRecommendationLastVisit = database.db(mongodb_database).collection("dailyRecommendationLastVisit"); // get the dailyRecommendationLastVisit collection
+const activityCollection = database
+  .db(mongodb_database)
+  .collection("activities"); // get the activity collection
+const mmseScoresCollection = database
+  .db(mongodb_database)
+  .collection("mmseScores"); // get the mmseScores collection
+const resultsCorrelationData = database
+  .db(mongodb_database)
+  .collection("resultsCorrelationData"); // get the resultsCorrelationData collection
+const resultsCorrelationValues = database
+  .db(mongodb_database)
+  .collection("resultsCorrelationValues"); // get the resultsCorrelationData collection
+const dailyRecommendationLastVisit = database
+  .db(mongodb_database)
+  .collection("dailyRecommendationLastVisit"); // get the dailyRecommendationLastVisit collection
 
 const notificationsCollection = database
   .db(mongodb_database)
-  .collection("notifications");
+  .collection("notifications"); // get the notifications collection
 
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
@@ -209,6 +220,7 @@ app.post("/signup", async (req, res) => {
     obesity: null,
     diabetes: null,
     depression: null,
+    wasEasterEggAnnounced: false,
     createdAt: currentDate.toISOString(),
   });
 
@@ -251,11 +263,77 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+async function checkChallengeTrend(username) {
+  const currentDate = new Date();
+  var checkingTs = currentDate.setHours(0, 0, 0, 0);
+  var challengePeriod = []; // prepare array for challenge period
+  for (let i = 1; i < CHALLENGE_PERIOD; i++) {
+    var day = new Date(currentDate); // Create a new Date object with the current date
+    day.setDate(currentDate.getDate() - i); // Subtract i days from the current date
+    day = day.toISOString().slice(0, 10); // Format the date as YYYY-MM-DD
+    challengePeriod.push(day);
+    console.log(day);
+  }
+  // Query the activityCollection to get the challenge trend for the specified username and challengePeriod
+  const challengeTrend = await activityCollection
+    .find({
+      username: username,
+      date: { $in: challengePeriod },
+    })
+    .project({ isOnTrack: 1 })
+    .toArray();
+  if (
+    challengeTrend.length === 3 &&
+    challengeTrend.every((day) => day.isOnTrack === true)
+  ) {
+    console.log("All challenge trend days are on track");
+    return true;
+  } else {
+    console.log("Challenge trend days do not meet the condition");
+    return false;
+  }
+}
+
+async function showEasterEggAnnounced(userId, isEasterEggActivated) {
+  const user = await userCollection.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { wasEasterEggAnnounced: 1 } }
+  );
+  const showPopUp = !user.wasEasterEggAnnounced;
+  if (showPopUp && isEasterEggActivated) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Middleware to validate user session before accessing homepage
 app.use("/homepage", validateSession);
 // get method for homepage
-app.get("/homepage", (req, res) => {
-  res.render("homepage", { recommendation1: 'alcohol' });
+
+app.get("/homepage", async (req, res) => {
+  var data = "";
+  var isEasterEggActivated = await checkChallengeTrend(req.session.username);
+  var showEasterEggPopup = await showEasterEggAnnounced(
+    req.session.userId,
+    isEasterEggActivated
+  );
+  console.log("showEasterEggPopup", showEasterEggPopup);
+  if (showEasterEggPopup) {
+    data = `You were doing great these last ${CHALLENGE_PERIOD} days. 
+      So RecallRx team decided to add something special for you.`;
+    await userCollection.updateOne(
+      { _id: new ObjectId(req.session.userId) },
+      { $set: { wasEasterEggAnnounced: true } }
+    );
+  }
+  console.log("render home");
+  res.render("homepage", {
+    recommendation1: "alcohol",
+    isEasterEggActivated: isEasterEggActivated,
+    data: data,
+    showPopUp: showEasterEggPopup,
+  });
 });
 
 app.use("/riskfactorsurvey", validateSession);
@@ -436,7 +514,10 @@ app.get("/mmse-results", async (req, res) => {
   const activities = await activityCollection.find({}).toArray();
 
   activities.forEach((activity) => {
-    if (req.session.username == activity.username && activity.date >= formattedDate) {
+    if (
+      req.session.username == activity.username &&
+      activity.date >= formattedDate
+    ) {
       console.log(activity.exerciseDuration);
       exercise.push(activity.exerciseDuration);
       social.push(activity.socialDuration);
@@ -469,7 +550,6 @@ app.get("/mmse-results", async (req, res) => {
       // score: score,
       score: 90,
     });
-
   } catch (error) {
     console.error("Error retrieving user data:", error);
   }
@@ -677,8 +757,7 @@ app.post("/forgot-password", async (req, res) => {
     }
   );
   req.session.messageData = {
-    message:
-      "Your reset password link is invalid or expired. Please, check your email for correct link or request a new reset password.",
+    message: "Your reset password link was sent to your email.",
     action: "/login",
     btnLabel: "Go to Sign In",
     isError: false,
@@ -1024,18 +1103,28 @@ app.use("/dailyrecommendation", validateSession);
 
 async function getRecommendation(req, res) {
   var lastRecommendation;
-  var dailyRecommendation
+  var dailyRecommendation;
 
-  if (await dailyRecommendationLastVisit.findOne({ username: req.session.username }, { projection: { date: 1 } }) == null) {
-    console.log("no last visit");
-    lastRecommendation = new Date().toISOString().slice(0, 10);
-    await dailyRecommendationLastVisit.insertOne({ username: req.session.username, date: lastRecommendation });
-  } else {
-    console.log("last visit");
-    lastRecommendation = (await dailyRecommendationLastVisit.findOne(
+  if (
+    (await dailyRecommendationLastVisit.findOne(
       { username: req.session.username },
       { projection: { date: 1 } }
-    )).date; // Access the "date" field of the found document
+    )) == null
+  ) {
+    console.log("no last visit");
+    lastRecommendation = new Date().toISOString().slice(0, 10);
+    await dailyRecommendationLastVisit.insertOne({
+      username: req.session.username,
+      date: lastRecommendation,
+    });
+  } else {
+    console.log("last visit");
+    lastRecommendation = (
+      await dailyRecommendationLastVisit.findOne(
+        { username: req.session.username },
+        { projection: { date: 1 } }
+      )
+    ).date; // Access the "date" field of the found document
   }
 
   const currentDate = new Date().toISOString().slice(0, 10); // Get current day
@@ -1068,7 +1157,10 @@ async function getRecommendation(req, res) {
     const activities = await activityCollection.find({}).toArray();
 
     activities.forEach((activity) => {
-      if (req.session.username == activity.username && activity.date >= formattedDate) {
+      if (
+        req.session.username == activity.username &&
+        activity.date >= formattedDate
+      ) {
         exercise.push(activity.exerciseDuration);
         social.push(activity.socialDuration);
         smoking.push(activity.smokeAmount);
@@ -1102,23 +1194,33 @@ async function getRecommendation(req, res) {
     recommendation1 = dailyRecommendations[0];
     recommendation2 = dailyRecommendations[1];
 
-    await dailyRecommendationLastVisit.updateOne({
-      username: req.session.username,
-    },
-      { $set: { recommendation1: recommendation1, recommendation2: recommendation2 } },
+    await dailyRecommendationLastVisit.updateOne(
+      {
+        username: req.session.username,
+      },
+      {
+        $set: {
+          recommendation1: recommendation1,
+          recommendation2: recommendation2,
+        },
+      },
       { upsert: true }
     );
   } else {
     console.log("same day");
-    recommendation1 = (await dailyRecommendationLastVisit.findOne(
-      { username: req.session.username },
-      { projection: { recommendation1: 1 } }
-    )).recommendation1; // Access the "recommendation1" field of the found document
+    recommendation1 = (
+      await dailyRecommendationLastVisit.findOne(
+        { username: req.session.username },
+        { projection: { recommendation1: 1 } }
+      )
+    ).recommendation1; // Access the "recommendation1" field of the found document
 
-    recommendation2 = (await dailyRecommendationLastVisit.findOne(
-      { username: req.session.username },
-      { projection: { recommendation2: 1 } }
-    )).recommendation2; // Access the "recommendation2" field of the found document
+    recommendation2 = (
+      await dailyRecommendationLastVisit.findOne(
+        { username: req.session.username },
+        { projection: { recommendation2: 1 } }
+      )
+    ).recommendation2; // Access the "recommendation2" field of the found document
   }
 
   return [recommendation1, recommendation2];
@@ -1157,10 +1259,13 @@ async function getWeeklyAverages(req, res) {
   fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
   const formatFourWeeksAgo = fourWeeksAgo.toISOString().slice(0, 10);
 
-
   const activities = await activityCollection.find({}).toArray();
   activities.forEach((activity) => {
-    if (req.session.username == activity.username && activity.date <= currentDay && activity.date > formatOneWeekAgo) {
+    if (
+      req.session.username == activity.username &&
+      activity.date <= currentDay &&
+      activity.date > formatOneWeekAgo
+    ) {
       exerciseAvgWeek4.push(activity.exerciseDuration);
       socialAvgWeek4.push(activity.socialDuration);
       smokingAvgWeek4.push(activity.smokeAmount);
@@ -1168,13 +1273,21 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
-  exerciseAvgWeek4 = exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
-  socialAvgWeek4 = socialAvgWeek4.reduce((a, b) => a + b, 0) / socialAvgWeek4.length;
-  smokingAvgWeek4 = smokingAvgWeek4.reduce((a, b) => a + b, 0) / smokingAvgWeek4.length;
-  alcoholAvgWeek4 = alcoholAvgWeek4.reduce((a, b) => a + b, 0) / alcoholAvgWeek4.length;
+  exerciseAvgWeek4 =
+    exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
+  socialAvgWeek4 =
+    socialAvgWeek4.reduce((a, b) => a + b, 0) / socialAvgWeek4.length;
+  smokingAvgWeek4 =
+    smokingAvgWeek4.reduce((a, b) => a + b, 0) / smokingAvgWeek4.length;
+  alcoholAvgWeek4 =
+    alcoholAvgWeek4.reduce((a, b) => a + b, 0) / alcoholAvgWeek4.length;
 
   activities.forEach((activity) => {
-    if (req.session.username == activity.username && activity.date <= formatOneWeekAgo && activity.date > formatTwoWeeksAgo) {
+    if (
+      req.session.username == activity.username &&
+      activity.date <= formatOneWeekAgo &&
+      activity.date > formatTwoWeeksAgo
+    ) {
       exerciseAvgWeek3.push(activity.exerciseDuration);
       socialAvgWeek3.push(activity.socialDuration);
       smokingAvgWeek3.push(activity.smokeAmount);
@@ -1182,13 +1295,21 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
-  exerciseAvgWeek3 = exerciseAvgWeek3.reduce((a, b) => a + b, 0) / exerciseAvgWeek3.length;
-  socialAvgWeek3 = socialAvgWeek3.reduce((a, b) => a + b, 0) / socialAvgWeek3.length;
-  smokingAvgWeek3 = smokingAvgWeek3.reduce((a, b) => a + b, 0) / smokingAvgWeek3.length;
-  alcoholAvgWeek3 = alcoholAvgWeek3.reduce((a, b) => a + b, 0) / alcoholAvgWeek3.length;
+  exerciseAvgWeek3 =
+    exerciseAvgWeek3.reduce((a, b) => a + b, 0) / exerciseAvgWeek3.length;
+  socialAvgWeek3 =
+    socialAvgWeek3.reduce((a, b) => a + b, 0) / socialAvgWeek3.length;
+  smokingAvgWeek3 =
+    smokingAvgWeek3.reduce((a, b) => a + b, 0) / smokingAvgWeek3.length;
+  alcoholAvgWeek3 =
+    alcoholAvgWeek3.reduce((a, b) => a + b, 0) / alcoholAvgWeek3.length;
 
   activities.forEach((activity) => {
-    if (req.session.username == activity.username && activity.date <= formatTwoWeeksAgo && activity.date > formatThreeWeeksAgo) {
+    if (
+      req.session.username == activity.username &&
+      activity.date <= formatTwoWeeksAgo &&
+      activity.date > formatThreeWeeksAgo
+    ) {
       exerciseAvgWeek2.push(activity.exerciseDuration);
       socialAvgWeek2.push(activity.socialDuration);
       smokingAvgWeek2.push(activity.smokeAmount);
@@ -1196,13 +1317,21 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
-  exerciseAvgWeek2 = exerciseAvgWeek2.reduce((a, b) => a + b, 0) / exerciseAvgWeek2.length;
-  socialAvgWeek2 = socialAvgWeek2.reduce((a, b) => a + b, 0) / socialAvgWeek2.length;
-  smokingAvgWeek2 = smokingAvgWeek2.reduce((a, b) => a + b, 0) / smokingAvgWeek2.length;
-  alcoholAvgWeek2 = alcoholAvgWeek2.reduce((a, b) => a + b, 0) / alcoholAvgWeek2.length;
+  exerciseAvgWeek2 =
+    exerciseAvgWeek2.reduce((a, b) => a + b, 0) / exerciseAvgWeek2.length;
+  socialAvgWeek2 =
+    socialAvgWeek2.reduce((a, b) => a + b, 0) / socialAvgWeek2.length;
+  smokingAvgWeek2 =
+    smokingAvgWeek2.reduce((a, b) => a + b, 0) / smokingAvgWeek2.length;
+  alcoholAvgWeek2 =
+    alcoholAvgWeek2.reduce((a, b) => a + b, 0) / alcoholAvgWeek2.length;
 
   activities.forEach((activity) => {
-    if (req.session.username == activity.username && activity.date <= formatThreeWeeksAgo && activity.date > formatFourWeeksAgo) {
+    if (
+      req.session.username == activity.username &&
+      activity.date <= formatThreeWeeksAgo &&
+      activity.date > formatFourWeeksAgo
+    ) {
       exerciseAvgWeek1.push(activity.exerciseDuration);
       socialAvgWeek1.push(activity.socialDuration);
       smokingAvgWeek1.push(activity.smokeAmount);
@@ -1210,15 +1339,34 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
-  exerciseAvgWeek1 = exerciseAvgWeek1.reduce((a, b) => a + b, 0) / exerciseAvgWeek1.length;
-  socialAvgWeek1 = socialAvgWeek1.reduce((a, b) => a + b, 0) / socialAvgWeek1.length;
-  smokingAvgWeek1 = smokingAvgWeek1.reduce((a, b) => a + b, 0) / smokingAvgWeek1.length;
-  alcoholAvgWeek1 = alcoholAvgWeek1.reduce((a, b) => a + b, 0) / alcoholAvgWeek1.length;
+  exerciseAvgWeek1 =
+    exerciseAvgWeek1.reduce((a, b) => a + b, 0) / exerciseAvgWeek1.length;
+  socialAvgWeek1 =
+    socialAvgWeek1.reduce((a, b) => a + b, 0) / socialAvgWeek1.length;
+  smokingAvgWeek1 =
+    smokingAvgWeek1.reduce((a, b) => a + b, 0) / smokingAvgWeek1.length;
+  alcoholAvgWeek1 =
+    alcoholAvgWeek1.reduce((a, b) => a + b, 0) / alcoholAvgWeek1.length;
 
-  exerciseAvg = [exerciseAvgWeek1, exerciseAvgWeek2, exerciseAvgWeek3, exerciseAvgWeek4];
+  exerciseAvg = [
+    exerciseAvgWeek1,
+    exerciseAvgWeek2,
+    exerciseAvgWeek3,
+    exerciseAvgWeek4,
+  ];
   socialAvg = [socialAvgWeek1, socialAvgWeek2, socialAvgWeek3, socialAvgWeek4];
-  smokingAvg = [smokingAvgWeek1, smokingAvgWeek2, smokingAvgWeek3, smokingAvgWeek4];
-  alcoholAvg = [alcoholAvgWeek1, alcoholAvgWeek2, alcoholAvgWeek3, alcoholAvgWeek4];
+  smokingAvg = [
+    smokingAvgWeek1,
+    smokingAvgWeek2,
+    smokingAvgWeek3,
+    smokingAvgWeek4,
+  ];
+  alcoholAvg = [
+    alcoholAvgWeek1,
+    alcoholAvgWeek2,
+    alcoholAvgWeek3,
+    alcoholAvgWeek4,
+  ];
 
   return [exerciseAvg, socialAvg, smokingAvg, alcoholAvg];
 }
@@ -1231,15 +1379,14 @@ app.get("/dailyrecommendation", async (req, res) => {
 
   const weeklyAverages = await getWeeklyAverages(req, res);
 
-  res.render("dailyrecommendation",
-    {
-      recommendation1: recommendation1,
-      recommendation2: recommendation2,
-      exerciseAvg: weeklyAverages[0],
-      socialAvg: weeklyAverages[1],
-      smokingAvg: weeklyAverages[2],
-      alcoholAvg: weeklyAverages[3]
-    });
+  res.render("dailyrecommendation", {
+    recommendation1: recommendation1,
+    recommendation2: recommendation2,
+    exerciseAvg: weeklyAverages[0],
+    socialAvg: weeklyAverages[1],
+    smokingAvg: weeklyAverages[2],
+    alcoholAvg: weeklyAverages[3],
+  });
 });
 
 // validate user session before accessing daily activity tracking page
@@ -1289,10 +1436,18 @@ app.get("/daily-activity-tracking", async (req, res) => {
     console.log("Smoke Count:", smokeAmount);
 
     // Calculate the progress ratios based on the retrieved data
-    const exerciseProgressRatio = exerciseDuration ? exerciseDuration / EXERCISE_TIME_GOAL : 0;
-    const socialProgressRatio = socialDuration ? socialDuration / SOCIAL_TIME_GOAL : 0;
-    const alcoholProgressRatio = alcoholAmount ? alcoholAmount / ALCOHOL_CONSUMPTION_LIMIT : 0;
-    const smokeProgressRatio = smokeAmount ? smokeAmount / SMOKE_COUNT_LIMIT : 0;
+    const exerciseProgressRatio = exerciseDuration
+      ? exerciseDuration / EXERCISE_TIME_GOAL
+      : 0;
+    const socialProgressRatio = socialDuration
+      ? socialDuration / SOCIAL_TIME_GOAL
+      : 0;
+    const alcoholProgressRatio = alcoholAmount
+      ? alcoholAmount / ALCOHOL_CONSUMPTION_LIMIT
+      : 0;
+    const smokeProgressRatio = smokeAmount
+      ? smokeAmount / SMOKE_COUNT_LIMIT
+      : 0;
     const exerciseMinLeft = EXERCISE_TIME_GOAL - exerciseDuration;
     const socialMinLeft = SOCIAL_TIME_GOAL - socialDuration;
     const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholAmount;
@@ -1315,13 +1470,29 @@ app.get("/daily-activity-tracking", async (req, res) => {
       isExerciseGoalReached: isExerciseGoalReached,
       isSocialGoalReached: isSocialGoalReached,
       isAlcoholGoalReached: isAlcoholGoalReached,
-      isSmokeGoalReached: isSmokeGoalReached
+      isSmokeGoalReached: isSmokeGoalReached,
     });
-
   } catch (error) {
     console.error("Error retrieving user data:", error);
   }
 });
+
+function isUserOnTrack(
+  exerciseDuration,
+  socialDuration,
+  alcoholAmount,
+  smokeAmount
+) {
+  if (
+    exerciseDuration <= EXERCISE_TIME_GOAL ||
+    socialDuration <= SOCIAL_TIME_GOAL ||
+    alcoholAmount >= ALCOHOL_CONSUMPTION_LIMIT ||
+    smokeAmount >= SMOKE_COUNT_LIMIT
+  ) {
+    return false;
+  }
+  return true;
+}
 
 app.post("/daily-activity-tracking", async (req, res) => {
   try {
@@ -1329,12 +1500,8 @@ app.post("/daily-activity-tracking", async (req, res) => {
     const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
 
     // Extract the variables from the req.body object
-    let {
-      exerciseDuration,
-      socialDuration,
-      alcoholAmount,
-      smokeAmount
-    } = req.body;
+    let { exerciseDuration, socialDuration, alcoholAmount, smokeAmount } =
+      req.body;
 
     console.log("Received exerciseDuration:", exerciseDuration);
     console.log("Received socialDuration:", socialDuration);
@@ -1346,6 +1513,12 @@ app.post("/daily-activity-tracking", async (req, res) => {
     socialDuration = parseFloat(socialDuration) || 0;
     alcoholAmount = parseFloat(alcoholAmount) || 0;
     smokeAmount = parseFloat(smokeAmount) || 0;
+    const isOnTrack = isUserOnTrack(
+      exerciseDuration,
+      socialDuration,
+      alcoholAmount,
+      smokeAmount
+    );
 
     // Find a document with the current username and today's date
     const existingDocument = await activityCollection.findOne({
@@ -1357,10 +1530,20 @@ app.post("/daily-activity-tracking", async (req, res) => {
 
     if (existingDocument) {
       // Document exists, update all the fields by adding the new values to the existing values
-      const updatedExerciseDuration = existingDocument.exerciseDuration + parseFloat(exerciseDuration);
-      const updatedSocialDuration = existingDocument.socialDuration + parseFloat(socialDuration);
-      const updatedAlcoholAmount = existingDocument.alcoholAmount + parseFloat(alcoholAmount);
-      const updatedSmokeAmount = existingDocument.smokeAmount + parseFloat(smokeAmount);
+      const updatedExerciseDuration =
+        existingDocument.exerciseDuration + parseFloat(exerciseDuration);
+      const updatedSocialDuration =
+        existingDocument.socialDuration + parseFloat(socialDuration);
+      const updatedAlcoholAmount =
+        existingDocument.alcoholAmount + parseFloat(alcoholAmount);
+      const updatedSmokeAmount =
+        existingDocument.smokeAmount + parseFloat(smokeAmount);
+      const isOnTrack = isUserOnTrack(
+        updatedExerciseDuration,
+        updatedSocialDuration,
+        updatedAlcoholAmount,
+        updatedSmokeAmount
+      );
 
       console.log("Existing document:", existingDocument);
       console.log("Existing document ID:", existingDocument._id);
@@ -1373,6 +1556,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
             socialDuration: updatedSocialDuration,
             alcoholAmount: updatedAlcoholAmount,
             smokeAmount: updatedSmokeAmount,
+            isOnTrack: isOnTrack,
           },
         }
       );
@@ -1390,10 +1574,10 @@ app.post("/daily-activity-tracking", async (req, res) => {
         socialDuration: socialDuration,
         alcoholAmount: alcoholAmount,
         smokeAmount: smokeAmount,
+        isOnTrack: isOnTrack,
       });
       console.log("Today's activity created");
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -1401,6 +1585,14 @@ app.post("/daily-activity-tracking", async (req, res) => {
   res.redirect("/daily-activity-tracking");
 });
 
+// Meditation page
+// verify the active session before allowing access to meditation page
+app.use("/meditation", validateSession);
+app.get("/meditation", (req, res) => {
+  res.render("meditation");
+});
+
+// End of meditation API
 
 // get method for 404 page
 app.get("*", (req, res) => {

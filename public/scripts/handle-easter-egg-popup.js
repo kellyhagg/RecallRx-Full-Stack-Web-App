@@ -8,7 +8,6 @@ $(document).ready(function () {
     // close the popup
     popup.hide();
     okBtn.hide();
-    // trigger the route (replace "route-url" with your actual route URL)
-    window.location.href = "/settings";
+    window.location.href = "/homepage";
   });
 });

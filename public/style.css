@@ -1259,3 +1259,162 @@ label {
 .hp-running-man {
     font-size: 80px;
 }
+/* Music player */
+.control {
+    cursor:pointer;
+    width: 3em;
+    height: 3em;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+.music-card {
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+}
+
+.music-image img{
+    width: 60%;
+    height: 60%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
+    border-radius: 3%;
+}
+
+.progress-info {
+    height: 6px;
+    background-color: #ccc;
+    border-radius: 15px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: inherit;
+    border-radius: inherit;
+    background-color: #7B8B50;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-bar span {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #7B8B50;
+    border-radius: inherit;
+    transform: translateY(-25%);
+    right: -5px;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.progress-details:hover .progress-bar span {
+    opacity: 1;
+}
+
+.deactivated {
+    background-color: rgba(119, 130, 81, 0.1);
+    box-shadow: inset 0 0 10px rgba(237, 243, 222, 0.2);
+}
+
+.t-shadow {
+    text-shadow: 2px 2px 4px #7B8B50;
+}
+
+/* Drop animation */
+.drop {
+    background: linear-gradient(45deg, #D0A449 0%, #B9C886 100%);
+    width: 150px;
+    height: 150px;
+    box-shadow: 0 0 20px rgba(119, 130, 81, 0.5);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.animated {
+    animation: liquid 7s ease-in-out infinite;
+}
+
+/* The border-radius change is implemented with chatGPT assistance */
+@keyframes liquid {
+    0% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+
+    50% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+        background-size: 300% 150%;
+    }
+
+    100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+}
+
+.scrolling-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none;  /* For Firefox */
+
+}
+
+/* Hide the scrollbar for WebKit browsers (Chrome, Safari) */
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none;
+} 
+
+.card-block {
+    height: 100px;
+    border: none;
+    background-position: center;
+    background-size: cover;
+    transition: transform 0.3s ease;
+    border-radius: 5%;
+    box-shadow: 0 0 10px rgba(119, 130, 81, 0.8);
+    font-size: 1.2em;
+    transition: box-shadow 0.25s;
+    &:hover {
+        transform: scale(0.95);
+    }
+    &:active {
+        transform: scale(0.95);
+        border: none;
+    }
+}
+
+.white-icon {
+    color: white;
+}
+
+.placeholder{
+    height: 3em;
+}
+
+.card-block a {
+    border: none; 
+    box-shadow: none;
+}
+
+.card-block a:visited {
+    text-decoration: none;
+    color: white;
+    border: none
+}
+
+.easter-egg-animation {
+    background: linear-gradient(45deg, #778251, #D0A449, #D88A63);
+    background-size: 200% 200%;
+    animation: gradientAnimation 5s ease-in-out infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}

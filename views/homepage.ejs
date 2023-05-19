@@ -1,6 +1,6 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
-    <div class="homepagestyle">
+<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>">
         <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
         <div class="precom_homepage_card pink-less-transparent-background text-center">
             <h4>We recommend that you <span id="recommendation-1"></span></h4>
@@ -21,32 +21,73 @@
                 </div>
             </div>
         </a>
-        <div class="button-container">
-            <!-- redirect to daily game page -->
-            <a href="#" class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Daily
-                Game</a>
-            <!-- redirect to questionnaire page -->
-            <a href="mmse-landing-page"
-                class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Questionnaire</a>
+     <div class="container-fluid  mb-5 pb-2">
+        <div class="scrolling-wrapper row flex-row flex-nowrap pb-2 d-flex align-items-center justify-content-center">
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5 btn-shadow easter-egg d-none">
+                <div class="card card-block easter-egg-animation d-flex align-items-center justify-content-center">
+                        <a href="meditation" class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column ">
+                            <i class="fa fa-music white-icon"></i>
+                           <p>Meditation</p> 
+                        </a>
+                    </div>
+            </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+                <div class="col-5">
+                    <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                        
+                        <a href="mmse-landing-page" class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column "> 
+                            <i class="fa fa-question white-icon"></i>
+                           <p>Questionnaire</p> 
+                        </a> 
+                    </div>
+                </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5">
+                <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                    <a href="#"
+                        class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column ">
+                        <i class="fa fa-puzzle-piece white-icon"></i>
+                        <p>Daily Game</p>
+                    </a>
+                </div>
+            </div>
         </div>
+    </div> 
+    <div class="placeholder mb-2"></div>
+</div>
+
+<!-- Popup -->
+<% if (showPopUp) { %>
+    <div id="backdrop" class="d-flex align-items-center justify-content-center">
+        <%- include("templates/easter-egg-popup", {data: data}) %>
+            <% console.log("show popup") %>
     </div>
+    <% } %>
 
-    <script>
-        const exerciseContent = 'find a way to get some exercise today!';
-        const socialContent = 'find a way to socialise today!';
-        const smokingContent = 'try to reduce how much you smoke today!';
-        const alcoholContent = 'try to reduce how much alcohol you consume today!';
 
-        if (`<%= recommendation1 %>` == 'exercise') {
-            $('#recommendation-1').text(exerciseContent);
-        } else if (`<%= recommendation1 %>` == 'social') {
-            $('#recommendation-1').text(socialContent);
-        } else if (`<%= recommendation1 %>` == 'smoking') {
-            $('#recommendation-1').text(smokingContent);
-        } else if (`<%= recommendation1 %>` == 'alcohol') {
-            $('#recommendation-1').text(alcoholContent);
-        }
+<script>
+    const exerciseContent = 'find a way to get some exercise today!';
+    const socialContent = 'find a way to socialise today!';
+    const smokingContent = 'try to reduce how much you smoke today!';
+    const alcoholContent = 'try to reduce how much alcohol you consume today!';
 
-    </script>
+    if (`<%= recommendation1 %>` == 'exercise') {
+        $('#recommendation-1').text(exerciseContent);
+    } else if (`<%= recommendation1 %>` == 'social') {
+        $('#recommendation-1').text(socialContent);
+    } else if (`<%= recommendation1 %>` == 'smoking') {
+        $('#recommendation-1').text(smokingContent);
+    } else if (`<%= recommendation1 %>` == 'alcohol') {
+        $('#recommendation-1').text(alcoholContent);
+    }
 
-    <%- include("templates/footer") %>
+</script>
+
+<!-- Handle popup JS -->
+<script src="/scripts/handle-easter-egg-popup.js"></script>
+
+<!-- Reval hidden elements JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>
+
+<%- include("templates/footer") %>
