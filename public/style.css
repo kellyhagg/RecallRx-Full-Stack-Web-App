@@ -1188,7 +1188,7 @@ label {
 
 .deactivated {
     background-color: rgba(119, 130, 81, 0.1);
-    box-shadow: 0 0 10px rgba(237, 243, 222, 0.2);
+    box-shadow: inset 0 0 10px rgba(237, 243, 222, 0.2);
 }
 
 .t-shadow {
@@ -1246,8 +1246,13 @@ label {
     border-radius: 5%;
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.8);
     font-size: 1.2em;
+    transition: box-shadow 0.25s;
     &:hover {
         transform: scale(0.95);
+    }
+    &:active {
+        transform: scale(0.95);
+        border: none;
     }
 }
 
@@ -1257,4 +1262,15 @@ label {
 
 .placeholder{
     height: 3em;
+}
+
+.card-block a {
+    border: none; 
+    box-shadow: none;
+}
+
+.card-block a:visited {
+    text-decoration: none;
+    color: white;
+    border: none
 }
