@@ -1,6 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
+const ss = require('simple-statistics');
+
+// Made with the assistance of ChatGPT - Calculates the correlation coefficients
+async function train(dataset) {
+
+    var values = [];
+    // Extract the values for each variable
+    const exerciseAvg = dataset.map(data => data.exerciseAvg);
+    const socialAvg = dataset.map(data => data.socialAvg);
+    const smokingAvg = dataset.map(data => data.smokingAvg);
+    const alcoholAvg = dataset.map(data => data.alcoholAvg);
+    const resultingScore = dataset.map(data => data.score);
+
+    // Calculate the correlation coefficients
+    const exerciseScoreCorrelation = ss.sampleCorrelation(exerciseAvg, resultingScore);
+    const socialScoreCorrelation = ss.sampleCorrelation(socialAvg, resultingScore);
+    const smokingScoreCorrelation = ss.sampleCorrelation(smokingAvg, resultingScore);
+    const alcoholScoreCorrelation = ss.sampleCorrelation(alcoholAvg, resultingScore);
+
+    // Print the correlation coefficients
+    console.log("Exercise-Score Correlation: ", exerciseScoreCorrelation);
+    console.log("Social-Score Correlation: ", socialScoreCorrelation);
+    console.log("Smoking-Score Correlation: ", smokingScoreCorrelation);
+    console.log("Alcohol-Score Correlation: ", alcoholScoreCorrelation);
+
+    values.push(exerciseScoreCorrelation);
+    values.push(socialScoreCorrelation);
+    values.push(smokingScoreCorrelation);
+    values.push(alcoholScoreCorrelation);
+
+    return values;
+};
+
 function getSlope(x1, y1, x2, y2) {
     return (y2 - y1) / (x2 - x1);
 }
@@ -82,3 +115,4 @@ async function runAlgorithm(numberOfCigarettes, numberOfDrinks, minutesOfExercis
 
 runAlgorithm(12.5, 2, 0, 0);
 
+module.exports = { runAlgorithm, train };

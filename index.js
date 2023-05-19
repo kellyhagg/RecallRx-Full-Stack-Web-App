@@ -40,10 +40,16 @@ const {
   getWord,
   getReversalScore,
 } = require("./public/scripts/mmse.js"); // import mmse.js
+const ss = require('simple-statistics'); // import simple-statistics
+const {
+  runAlgorithm,
+  train
+} = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
+
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -68,6 +74,8 @@ const userCollection = database.db(mongodb_database).collection("users"); // get
 const activityCollection = database.db(mongodb_database).collection("activities"); // get the activity collection
 const mmseScoresCollection = database.db(mongodb_database).collection("mmseScores"); // get the mmseScores collection
 const resultsCorrelationData = database.db(mongodb_database).collection("resultsCorrelationData"); // get the resultsCorrelationData collection
+const resultsCorrelationValues = database.db(mongodb_database).collection("resultsCorrelationValues"); // get the resultsCorrelationData collection
+const dailyRecommendationLastVisit = database.db(mongodb_database).collection("dailyRecommendationLastVisit"); // get the dailyRecommendationLastVisit collection
 
 const notificationsCollection = database
   .db(mongodb_database)
@@ -413,22 +421,19 @@ app.post("/mmse-word-reversal", async (req, res) => {
 });
 
 app.get("/mmse-results", async (req, res) => {
-  const score = parseInt(Math.round((userScore / 15) * 100));
-  const userData = await userCollection.find({}).toArray();
+  // const score = parseInt(Math.round((userScore / 15) * 100));
+  const score = 90;
   const activityData = await activityCollection.find({}).toArray();
   var exercise = [];
   var social = [];
   var smoking = [];
   var alcohol = [];
+
   const previousMonth = new Date();
   previousMonth.setMonth(previousMonth.getMonth() - 1);
   const formattedDate = previousMonth.toISOString();
-  console.log(formattedDate);
 
   await activityData.forEach((activity) => {
-    console.log(req.session.username == activity.username);
-    console.log(activity.date);
-    console.log(formattedDate);
     if (req.session.username == activity.username && activity.date >= formattedDate) {
       console.log(activity.exerciseDuration);
       exercise.push(activity.exerciseDuration);
@@ -459,11 +464,49 @@ app.get("/mmse-results", async (req, res) => {
     const user = await mmseScoresCollection.insertOne({
       username: username,
       date: currentDate,
-      score: score,
+      // score: score,
+      score: 90,
     });
 
   } catch (error) {
     console.error("Error retrieving user data:", error);
+  }
+
+  // const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
+  const randomNumber1to100 = 1;
+
+  // const dataset = [
+  //   { exerciseAvg: 40, socialAvg: 50, smokingAvg: 0, alcoholAvg: 2, score: 85 },
+  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
+  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 2, alcoholAvg: 1, score: 95 },
+  //   { exerciseAvg: 30, socialAvg: 60, smokingAvg: 0, alcoholAvg: 3, score: 75 },
+  //   { exerciseAvg: 50, socialAvg: 80, smokingAvg: 2, alcoholAvg: 2, score: 80 },
+  //   { exerciseAvg: 10, socialAvg: 40, smokingAvg: 4, alcoholAvg: 4, score: 65 },
+  //   { exerciseAvg: 70, socialAvg: 100, smokingAvg: 0, alcoholAvg: 1, score: 95 },
+  //   { exerciseAvg: 40, socialAvg: 70, smokingAvg: 1, alcoholAvg: 3, score: 85 },
+  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
+  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 0, alcoholAvg: 2, score: 100 }
+  // ];
+
+  // dataset.forEach(async (data) => {
+  //   await resultsCorrelationData.insertOne(data);
+  // });
+
+  if (randomNumber1to100 == 1) {
+    console.log("Training model");
+    var updatedCorrelationValues = [];
+    const result = await resultsCorrelationData.find({}).toArray();
+    updatedCorrelationValues = await train(result);
+    console.log(updatedCorrelationValues[0]);
+
+    console.log(updatedCorrelationValues);
+    await resultsCorrelationValues.deleteMany({});
+    await resultsCorrelationValues.insertOne({
+      exerciseCorrelation: updatedCorrelationValues[0],
+      socialCorrelation: updatedCorrelationValues[1],
+      smokingCorrelation: -updatedCorrelationValues[2],
+      alcoholCorrelation: -updatedCorrelationValues[3],
+    });
   }
 
   res.render("mmse-results.ejs", {
@@ -979,13 +1022,13 @@ app.post("/notifications", async (req, res, next) => {
 
 // get method for daily recommendation page
 app.get("/dailyrecommendation", async (req, res) => {
-  // const mmseData = await mmseScoresCollection.find({}).toArray();
-  // mmseData.forEach(function (scoreTuple) {
-  //     activityData.find({
-  //         username: scoreTuple.username,
-  //         date: scoreTuple.date
-  //     })
-  // });
+  const mmseData = await mmseScoresCollection.find({}).toArray();
+  mmseData.forEach(function (scoreTuple) {
+    activityData.find({
+      username: scoreTuple.username,
+      date: scoreTuple.date
+    })
+  });
 
   res.render("dailyrecommendation", { recommendation1: 'exercise', recommendation2: 'social' });
 });
