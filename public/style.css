@@ -300,6 +300,12 @@ input:checked~label {
     color: #edf3de;
 }
 
+.btn-pink-button {
+    background-color: #D88A63;
+    border-color: #D88A63;
+    color: #edf3de;
+}
+
 .riskfactorsurvey {
     background-image: url('riskfactorsurvey.jpg');
     background-size: cover;
@@ -1080,21 +1086,6 @@ label {
     border-radius: 15px;
 }
 
-.hpicon-container {
-    display: flex;
-    justify-content: center;
-    margin: 5%;
-}
-
-.hpiconset {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    margin: 5%;
-}
-
 .hpicon {
     align-items: center;
     border-radius: 50%;
@@ -1213,4 +1204,50 @@ label {
 
 .recom-slide {
     height: 100%;
+}
+
+.value-text {
+    transform: translateY(0.5rem);
+}
+
+.hp-circle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 25vh;
+}
+
+.activity-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 10px solid #7B8B50;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7B8B50;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.running-man-circle {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #7B8B50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.hp-running-man {
+    font-size: 80px;
 }
