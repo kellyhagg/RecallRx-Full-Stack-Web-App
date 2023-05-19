@@ -17,7 +17,6 @@ window.addEventListener("load", () => {
 
 function loadData(index) {
   musicTitle.innerHTML = music[index - 1].purpose;
-  //   musicImage.src = "images/" + music[indexValue - 1].img + ".jpg";
   audio.src = "music/" + music[index - 1].audio + ".mp3";
 }
 
@@ -45,6 +44,17 @@ function pause() {
   audio.pause();
 }
 
+// Update melody duration
+function setDurationTime(durationTimeText) {
+  let durationValue = audio.duration;
+  let durationMinutes = Math.floor(durationValue / 60);
+  let durationSeconds = Math.floor(durationValue % 60);
+  if (durationSeconds < 10) {
+    durationSeconds = "0" + durationSeconds;
+  }
+  durationTimeText.innerText = durationMinutes + ":" + durationSeconds;
+}
+
 // Time bar
 audio.addEventListener("timeupdate", (e) => {
   const currentTime = e.target.currentTime; // get current melody timestamp
@@ -62,18 +72,13 @@ audio.addEventListener("timeupdate", (e) => {
   });
 
   //Timer Logic
+  let durationTimeText = content.querySelector(".duration");
   audio.addEventListener("loadeddata", () => {
-    let durationTimeText = content.querySelector(".duration");
-
-    //Update finalDuration
-    let durationValue = audio.duration;
-    let durationMinutes = Math.floor(durationValue / 60);
-    let durationSeconds = Math.floor(durationValue % 60);
-    if (durationSeconds < 10) {
-      durationSeconds = "0" + durationSeconds;
-    }
-    durationTimeText.innerText = durationMinutes + ":" + durationSeconds;
+    console.log("Audio loaded");
+    setDurationTime(durationTimeText);
   });
+
+  setDurationTime(durationTimeText);
 
   //Update Current Duration
   let currentTimeText = content.querySelector(".current-time");
