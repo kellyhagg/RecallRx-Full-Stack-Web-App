@@ -20,12 +20,6 @@ async function train(dataset) {
     const smokingScoreCorrelation = ss.sampleCorrelation(smokingAvg, resultingScore);
     const alcoholScoreCorrelation = ss.sampleCorrelation(alcoholAvg, resultingScore);
 
-    // Print the correlation coefficients
-    console.log("Exercise-Score Correlation: ", exerciseScoreCorrelation);
-    console.log("Social-Score Correlation: ", socialScoreCorrelation);
-    console.log("Smoking-Score Correlation: ", smokingScoreCorrelation);
-    console.log("Alcohol-Score Correlation: ", alcoholScoreCorrelation);
-
     values.push(exerciseScoreCorrelation);
     values.push(socialScoreCorrelation);
     values.push(smokingScoreCorrelation);
@@ -125,8 +119,6 @@ async function runAlgorithm(input, coefficients) {
     var smokingRisk = await getSmokingRisk(input[2]);
     var drinkingRisk = getDrinkingRisk(input[3]);
 
-    console.log("c: ", coefficients[0]);
-
     exerciseRisk = exerciseRisk * coefficients[0];
     socializationRisk = socializationRisk * coefficients[1];
     smokingRisk = smokingRisk * coefficients[2];
@@ -137,9 +129,7 @@ async function runAlgorithm(input, coefficients) {
     values.push(smokingRisk);
     values.push(drinkingRisk);
 
-    console.log(values);
     const indices = findIndicesOfLargestValues(values);
-    console.log(indices);
 
     var firstRecommendation = "";
     var secondRecommendation = "";
