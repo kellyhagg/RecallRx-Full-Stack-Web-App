@@ -40,10 +40,16 @@ const {
   getWord,
   getReversalScore,
 } = require("./public/scripts/mmse.js"); // import mmse.js
+const ss = require('simple-statistics'); // import simple-statistics
+const {
+  runAlgorithm,
+  train
+} = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
+
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -58,6 +64,7 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 /* END secret section */
 
 const mmse = require("./public/scripts/mmse.js");
+const { format } = require("path");
 // Set up the view engine and static files
 app.set("view engine", "ejs"); // set up the view engine
 app.use(express.json()); // use express.json() to parse JSON bodies
@@ -66,6 +73,10 @@ app.use(express.json()); // use express.json() to parse JSON bodies
 var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users"); // get the user collection
 const activityCollection = database.db(mongodb_database).collection("activities"); // get the activity collection
+const mmseScoresCollection = database.db(mongodb_database).collection("mmseScores"); // get the mmseScores collection
+const resultsCorrelationData = database.db(mongodb_database).collection("resultsCorrelationData"); // get the resultsCorrelationData collection
+const resultsCorrelationValues = database.db(mongodb_database).collection("resultsCorrelationValues"); // get the resultsCorrelationData collection
+const dailyRecommendationLastVisit = database.db(mongodb_database).collection("dailyRecommendationLastVisit"); // get the dailyRecommendationLastVisit collection
 
 const notificationsCollection = database
   .db(mongodb_database)
@@ -410,8 +421,96 @@ app.post("/mmse-word-reversal", async (req, res) => {
   }
 });
 
-app.get("/mmse-results", (req, res) => {
-  var score = parseInt(Math.round((userScore / 15) * 100));
+app.get("/mmse-results", async (req, res) => {
+  // const score = parseInt(Math.round((userScore / 15) * 100));
+  const score = 90;
+  const activityData = await activityCollection.find({}).toArray();
+  var exercise = [];
+  var social = [];
+  var smoking = [];
+  var alcohol = [];
+
+  const previousMonth = new Date();
+  previousMonth.setMonth(previousMonth.getMonth() - 1);
+  const formattedDate = previousMonth.toISOString();
+  const activities = await activityCollection.find({}).toArray();
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date >= formattedDate) {
+      console.log(activity.exerciseDuration);
+      exercise.push(activity.exerciseDuration);
+      social.push(activity.socialDuration);
+      smoking.push(activity.smokeAmount);
+      alcohol.push(activity.alcoholAmount);
+    }
+  });
+
+  const exerciseAvg = exercise.reduce((a, b) => a + b, 0) / exercise.length;
+  const socialAvg = social.reduce((a, b) => a + b, 0) / social.length;
+  const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
+  const alcoholAvg = alcohol.reduce((a, b) => a + b, 0) / alcohol.length;
+
+  await resultsCorrelationData.insertOne({
+    exerciseAvg: exerciseAvg,
+    socialAvg: socialAvg,
+    smokingAvg: smokingAvg,
+    alcoholAvg: alcoholAvg,
+    score: score,
+  });
+
+  try {
+    const username = req.session.username;
+    const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+
+    // Find a document with the current username and today's date
+    const user = await mmseScoresCollection.insertOne({
+      username: username,
+      date: currentDate,
+      // score: score,
+      score: 90,
+    });
+
+  } catch (error) {
+    console.error("Error retrieving user data:", error);
+  }
+
+  // const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
+  const randomNumber1to100 = 1;
+
+  // const dataset = [
+  //   { exerciseAvg: 40, socialAvg: 50, smokingAvg: 0, alcoholAvg: 2, score: 85 },
+  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
+  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 2, alcoholAvg: 1, score: 95 },
+  //   { exerciseAvg: 30, socialAvg: 60, smokingAvg: 0, alcoholAvg: 3, score: 75 },
+  //   { exerciseAvg: 50, socialAvg: 80, smokingAvg: 2, alcoholAvg: 2, score: 80 },
+  //   { exerciseAvg: 10, socialAvg: 40, smokingAvg: 4, alcoholAvg: 4, score: 65 },
+  //   { exerciseAvg: 70, socialAvg: 100, smokingAvg: 0, alcoholAvg: 1, score: 95 },
+  //   { exerciseAvg: 40, socialAvg: 70, smokingAvg: 1, alcoholAvg: 3, score: 85 },
+  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
+  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 0, alcoholAvg: 2, score: 100 }
+  // ];
+
+  // dataset.forEach(async (data) => {
+  //   await resultsCorrelationData.insertOne(data);
+  // });
+
+  if (randomNumber1to100 == 1) {
+    console.log("Training model");
+    var updatedCorrelationValues = [];
+    const result = await resultsCorrelationData.find({}).toArray();
+    updatedCorrelationValues = await train(result);
+    console.log(updatedCorrelationValues[0]);
+
+    console.log(updatedCorrelationValues);
+    await resultsCorrelationValues.deleteMany({});
+    await resultsCorrelationValues.insertOne({
+      exerciseCorrelation: updatedCorrelationValues[0],
+      socialCorrelation: updatedCorrelationValues[1],
+      smokingCorrelation: -updatedCorrelationValues[2],
+      alcoholCorrelation: -updatedCorrelationValues[3],
+    });
+  }
+
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
     score: score,
@@ -921,11 +1020,226 @@ app.post("/notifications", async (req, res, next) => {
 // End of Notifications API
 
 // validate user session before accessing daily recommendation page
-// app.use("/dailyrecommendation", validateSession);
+app.use("/dailyrecommendation", validateSession);
+
+async function getRecommendation(req, res) {
+  var lastRecommendation;
+  var dailyRecommendation
+
+  if (await dailyRecommendationLastVisit.findOne({ username: req.session.username }, { projection: { date: 1 } }) == null) {
+    console.log("no last visit");
+    lastRecommendation = new Date().toISOString().slice(0, 10);
+    await dailyRecommendationLastVisit.insertOne({ username: req.session.username, date: lastRecommendation });
+  } else {
+    console.log("last visit");
+    lastRecommendation = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { date: 1 } }
+    )).date; // Access the "date" field of the found document
+  }
+
+  const currentDate = new Date().toISOString().slice(0, 10); // Get current day
+  console.log(lastRecommendation != currentDate);
+
+  if (lastRecommendation == currentDate) {
+    console.log("new day");
+    lastRecommendation = currentDate; // Update lastRecommendation with currentDate
+
+    await dailyRecommendationLastVisit.updateOne(
+      { username: req.session.username },
+      { $set: { date: currentDate } }
+    );
+
+    var exercise = [];
+    var social = [];
+    var smoking = [];
+    var alcohol = [];
+
+    var values = [];
+    var coefficients = [];
+
+    var recommendation1;
+    var recommendation2;
+
+    const previousMonth = new Date();
+    previousMonth.setMonth(previousMonth.getMonth() - 1);
+    const formattedDate = previousMonth.toISOString();
+
+    const activities = await activityCollection.find({}).toArray();
+
+    activities.forEach((activity) => {
+      if (req.session.username == activity.username && activity.date >= formattedDate) {
+        exercise.push(activity.exerciseDuration);
+        social.push(activity.socialDuration);
+        smoking.push(activity.smokeAmount);
+        alcohol.push(activity.alcoholAmount);
+      }
+    });
+
+    const correlations = await resultsCorrelationValues.find({}).toArray();
+
+    correlations.forEach((result) => {
+      coefficients.push(result.exerciseCorrelation);
+      coefficients.push(result.socialCorrelation);
+      coefficients.push(result.smokingCorrelation);
+      coefficients.push(result.alcoholCorrelation);
+    });
+
+    const exerciseAvg = exercise.reduce((a, b) => a + b, 0) / exercise.length;
+    const socialAvg = social.reduce((a, b) => a + b, 0) / social.length;
+    const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
+    const alcoholAvg = alcohol.reduce((a, b) => a + b, 0) / alcohol.length;
+
+    values.push(exerciseAvg);
+    values.push(socialAvg);
+    values.push(smokingAvg);
+    values.push(alcoholAvg);
+
+    console.log(coefficients);
+
+    const dailyRecommendations = await runAlgorithm(values, coefficients);
+
+    recommendation1 = dailyRecommendations[0];
+    recommendation2 = dailyRecommendations[1];
+
+    await dailyRecommendationLastVisit.updateOne({
+      username: req.session.username,
+    },
+      { $set: { recommendation1: recommendation1, recommendation2: recommendation2 } },
+      { upsert: true }
+    );
+  } else {
+    console.log("same day");
+    recommendation1 = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { recommendation1: 1 } }
+    )).recommendation1; // Access the "recommendation1" field of the found document
+
+    recommendation2 = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { recommendation2: 1 } }
+    )).recommendation2; // Access the "recommendation2" field of the found document
+  }
+
+  return [recommendation1, recommendation2];
+}
+
+async function getWeeklyAverages(req, res) {
+  var exerciseAvgWeek1 = [];
+  var exerciseAvgWeek2 = [];
+  var exerciseAvgWeek3 = [];
+  var exerciseAvgWeek4 = [];
+  var socialAvgWeek1 = [];
+  var socialAvgWeek2 = [];
+  var socialAvgWeek3 = [];
+  var socialAvgWeek4 = [];
+  var smokingAvgWeek1 = [];
+  var smokingAvgWeek2 = [];
+  var smokingAvgWeek3 = [];
+  var smokingAvgWeek4 = [];
+  var alcoholAvgWeek1 = [];
+  var alcoholAvgWeek2 = [];
+  var alcoholAvgWeek3 = [];
+  var alcoholAvgWeek4 = [];
+
+  const currentDay = new Date().toISOString().slice(0, 10);
+
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const formatOneWeekAgo = oneWeekAgo.toISOString().slice(0, 10);
+  const twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+  const formatTwoWeeksAgo = twoWeeksAgo.toISOString().slice(0, 10);
+  const threeWeeksAgo = new Date();
+  threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+  const formatThreeWeeksAgo = threeWeeksAgo.toISOString().slice(0, 10);
+  const fourWeeksAgo = new Date();
+  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+  const formatFourWeeksAgo = fourWeeksAgo.toISOString().slice(0, 10);
+
+
+  const activities = await activityCollection.find({}).toArray();
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= currentDay && activity.date > formatOneWeekAgo) {
+      exerciseAvgWeek4.push(activity.exerciseDuration);
+      socialAvgWeek4.push(activity.socialDuration);
+      smokingAvgWeek4.push(activity.smokeAmount);
+      alcoholAvgWeek4.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek4 = exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
+  socialAvgWeek4 = socialAvgWeek4.reduce((a, b) => a + b, 0) / socialAvgWeek4.length;
+  smokingAvgWeek4 = smokingAvgWeek4.reduce((a, b) => a + b, 0) / smokingAvgWeek4.length;
+  alcoholAvgWeek4 = alcoholAvgWeek4.reduce((a, b) => a + b, 0) / alcoholAvgWeek4.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatOneWeekAgo && activity.date > formatTwoWeeksAgo) {
+      exerciseAvgWeek3.push(activity.exerciseDuration);
+      socialAvgWeek3.push(activity.socialDuration);
+      smokingAvgWeek3.push(activity.smokeAmount);
+      alcoholAvgWeek3.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek3 = exerciseAvgWeek3.reduce((a, b) => a + b, 0) / exerciseAvgWeek3.length;
+  socialAvgWeek3 = socialAvgWeek3.reduce((a, b) => a + b, 0) / socialAvgWeek3.length;
+  smokingAvgWeek3 = smokingAvgWeek3.reduce((a, b) => a + b, 0) / smokingAvgWeek3.length;
+  alcoholAvgWeek3 = alcoholAvgWeek3.reduce((a, b) => a + b, 0) / alcoholAvgWeek3.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatTwoWeeksAgo && activity.date > formatThreeWeeksAgo) {
+      exerciseAvgWeek2.push(activity.exerciseDuration);
+      socialAvgWeek2.push(activity.socialDuration);
+      smokingAvgWeek2.push(activity.smokeAmount);
+      alcoholAvgWeek2.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek2 = exerciseAvgWeek2.reduce((a, b) => a + b, 0) / exerciseAvgWeek2.length;
+  socialAvgWeek2 = socialAvgWeek2.reduce((a, b) => a + b, 0) / socialAvgWeek2.length;
+  smokingAvgWeek2 = smokingAvgWeek2.reduce((a, b) => a + b, 0) / smokingAvgWeek2.length;
+  alcoholAvgWeek2 = alcoholAvgWeek2.reduce((a, b) => a + b, 0) / alcoholAvgWeek2.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatThreeWeeksAgo && activity.date > formatFourWeeksAgo) {
+      exerciseAvgWeek1.push(activity.exerciseDuration);
+      socialAvgWeek1.push(activity.socialDuration);
+      smokingAvgWeek1.push(activity.smokeAmount);
+      alcoholAvgWeek1.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek1 = exerciseAvgWeek1.reduce((a, b) => a + b, 0) / exerciseAvgWeek1.length;
+  socialAvgWeek1 = socialAvgWeek1.reduce((a, b) => a + b, 0) / socialAvgWeek1.length;
+  smokingAvgWeek1 = smokingAvgWeek1.reduce((a, b) => a + b, 0) / smokingAvgWeek1.length;
+  alcoholAvgWeek1 = alcoholAvgWeek1.reduce((a, b) => a + b, 0) / alcoholAvgWeek1.length;
+
+  exerciseAvg = [exerciseAvgWeek1, exerciseAvgWeek2, exerciseAvgWeek3, exerciseAvgWeek4];
+  socialAvg = [socialAvgWeek1, socialAvgWeek2, socialAvgWeek3, socialAvgWeek4];
+  smokingAvg = [smokingAvgWeek1, smokingAvgWeek2, smokingAvgWeek3, smokingAvgWeek4];
+  alcoholAvg = [alcoholAvgWeek1, alcoholAvgWeek2, alcoholAvgWeek3, alcoholAvgWeek4];
+
+  return [exerciseAvg, socialAvg, smokingAvg, alcoholAvg];
+}
 
 // get method for daily recommendation page
-app.get("/dailyrecommendation", (req, res) => {
-  res.render("dailyrecommendation");
+app.get("/dailyrecommendation", async (req, res) => {
+  var dailyRecommendations = await getRecommendation(req, res);
+  var recommendation1 = dailyRecommendations[0];
+  var recommendation2 = dailyRecommendations[1];
+
+  const weeklyAverages = await getWeeklyAverages(req, res);
+
+  res.render("dailyrecommendation",
+    {
+      recommendation1: recommendation1,
+      recommendation2: recommendation2,
+      exerciseAvg: weeklyAverages[0],
+      socialAvg: weeklyAverages[1],
+      smokingAvg: weeklyAverages[2],
+      alcoholAvg: weeklyAverages[3]
+    });
 });
 
 // validate user session before accessing daily activity tracking page
