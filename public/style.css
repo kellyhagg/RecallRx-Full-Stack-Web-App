@@ -8,6 +8,14 @@
     margin-left: 1em;
 }
 
+.recommendations-btn {
+    background-color: #D49C78;
+    border-color: #CC9773;
+    width: 80%;
+    color: #f5f5f5;
+    font-size: 1.3em;
+}
+
 .header-message {
     font-size: 8vw;
 }
