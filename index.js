@@ -322,7 +322,7 @@ async function canShowCheckupNotification(userId) {
   );
   console.log("notification: ", notification);
   const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
-  var nextNotificationDate = notification.mmse.next;
+  var nextNotificationDate = notification?.mmse?.next;
   nextNotificationDate = nextNotificationDate.slice(0, 10);
   const showNotification = !notification.mmse.wasNotificationClosed;
   console.log("was closed?: ", notification.mmse.wasNotificationClosed);
