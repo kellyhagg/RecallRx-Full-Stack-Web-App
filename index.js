@@ -61,6 +61,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 const jwt_secret = process.env.JSON_WEB_TOKEN_SECRET;
 const app_email_address = process.env.EMAIL_ADDRESS;
 const app_email_password = process.env.EMAIL_PASSWORD;
+const app_hosting_address = process.env.HOSTING_ADDRESS;
 /* END secret section */
 
 const mmse = require("./public/scripts/mmse.js");
@@ -817,7 +818,8 @@ app.post("/forgot-password", async (req, res) => {
   console.log("payload" + payload);
   const token = jwt.sign(payload, secret, { expiresIn: "1d" });
   //  TO DO
-  const link = `https://recallrx.cyclic.app/reset-password/${user[0]._id}&auth=${token}`;
+  const link = `${app_hosting_address}/reset-password/${user[0]._id}&auth=${token}`;
+  // const link = `https://recallrx.cyclic.app/reset-password/${user[0]._id}&auth=${token}`;
   // const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
   console.log(link);
   //TO DO: send email

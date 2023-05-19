@@ -51,7 +51,8 @@ $("#mmse-toast-close").on("click", function () {
   };
 
   // Send the HTTP POST request
-  fetch("http://localhost:3000/checkup-toast-state-update", {
+  fetch(`${app_hosting_address}/checkup-toast-state-update`, {
+    // fetch(`http://localhost:3000/checkup-toast-state-update`, {
     method: "post",
     body: JSON.stringify(body),
     headers: {

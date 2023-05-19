@@ -84,8 +84,8 @@ function updateNotifications() {
       next: newNextDate.toISOString(),
     },
   };
-  // fetch("https://recallrx.cyclic.app//notifications", {
-  fetch("http://localhost:3000/notifications", {
+  fetch(`${app_hosting_address}/notifications`, {
+    // fetch("http://localhost:3000/notifications", {
     method: "post",
     body: JSON.stringify(body),
     headers: {
