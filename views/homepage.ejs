@@ -48,20 +48,11 @@
             </div>
         </div>
     </div>
-    <!-- <div class="button-container"> -->
-        <!-- redirect to meditation music page -->
-        <!-- <a href="meditation" class="hpbutton easter-egg w-100 btn btn-lg dark-green-background white-font mt-3 mb-3 d-none">Meditation</a> -->
-        <!-- redirect to daily game page -->
-        <!-- <a href="#" class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Daily Game</a> -->
-        <!-- redirect to questionnaire page -->
-        <!-- <a href="mmse-landing-page"
-            class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Questionnaire</a>
-    </div>  -->
      <div class="container-fluid  mb-5 pb-2">
         <div class="scrolling-wrapper row flex-row flex-nowrap pb-2 d-flex align-items-center justify-content-center">
             <!-- <div class="card card-body dark-green-background mx-2"> -->
             <div class="col-5 btn-shadow easter-egg d-none">
-                <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                <div class="card card-block easter-egg-animation d-flex align-items-center justify-content-center">
                         <a href="meditation" class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column ">
                             <i class="fa fa-music white-icon"></i>
                            <p>Meditation</p> 
@@ -93,6 +84,17 @@
     <div class="placeholder mb-2"></div>
 </div>
 <%- include("templates/footer") %>
+
+<!-- Popup -->
+<% if (showPopUp) { %>
+    <div id="backdrop" class="d-flex align-items-center justify-content-center">
+        <%- include("templates/easter-egg-popup", {data: data}) %>
+            <% console.log("show popup") %>
+    </div>
+    <% } %>
+
+<!-- Handle popup JS -->
+<script src="/scripts/handle-easter-egg-popup.js"></script>
 
 <!-- Reval hidden elements JS -->
 <script src="/scripts/reveal-hidden-elements.js"></script>
