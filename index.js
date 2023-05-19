@@ -211,11 +211,13 @@ app.post("/signup", async (req, res) => {
       frequency: "daily", // default frequency
       isActive: true, // default enabled
       next: nextExerciseNotification.toISOString(), // default next 2 weeks
+      wasNotificationClosed: false,
     },
     mmse: {
       frequency: "every-other-week", // default frequency
       isActive: true, // default enabled
       next: nextMMSENotification.toISOString(), // default next 2 weeks
+      wasNotificationClosed: false,
     },
   });
 
@@ -234,11 +236,54 @@ app.post("/signup", async (req, res) => {
   res.redirect("/riskfactorsurvey");
 });
 
+async function canShowCheckupNotification(userId) {
+  console.log("userId: ", userId);
+  const notification = await notificationsCollection.findOne(
+    {
+      userId: userId,
+    },
+    {
+      projection: { mmse: 1, wasNotificationClosed: 1 },
+    }
+  );
+  console.log("notification: ", notification);
+  const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+  var nextNotificationDate = notification.mmse.next;
+  nextNotificationDate = nextNotificationDate.slice(0, 10);
+  const showNotification = !notification.mmse.wasNotificationClosed;
+  console.log("was closed?: ", notification.mmse.wasNotificationClosed);
+  console.log("show?: ", showNotification);
+  if (currentDate >= nextNotificationDate && showNotification) {
+    console.log("show notification");
+    return true;
+  } else {
+    console.log("do not show notification");
+    return false;
+  }
+}
+
 // Middleware to validate user session before accessing homepage
 app.use("/homepage", validateSession);
 // get method for homepage
-app.get("/homepage", (req, res) => {
-  res.render("homepage");
+app.get("/homepage", async (req, res) => {
+  const showCheckupNotification = await canShowCheckupNotification(
+    req.session.userId
+  );
+  console.log("Home: ", showCheckupNotification);
+  res.render("homepage", { showCheckupNotification: showCheckupNotification });
+});
+
+app.post("/checkup-toast-state-update", async (req, res) => {
+  const userId = req.session.userId;
+  var notification = await notificationsCollection.findOne(
+    { userId: userId },
+    { projection: { _id: 1 } }
+  );
+  const updatedNotification = await notificationsCollection.findOneAndUpdate(
+    { _id: notification._id },
+    { $set: { "mmse.wasNotificationClosed": true } },
+    { returnOriginal: false }
+  );
 });
 
 app.use("/riskfactorsurvey", validateSession);
@@ -403,6 +448,10 @@ app.post("/mmse-word-reversal", async (req, res) => {
     res.redirect("/mmse-results");
   }
 });
+
+function defineNextMmseDate(userId) {
+  
+}
 
 app.get("/mmse-results", (req, res) => {
   var score = parseInt(Math.round((userScore / 15) * 100));
