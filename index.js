@@ -1229,16 +1229,16 @@ app.get("/dailyrecommendation", async (req, res) => {
   var recommendation1 = dailyRecommendations[0];
   var recommendation2 = dailyRecommendations[1];
 
-  const exerciseAverages = await getWeeklyAverages(req, res);
+  const weeklyAverages = await getWeeklyAverages(req, res);
 
   res.render("dailyrecommendation",
     {
       recommendation1: recommendation1,
       recommendation2: recommendation2,
-      exerciseAvg: exerciseAverages[0],
-      socialAvg: exerciseAverages[1],
-      smokingAvg: exerciseAverages[2],
-      alcoholAvg: exerciseAverages[3]
+      exerciseAvg: weeklyAverages[0],
+      socialAvg: weeklyAverages[1],
+      smokingAvg: weeklyAverages[2],
+      alcoholAvg: weeklyAverages[3]
     });
 });
 
