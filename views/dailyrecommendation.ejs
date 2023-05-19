@@ -86,11 +86,11 @@
 
         // Define the data for the trendlines
         var data = {
-            labels: ['January', 'February', 'March', 'April', 'May'],
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Last Week'],
             datasets: [
                 {
                     label: 'Exercise',
-                    data: `<%= exerciseAvg %>`,
+                    data: <%= JSON.stringify(exerciseAvg) %>,
                     borderColor: 'rgba(255, 137, 127, 1)',
                     backgroundColor: 'rgba(255, 137, 127, 1)',
                     borderWidth: 4,
@@ -100,7 +100,7 @@
                 },
                 {
                     label: 'Social',
-                    data: `<%= socialAvg %>`,
+                    data: <%= JSON.stringify(socialAvg) %>,
                     borderColor: 'rgba(118, 130, 80, 1)',
                     backgroundColor: 'rgba(118, 130, 80, 1)',
                     borderWidth: 4,
@@ -110,7 +110,7 @@
                 },
                 {
                     label: 'Smoking',
-                    data: `<%= smokingAvg %>`,
+                    data: <%= JSON.stringify(smokingAvg) %>,
                     borderColor: 'rgba(128, 128, 128, 1)',
                     backgroundColor: 'rgba(128, 128, 128, 1)',
                     borderWidth: 4,
@@ -120,7 +120,7 @@
                 },
                 {
                     label: 'Alcohol',
-                    data: `<%= alcoholAvg %>`,
+                    data: <%= JSON.stringify(alcoholAvg) %>,
                     borderColor: 'rgba(255, 159, 64, 1)',
                     backgroundColor: 'rgba(255, 159, 64, 1)',
                     borderWidth: 4,
