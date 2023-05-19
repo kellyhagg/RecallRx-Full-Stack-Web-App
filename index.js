@@ -240,11 +240,13 @@ app.post("/signup", async (req, res) => {
       frequency: "daily", // default frequency
       isActive: true, // default enabled
       next: nextExerciseNotification.toISOString(), // default next 2 weeks
+      wasNotificationClosed: false,
     },
     mmse: {
       frequency: "every-other-week", // default frequency
       isActive: true, // default enabled
       next: nextMMSENotification.toISOString(), // default next 2 weeks
+      wasNotificationClosed: false,
     },
   });
 
@@ -307,11 +309,41 @@ async function showEasterEggAnnounced(userId, isEasterEggActivated) {
   }
 }
 
+async function canShowCheckupNotification(userId) {
+  console.log("userId: ", userId);
+  const notification = await notificationsCollection.findOne(
+    {
+      userId: userId,
+    },
+    {
+      projection: { mmse: 1, wasNotificationClosed: 1 },
+    }
+  );
+  console.log("notification: ", notification);
+  const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+  var nextNotificationDate = notification.mmse.next;
+  nextNotificationDate = nextNotificationDate.slice(0, 10);
+  const showNotification = !notification.mmse.wasNotificationClosed;
+  console.log("was closed?: ", notification.mmse.wasNotificationClosed);
+  console.log("show?: ", showNotification);
+  if (currentDate >= nextNotificationDate && showNotification) {
+    console.log("show notification");
+    return true;
+  } else {
+    console.log("do not show notification");
+    return false;
+  }
+}
+
 // Middleware to validate user session before accessing homepage
 app.use("/homepage", validateSession);
 // get method for homepage
-
 app.get("/homepage", async (req, res) => {
+  const showCheckupNotification = await canShowCheckupNotification(
+    req.session.userId
+  );
+  console.log("Home: ", showCheckupNotification);
+
   var data = "";
   var isEasterEggActivated = await checkChallengeTrend(req.session.username);
   var showEasterEggPopup = await showEasterEggAnnounced(
@@ -333,7 +365,21 @@ app.get("/homepage", async (req, res) => {
     isEasterEggActivated: isEasterEggActivated,
     data: data,
     showPopUp: showEasterEggPopup,
+    showCheckupNotification: showCheckupNotification,
   });
+});
+
+app.post("/checkup-toast-state-update", async (req, res) => {
+  const userId = req.session.userId;
+  var notification = await notificationsCollection.findOne(
+    { userId: userId },
+    { projection: { _id: 1 } }
+  );
+  const updatedNotification = await notificationsCollection.findOneAndUpdate(
+    { _id: notification._id },
+    { $set: { "mmse.wasNotificationClosed": true } },
+    { returnOriginal: false }
+  );
 });
 
 app.use("/riskfactorsurvey", validateSession);
@@ -598,6 +644,37 @@ app.get("/mmse-results", async (req, res) => {
   userScore = 0;
 });
 
+async function defineNextMmseDate(userId) {
+  const currentDate = new Date();
+  var notification = await notificationsCollection.findOne(
+    { userId: userId },
+    { projection: { mmse: 1 } }
+  );
+  const frequency = notification.mmse.frequency;
+  const isActive = notification.mmse.active;
+  var numberOfDays = 7;
+  switch (frequency) {
+    case "every-other-week":
+      numberOfDays = 14;
+      break;
+    case "monthly":
+      numberOfDays = 30;
+  }
+  console.log("current date: ", currentDate);
+  const newNextDate = new Date();
+  newNextDate.setDate(currentDate.getDate() + numberOfDays);
+  console.log("next: ", newNextDate);
+  console.log("next: ", newNextDate.toISOString());
+  console.log("user id: ", userId);
+  if (isActive) {
+    const updatedNotification = await notificationsCollection.findOneAndUpdate(
+      { userId: userId },
+      { $set: { "mmse.next": newNextDate.toISOString() } },
+      { returnOriginal: false }
+    );
+  }
+}
+
 // Login API
 // This block of code is modified from COMP 2537 Assignment 2 by Olga Zimina.
 
@@ -757,7 +834,8 @@ app.post("/forgot-password", async (req, res) => {
     }
   );
   req.session.messageData = {
-    message: "Your reset password link was sent to your email.",
+    message:
+      "Your reset password link for RecallRx was sent. Please check your email.",
     action: "/login",
     btnLabel: "Go to Sign In",
     isError: false,

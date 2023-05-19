@@ -1,7 +1,30 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
-<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>">
-        <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
+<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>" data-show-checkup-notification="<%= showCheckupNotification %>" >
+
+    <!-- hidden notification toasts for mmse questionnaire and exercise -->
+    <div aria-live="polite" aria-atomic="true" class="toast-container w-100">
+        <div class="toast toast-border mx-auto mb-2" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-question"></i>
+                <strong class="me-auto px-2">Checkup reminder</strong>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close" id="mmse-toast-close"></button>
+            </div>
+            <div class="toast-body">
+                Please take a moment to complete the MMSE questionnaire.
+            </div>
+        </div>
+        <div class="toast toast-border mx-auto mb-2 pt-1" id="puzzle-notification" role="alert" aria-live="assertive" aria-atomic="true"  data-autohide="false">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-puzzle-piece"></i>
+                <strong class="me-auto px-2">Exercise reminder</strong>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                It's time for a daily challenge.
+            </div>
+        </div>
+    <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
         <div class="precom_homepage_card pink-less-transparent-background text-center">
             <h4>We recommend that you <span id="recommendation-1"></span></h4>
             <a type="button" class="btn btn-block recommendations-btn" id="recommendation-2"
@@ -21,6 +44,7 @@
                 </div>
             </div>
         </a>
+			<!-- Scrolling buttons section -->
      <div class="container-fluid  mb-5 pb-2">
         <div class="scrolling-wrapper row flex-row flex-nowrap pb-2 d-flex align-items-center justify-content-center">
             <!-- <div class="card card-body dark-green-background mx-2"> -->
@@ -88,6 +112,11 @@
 <script src="/scripts/handle-easter-egg-popup.js"></script>
 
 <!-- Reval hidden elements JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>
+
+
+
+<!-- Notifications toasts handlers JS -->
 <script src="/scripts/reveal-hidden-elements.js"></script>
 
 <%- include("templates/footer") %>
