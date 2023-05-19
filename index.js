@@ -255,7 +255,7 @@ app.post("/signup", async (req, res) => {
 app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", (req, res) => {
-  res.render("homepage");
+  res.render("homepage", { recommendation1: 'alcohol' });
 });
 
 app.use("/riskfactorsurvey", validateSession);

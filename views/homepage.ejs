@@ -1,29 +1,48 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
-<div class="homepagestyle">
-    <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
-    <div class="precom_homepage_card pink-less-transparent-background text-center">
-        <h4>This is a place holder for personal recommendation of the day generated based on user data.</h4>
-    </div>
-    <!-- activity tracking section -->
-    <a href="daily-activity-tracking" class="hp-circle-container" style="text-decoration:none;">
-        <div class="hp-circle-container">
-            <div class="activity-circle">
-                <div class="running-man-circle">
-                    <span class="material-symbols-outlined hp-running-man">
-                        directions_run
-                    </span>
+    <div class="homepagestyle">
+        <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
+        <div class="precom_homepage_card pink-less-transparent-background text-center">
+            <h4>We recommend that you <span id="recommendation-1"></span></h4>
+        </div>
+        <!-- activity tracking section -->
+        <a href="daily-activity-tracking" class="hp-circle-container" style="text-decoration:none;">
+            <div class="hp-circle-container">
+                <div class="activity-circle">
+                    <div class="running-man-circle">
+                        <span class="material-symbols-outlined hp-running-man">
+                            directions_run
+                        </span>
+                    </div>
                 </div>
             </div>
+        </a>
+        <div class="button-container">
+            <!-- redirect to daily game page -->
+            <a href="#" class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Daily
+                Game</a>
+            <!-- redirect to questionnaire page -->
+            <a href="mmse-landing-page"
+                class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Questionnaire</a>
         </div>
-    </a>
-    <div class="button-container">
-        <!-- redirect to daily game page -->
-        <a href="#" class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Daily
-            Game</a>
-        <!-- redirect to questionnaire page -->
-        <a href="mmse-landing-page"
-            class="hpbutton w-100 btn btn-lg btn-success dark-green-background white-font mt-3 mb-3">Questionnaire</a>
     </div>
-</div>
-<%- include("templates/footer") %>
+
+    <script>
+        const exerciseContent = 'find a way to get some exercise today!';
+        const socialContent = 'find a way to socialise today!';
+        const smokingContent = 'try to reduce how much you smoke today!';
+        const alcoholContent = 'try to reduce how much alcohol you consume today!';
+
+        if (`<%= recommendation1 %>` == 'exercise') {
+            $('#recommendation-1').text(exerciseContent);
+        } else if (`<%= recommendation1 %>` == 'social') {
+            $('#recommendation-1').text(socialContent);
+        } else if (`<%= recommendation1 %>` == 'smoking') {
+            $('#recommendation-1').text(smokingContent);
+        } else if (`<%= recommendation1 %>` == 'alcohol') {
+            $('#recommendation-1').text(alcoholContent);
+        }
+
+    </script>
+
+    <%- include("templates/footer") %>
