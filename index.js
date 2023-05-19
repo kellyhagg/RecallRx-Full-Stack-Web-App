@@ -64,6 +64,7 @@ const app_email_password = process.env.EMAIL_PASSWORD;
 /* END secret section */
 
 const mmse = require("./public/scripts/mmse.js");
+const { format } = require("path");
 // Set up the view engine and static files
 app.set("view engine", "ejs"); // set up the view engine
 app.use(express.json()); // use express.json() to parse JSON bodies
@@ -432,8 +433,9 @@ app.get("/mmse-results", async (req, res) => {
   const previousMonth = new Date();
   previousMonth.setMonth(previousMonth.getMonth() - 1);
   const formattedDate = previousMonth.toISOString();
+  const activities = await activityCollection.find({}).toArray();
 
-  await activityData.forEach((activity) => {
+  activities.forEach((activity) => {
     if (req.session.username == activity.username && activity.date >= formattedDate) {
       console.log(activity.exerciseDuration);
       exercise.push(activity.exerciseDuration);
@@ -1018,19 +1020,226 @@ app.post("/notifications", async (req, res, next) => {
 // End of Notifications API
 
 // validate user session before accessing daily recommendation page
-// app.use("/dailyrecommendation", validateSession);
+app.use("/dailyrecommendation", validateSession);
+
+async function getRecommendation(req, res) {
+  var lastRecommendation;
+  var dailyRecommendation
+
+  if (await dailyRecommendationLastVisit.findOne({ username: req.session.username }, { projection: { date: 1 } }) == null) {
+    console.log("no last visit");
+    lastRecommendation = new Date().toISOString().slice(0, 10);
+    await dailyRecommendationLastVisit.insertOne({ username: req.session.username, date: lastRecommendation });
+  } else {
+    console.log("last visit");
+    lastRecommendation = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { date: 1 } }
+    )).date; // Access the "date" field of the found document
+  }
+
+  const currentDate = new Date().toISOString().slice(0, 10); // Get current day
+  console.log(lastRecommendation != currentDate);
+
+  if (lastRecommendation == currentDate) {
+    console.log("new day");
+    lastRecommendation = currentDate; // Update lastRecommendation with currentDate
+
+    await dailyRecommendationLastVisit.updateOne(
+      { username: req.session.username },
+      { $set: { date: currentDate } }
+    );
+
+    var exercise = [];
+    var social = [];
+    var smoking = [];
+    var alcohol = [];
+
+    var values = [];
+    var coefficients = [];
+
+    var recommendation1;
+    var recommendation2;
+
+    const previousMonth = new Date();
+    previousMonth.setMonth(previousMonth.getMonth() - 1);
+    const formattedDate = previousMonth.toISOString();
+
+    const activities = await activityCollection.find({}).toArray();
+
+    activities.forEach((activity) => {
+      if (req.session.username == activity.username && activity.date >= formattedDate) {
+        exercise.push(activity.exerciseDuration);
+        social.push(activity.socialDuration);
+        smoking.push(activity.smokeAmount);
+        alcohol.push(activity.alcoholAmount);
+      }
+    });
+
+    const correlations = await resultsCorrelationValues.find({}).toArray();
+
+    correlations.forEach((result) => {
+      coefficients.push(result.exerciseCorrelation);
+      coefficients.push(result.socialCorrelation);
+      coefficients.push(result.smokingCorrelation);
+      coefficients.push(result.alcoholCorrelation);
+    });
+
+    const exerciseAvg = exercise.reduce((a, b) => a + b, 0) / exercise.length;
+    const socialAvg = social.reduce((a, b) => a + b, 0) / social.length;
+    const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
+    const alcoholAvg = alcohol.reduce((a, b) => a + b, 0) / alcohol.length;
+
+    values.push(exerciseAvg);
+    values.push(socialAvg);
+    values.push(smokingAvg);
+    values.push(alcoholAvg);
+
+    console.log(coefficients);
+
+    const dailyRecommendations = await runAlgorithm(values, coefficients);
+
+    recommendation1 = dailyRecommendations[0];
+    recommendation2 = dailyRecommendations[1];
+
+    await dailyRecommendationLastVisit.updateOne({
+      username: req.session.username,
+    },
+      { $set: { recommendation1: recommendation1, recommendation2: recommendation2 } },
+      { upsert: true }
+    );
+  } else {
+    console.log("same day");
+    recommendation1 = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { recommendation1: 1 } }
+    )).recommendation1; // Access the "recommendation1" field of the found document
+
+    recommendation2 = (await dailyRecommendationLastVisit.findOne(
+      { username: req.session.username },
+      { projection: { recommendation2: 1 } }
+    )).recommendation2; // Access the "recommendation2" field of the found document
+  }
+
+  return [recommendation1, recommendation2];
+}
+
+async function getWeeklyAverages(req, res) {
+  var exerciseAvgWeek1 = [];
+  var exerciseAvgWeek2 = [];
+  var exerciseAvgWeek3 = [];
+  var exerciseAvgWeek4 = [];
+  var socialAvgWeek1 = [];
+  var socialAvgWeek2 = [];
+  var socialAvgWeek3 = [];
+  var socialAvgWeek4 = [];
+  var smokingAvgWeek1 = [];
+  var smokingAvgWeek2 = [];
+  var smokingAvgWeek3 = [];
+  var smokingAvgWeek4 = [];
+  var alcoholAvgWeek1 = [];
+  var alcoholAvgWeek2 = [];
+  var alcoholAvgWeek3 = [];
+  var alcoholAvgWeek4 = [];
+
+  const currentDay = new Date().toISOString().slice(0, 10);
+
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const formatOneWeekAgo = oneWeekAgo.toISOString().slice(0, 10);
+  const twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+  const formatTwoWeeksAgo = twoWeeksAgo.toISOString().slice(0, 10);
+  const threeWeeksAgo = new Date();
+  threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+  const formatThreeWeeksAgo = threeWeeksAgo.toISOString().slice(0, 10);
+  const fourWeeksAgo = new Date();
+  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+  const formatFourWeeksAgo = fourWeeksAgo.toISOString().slice(0, 10);
+
+
+  const activities = await activityCollection.find({}).toArray();
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= currentDay && activity.date > formatOneWeekAgo) {
+      exerciseAvgWeek4.push(activity.exerciseDuration);
+      socialAvgWeek4.push(activity.socialDuration);
+      smokingAvgWeek4.push(activity.smokeAmount);
+      alcoholAvgWeek4.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek4 = exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
+  socialAvgWeek4 = socialAvgWeek4.reduce((a, b) => a + b, 0) / socialAvgWeek4.length;
+  smokingAvgWeek4 = smokingAvgWeek4.reduce((a, b) => a + b, 0) / smokingAvgWeek4.length;
+  alcoholAvgWeek4 = alcoholAvgWeek4.reduce((a, b) => a + b, 0) / alcoholAvgWeek4.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatOneWeekAgo && activity.date > formatTwoWeeksAgo) {
+      exerciseAvgWeek3.push(activity.exerciseDuration);
+      socialAvgWeek3.push(activity.socialDuration);
+      smokingAvgWeek3.push(activity.smokeAmount);
+      alcoholAvgWeek3.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek3 = exerciseAvgWeek3.reduce((a, b) => a + b, 0) / exerciseAvgWeek3.length;
+  socialAvgWeek3 = socialAvgWeek3.reduce((a, b) => a + b, 0) / socialAvgWeek3.length;
+  smokingAvgWeek3 = smokingAvgWeek3.reduce((a, b) => a + b, 0) / smokingAvgWeek3.length;
+  alcoholAvgWeek3 = alcoholAvgWeek3.reduce((a, b) => a + b, 0) / alcoholAvgWeek3.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatTwoWeeksAgo && activity.date > formatThreeWeeksAgo) {
+      exerciseAvgWeek2.push(activity.exerciseDuration);
+      socialAvgWeek2.push(activity.socialDuration);
+      smokingAvgWeek2.push(activity.smokeAmount);
+      alcoholAvgWeek2.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek2 = exerciseAvgWeek2.reduce((a, b) => a + b, 0) / exerciseAvgWeek2.length;
+  socialAvgWeek2 = socialAvgWeek2.reduce((a, b) => a + b, 0) / socialAvgWeek2.length;
+  smokingAvgWeek2 = smokingAvgWeek2.reduce((a, b) => a + b, 0) / smokingAvgWeek2.length;
+  alcoholAvgWeek2 = alcoholAvgWeek2.reduce((a, b) => a + b, 0) / alcoholAvgWeek2.length;
+
+  activities.forEach((activity) => {
+    if (req.session.username == activity.username && activity.date <= formatThreeWeeksAgo && activity.date > formatFourWeeksAgo) {
+      exerciseAvgWeek1.push(activity.exerciseDuration);
+      socialAvgWeek1.push(activity.socialDuration);
+      smokingAvgWeek1.push(activity.smokeAmount);
+      alcoholAvgWeek1.push(activity.alcoholAmount);
+    }
+  });
+
+  exerciseAvgWeek1 = exerciseAvgWeek1.reduce((a, b) => a + b, 0) / exerciseAvgWeek1.length;
+  socialAvgWeek1 = socialAvgWeek1.reduce((a, b) => a + b, 0) / socialAvgWeek1.length;
+  smokingAvgWeek1 = smokingAvgWeek1.reduce((a, b) => a + b, 0) / smokingAvgWeek1.length;
+  alcoholAvgWeek1 = alcoholAvgWeek1.reduce((a, b) => a + b, 0) / alcoholAvgWeek1.length;
+
+  exerciseAvg = [exerciseAvgWeek1, exerciseAvgWeek2, exerciseAvgWeek3, exerciseAvgWeek4];
+  socialAvg = [socialAvgWeek1, socialAvgWeek2, socialAvgWeek3, socialAvgWeek4];
+  smokingAvg = [smokingAvgWeek1, smokingAvgWeek2, smokingAvgWeek3, smokingAvgWeek4];
+  alcoholAvg = [alcoholAvgWeek1, alcoholAvgWeek2, alcoholAvgWeek3, alcoholAvgWeek4];
+
+  return [exerciseAvg, socialAvg, smokingAvg, alcoholAvg];
+}
 
 // get method for daily recommendation page
 app.get("/dailyrecommendation", async (req, res) => {
-  const mmseData = await mmseScoresCollection.find({}).toArray();
-  mmseData.forEach(function (scoreTuple) {
-    activityData.find({
-      username: scoreTuple.username,
-      date: scoreTuple.date
-    })
-  });
+  var dailyRecommendations = await getRecommendation(req, res);
+  var recommendation1 = dailyRecommendations[0];
+  var recommendation2 = dailyRecommendations[1];
 
-  res.render("dailyrecommendation", { recommendation1: 'exercise', recommendation2: 'social' });
+  const exerciseAverages = await getWeeklyAverages(req, res);
+
+  res.render("dailyrecommendation",
+    {
+      recommendation1: recommendation1,
+      recommendation2: recommendation2,
+      exerciseAvg: exerciseAverages[0],
+      socialAvg: exerciseAverages[1],
+      smokingAvg: exerciseAverages[2],
+      alcoholAvg: exerciseAverages[3]
+    });
 });
 
 // validate user session before accessing daily activity tracking page
