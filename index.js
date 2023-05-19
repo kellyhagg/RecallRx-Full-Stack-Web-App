@@ -546,8 +546,7 @@ app.post("/mmse-word-reversal", async (req, res) => {
 });
 
 app.get("/mmse-results", async (req, res) => {
-  // const score = parseInt(Math.round((userScore / 15) * 100));
-  const score = 90;
+  const score = parseInt(Math.round((userScore / 15) * 100));
   const activityData = await activityCollection.find({}).toArray();
   var exercise = [];
   var social = [];
