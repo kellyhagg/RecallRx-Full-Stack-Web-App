@@ -27,8 +27,8 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract exercise -->
-                        <button class="btn btn-pink-button btn-danger" id="subtractExerciseTime">- 5 mins</button>
-                        <button class="btn btn-pink-button btn-danger" id="addExerciseTime">+ 10 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractExerciseTime">- 1 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="addExerciseTime">+ 5 mins</button>
                     </div>
                     <div id="Exercise-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Exercise: + 0
                         mins
@@ -52,8 +52,8 @@
                     </div>
                     <div>
                         <!-- buttons to add and subtract social -->
-                        <button class="btn btn-pink-button btn-danger" id="subtractSocialTime">- 5 mins</button>
-                        <button class="btn btn-pink-button btn-danger" id="addSocialTime">+ 10 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="subtractSocialTime">- 1 mins</button>
+                        <button class="btn btn-pink-button btn-danger" id="addSocialTime">+ 5 mins</button>
                     </div>
                     <div id="Social-action-change" class="fs-3 mt-5 dark-pink" style="font-size: 20px;">Social: + 0 mins
                     </div>
@@ -289,7 +289,7 @@
     // Button click event handlers
     // subtract and add exercise time
     $('#subtractExerciseTime').click(function () {
-        exerciseDuration -= 5;
+        exerciseDuration -= 1;
         // triggers warning when user tries to subtract more than 0
         if (exerciseDuration < 0) {
             alert('Warning: Exercise duration cannot be negative');
@@ -299,13 +299,13 @@
     });
 
     $('#addExerciseTime').click(function () {
-        exerciseDuration += 10;
+        exerciseDuration += 5;
         updateActionDuration('Exercise', exerciseDuration + ' mins');
     });
 
     // subtract and add social time
     $('#subtractSocialTime').click(function () {
-        socialDuration -= 5;
+        socialDuration -= 1;
         // triggers warning when user tries to subtract more than 0
         if (socialDuration < 0) {
             alert('Warning: Social duration cannot be negative');
@@ -315,7 +315,7 @@
     });
 
     $('#addSocialTime').click(function () {
-        socialDuration += 10;
+        socialDuration += 5;
         updateActionDuration('Social', socialDuration + ' mins');
     });
 
