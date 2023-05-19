@@ -101,18 +101,60 @@ async function getSmokingRisk(numberSmoked) {
         });
 }
 
-async function runAlgorithm(numberOfCigarettes, numberOfDrinks, minutesOfExercise, minutesOfSocialization) {
-    var values = [];
-    const smokingRisk = await getSmokingRisk(numberOfCigarettes);
-    values.push(smokingRisk);
-    values.push(getDrinkingRisk(numberOfDrinks));
-    values.push(getExerciseReduction(minutesOfExercise));
-    values.push(getSocializationReduction(minutesOfSocialization));
-    console.log(values);
-    values.sort((a, b) => b - a);
-    console.log(values);
+// Provided by ChatGPT
+function findIndicesOfLargestValues(arr) {
+    let firstLargestIndex = 0;
+    let secondLargestIndex = -1;
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > arr[firstLargestIndex]) {
+            secondLargestIndex = firstLargestIndex;
+            firstLargestIndex = i;
+        } else if (arr[i] !== arr[firstLargestIndex] && (secondLargestIndex === -1 || arr[i] > arr[secondLargestIndex])) {
+            secondLargestIndex = i;
+        }
+    }
+
+    return [firstLargestIndex, secondLargestIndex];
 }
 
-runAlgorithm(12.5, 2, 0, 0);
+async function runAlgorithm(input, coefficients) {
+    var values = [];
+    var exerciseRisk = getExerciseReduction(input[0]);
+    var socializationRisk = getSocializationReduction(input[1]);
+    var smokingRisk = await getSmokingRisk(input[2]);
+    var drinkingRisk = getDrinkingRisk(input[3]);
+
+    console.log("c: ", coefficients[0]);
+
+    exerciseRisk = exerciseRisk * coefficients[0];
+    socializationRisk = socializationRisk * coefficients[1];
+    smokingRisk = smokingRisk * coefficients[2];
+    drinkingRisk = drinkingRisk * coefficients[3];
+
+    values.push(exerciseRisk);
+    values.push(socializationRisk);
+    values.push(smokingRisk);
+    values.push(drinkingRisk);
+
+    console.log(values);
+    const indices = findIndicesOfLargestValues(values);
+    console.log(indices);
+
+    var firstRecommendation = "";
+    var secondRecommendation = "";
+
+    if (indices[0] == 0) { firstRecommendation = "exercise"; }
+    else if (indices[0] == 1) { firstRecommendation = "social"; }
+    else if (indices[0] == 2) { firstRecommendation = "smoking"; }
+    else if (indices[0] == 3) { firstRecommendation = "drinking"; }
+
+    if (indices[1] == 0) { secondRecommendation = "exercise"; }
+    else if (indices[1] == 1) { secondRecommendation = "social"; }
+    else if (indices[1] == 2) { secondRecommendation = "smoking"; }
+    else if (indices[1] == 3) { secondRecommendation = "drinking"; }
+
+    return [firstRecommendation, secondRecommendation];
+}
 
 module.exports = { runAlgorithm, train };
