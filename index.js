@@ -449,8 +449,35 @@ app.post("/mmse-word-reversal", async (req, res) => {
   }
 });
 
-function defineNextMmseDate(userId) {
-  
+async function defineNextMmseDate(userId) {
+  const currentDate = new Date();
+  var notification = await notificationsCollection.findOne(
+    { userId: userId },
+    { projection: { mmse: 1 } }
+  );
+  const frequency = notification.mmse.frequency;
+  const isActive = notification.mmse.active;
+  var numberOfDays = 7;
+  switch (frequency) {
+    case "every-other-week":
+      numberOfDays = 14;
+      break;
+    case "monthly":
+      numberOfDays = 30;
+  }
+  console.log("current date: ", currentDate);
+  const newNextDate = new Date();
+  newNextDate.setDate(currentDate.getDate() + numberOfDays);
+  console.log("next: ", newNextDate);
+  console.log("next: ", newNextDate.toISOString());
+  console.log("user id: ", userId);
+  if (isActive) {
+    const updatedNotification = await notificationsCollection.findOneAndUpdate(
+      { userId: userId },
+      { $set: { "mmse.next": newNextDate.toISOString() } },
+      { returnOriginal: false }
+    );
+  }
 }
 
 app.get("/mmse-results", (req, res) => {
