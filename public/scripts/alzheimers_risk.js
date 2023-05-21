@@ -28,6 +28,7 @@ fs.createReadStream('public/resources/alzheimer.csv')
                 Age: Number(data.Age),
                 Group: data.Group === 'Nondemented' ? 0 : 1,
                 Sex: sex === 'F' ? 0 : 1,
+                Edu: Number(data.EDUC)
             });
         }
     })
@@ -39,14 +40,16 @@ fs.createReadStream('public/resources/alzheimer.csv')
         // Extract all genders
         sexes = results.map((data) => data.Sex);
         // Extract all education levels
-        edus = results.map((data) => data.Edu);
+        edu = results.map((data) => data.Edu);
 
         console.log(ages);
         console.log(groups);
         console.log(sexes);
+        console.log(edu);
 
         const ageRegression = ss.linearRegression([ages, groups]);
         const sexRegression = ss.linearRegression([sexes, groups]);
+        const eduRegression = ss.linearRegression([edu, groups]);
 
         ageSlope = ageRegression.m;
         ageIntercept = ageRegression.b;
@@ -54,7 +57,7 @@ fs.createReadStream('public/resources/alzheimer.csv')
         sexSlope = sexRegression.m;
         sexIntercept = sexRegression.b;
 
-        console.log(ageSlope);
-        console.log(ageIntercept);
+        eduSlope = eduRegression.m;
+        eduIntercept = eduRegression.b;
     });
 
