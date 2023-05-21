@@ -431,8 +431,14 @@ app.post("/riskfactorquestions", async (req, res) => {
 
   // insert the user's risk factor survey results into the database and save it to the same document
   console.log("username: ", username);
+  console.log("educationLevel: ", educationLevel);
+  console.log("age: ", age);
+  console.log("gender: ", gender);
+  console.log("diabetes: ", diabetes);
+  console.log("depression: ", depression);
+
   await userCollection.updateOne(
-    { _id: username },
+    { username: username },
     {
       $set: {
         educationLevel: educationLevel,
