@@ -427,11 +427,12 @@ app.post("/riskfactorquestions", async (req, res) => {
   }
 
   // retrieve the user ID from the session
-  const userId = req.session.userId;
+  const username = req.session.username;
 
   // insert the user's risk factor survey results into the database and save it to the same document
+  console.log("username: ", username);
   await userCollection.updateOne(
-    { _id: userId },
+    { _id: username },
     {
       $set: {
         educationLevel: educationLevel,
