@@ -218,7 +218,7 @@ app.post("/signup", async (req, res) => {
     password: hashedPassword,
     educationLevel: null,
     age: null,
-    obesity: null,
+    gender: null,
     diabetes: null,
     depression: null,
     wasEasterEggAnnounced: false,
@@ -399,15 +399,15 @@ app.get("/riskfactorquestions", (req, res) => {
 app.post("/riskfactorquestions", async (req, res) => {
   const educationLevel = req.body.educationLevel;
   const age = req.body.age;
-  const obesity = req.body.obesity;
+  const gender = req.body.gender;
   const diabetes = req.body.diabetes;
   const depression = req.body.depression;
 
-  // validate the input style for educationLevel, age, obesity, diabetes and depression using Joi
+  // validate the input style for educationLevel, age, gender, diabetes and depression using Joi
   const schema = Joi.object({
     educationLevel: Joi.string().required(),
     age: Joi.string().required(),
-    obesity: Joi.string().required(),
+    gender: Joi.string().required(),
     diabetes: Joi.string().required(),
     depression: Joi.string().required(),
   });
@@ -416,7 +416,7 @@ app.post("/riskfactorquestions", async (req, res) => {
   const validationResult = schema.validate({
     educationLevel,
     age,
-    obesity,
+    gender,
     diabetes,
     depression,
   });
@@ -436,7 +436,7 @@ app.post("/riskfactorquestions", async (req, res) => {
       $set: {
         educationLevel: educationLevel,
         age: age,
-        obesity: obesity,
+        gender: gender,
         diabetes: diabetes,
         depression: depression,
       },
