@@ -286,7 +286,7 @@ async function checkChallengeTrend(username) {
     .project({ isOnTrack: 1 })
     .toArray();
   if (
-    challengeTrend.length === 4 &&
+    challengeTrend.length === CHALLENGE_PERIOD &&
     challengeTrend.every((day) => day.isOnTrack === true)
   ) {
     console.log("All challenge trend days are on track");
@@ -325,7 +325,10 @@ async function canShowCheckupNotification(userId) {
   var nextNotificationDate = notification?.mmse?.next;
   nextNotificationDate = nextNotificationDate.slice(0, 10);
   const showNotification = !notification.mmse.wasNotificationClosed;
-  console.log("Notification was previously closed: ", notification.mmse.wasNotificationClosed);
+  console.log(
+    "Notification was previously closed: ",
+    notification.mmse.wasNotificationClosed
+  );
   console.log("Show notification: ", showNotification);
   if (currentDate >= nextNotificationDate && showNotification) {
     console.log("Show notification");
