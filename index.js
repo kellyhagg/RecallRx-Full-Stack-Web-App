@@ -270,7 +270,7 @@ async function checkChallengeTrend(username) {
   const currentDate = new Date();
   var checkingTs = currentDate.setHours(0, 0, 0, 0);
   var challengePeriod = []; // prepare array for challenge period
-  for (let i = 1; i < CHALLENGE_PERIOD; i++) {
+  for (let i = 0; i < CHALLENGE_PERIOD; i++) {
     var day = new Date(currentDate); // Create a new Date object with the current date
     day.setDate(currentDate.getDate() - i); // Subtract i days from the current date
     day = day.toISOString().slice(0, 10); // Format the date as YYYY-MM-DD
@@ -286,7 +286,7 @@ async function checkChallengeTrend(username) {
     .project({ isOnTrack: 1 })
     .toArray();
   if (
-    challengeTrend.length === 3 &&
+    challengeTrend.length === 4 &&
     challengeTrend.every((day) => day.isOnTrack === true)
   ) {
     console.log("All challenge trend days are on track");
@@ -325,13 +325,13 @@ async function canShowCheckupNotification(userId) {
   var nextNotificationDate = notification?.mmse?.next;
   nextNotificationDate = nextNotificationDate.slice(0, 10);
   const showNotification = !notification.mmse.wasNotificationClosed;
-  console.log("was closed?: ", notification.mmse.wasNotificationClosed);
-  console.log("show?: ", showNotification);
+  console.log("Notification was previously closed: ", notification.mmse.wasNotificationClosed);
+  console.log("Show notification: ", showNotification);
   if (currentDate >= nextNotificationDate && showNotification) {
-    console.log("show notification");
+    console.log("Show notification");
     return true;
   } else {
-    console.log("do not show notification");
+    console.log("Do not show notification");
     return false;
   }
 }
@@ -1570,10 +1570,10 @@ function isUserOnTrack(
   smokeAmount
 ) {
   if (
-    exerciseDuration <= EXERCISE_TIME_GOAL ||
-    socialDuration <= SOCIAL_TIME_GOAL ||
-    alcoholAmount >= ALCOHOL_CONSUMPTION_LIMIT ||
-    smokeAmount >= SMOKE_COUNT_LIMIT
+    exerciseDuration < EXERCISE_TIME_GOAL ||
+    socialDuration < SOCIAL_TIME_GOAL ||
+    alcoholAmount > ALCOHOL_CONSUMPTION_LIMIT ||
+    smokeAmount > SMOKE_COUNT_LIMIT
   ) {
     return false;
   }
@@ -1624,7 +1624,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
         existingDocument.alcoholAmount + parseFloat(alcoholAmount);
       const updatedSmokeAmount =
         existingDocument.smokeAmount + parseFloat(smokeAmount);
-      const isOnTrack = isUserOnTrack(
+      const updatedIsOnTrack = isUserOnTrack(
         updatedExerciseDuration,
         updatedSocialDuration,
         updatedAlcoholAmount,
@@ -1642,7 +1642,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
             socialDuration: updatedSocialDuration,
             alcoholAmount: updatedAlcoholAmount,
             smokeAmount: updatedSmokeAmount,
-            isOnTrack: isOnTrack,
+            isOnTrack: updatedIsOnTrack,
           },
         }
       );
@@ -1651,6 +1651,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
       console.log("updatedSocialDuration:" + updatedSocialDuration);
       console.log("updatedAlcoholAmount:" + updatedAlcoholAmount);
       console.log("updatedSmokeAmount:" + updatedSmokeAmount);
+      console.log("updatedIsOnTrack:" + updatedIsOnTrack);
     } else {
       // Document does not exist, create a new one
       await activityCollection.insertOne({
