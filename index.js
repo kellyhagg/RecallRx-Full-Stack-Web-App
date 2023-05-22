@@ -46,6 +46,9 @@ const {
   runAlgorithm,
   train,
 } = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
+const {
+  calculateRisk
+} = require("./public/scripts/alzheimers_risk.js"); // import alzheimers_risk.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
@@ -460,8 +463,16 @@ app.post("/riskfactorquestions", async (req, res) => {
 });
 
 // get method for survey finished page
-app.get("/surveyfinished", (req, res) => {
-  res.render("surveyfinished");
+app.get("/surveyfinished", async (req, res) => {
+  const userData = await userCollection.findOne(
+    { username: req.session.username },
+    { projection: { educationLevel: 1, age: 1, gender: 1 } }
+  );
+  console.log("userData: ", userData.educationLevel);
+
+  const risk = await calculateRisk(userData.age, userData.gender, userData.educationLevel);
+
+  res.render("surveyfinished", { risk: risk });
 });
 
 app.get("/mmse-landing-page", (req, res) => {
