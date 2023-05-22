@@ -80,13 +80,41 @@ async function calculateRisk(age, gender, educationLevel) {
     const dementiaPrevelance = 55000000 / 8034000000;
     const percentOfDementiaBeingAlzheimers = 0.7;
 
+    if (age == 'lessThan65') {
+        age = 64;
+    } else if (age == '65-69') {
+        age = 67;
+    } else if (age == '70-75') {
+        age = 72;
+    } else if (age == '76-80') {
+        age = 78;
+    } else if (age == '81-85') {
+        age = 83;
+    } else if (age == 'Over85') {
+        age = 90;
+    }
+
+    if (educationLevel == 'lessThanSecondary') {
+        educationLevel = 12;
+    } else if (educationLevel == 'secondary') {
+        educationLevel = 14;
+    } else if (educationLevel == 'postSecondary') {
+        educationLevel = 16;
+    } else if (educationLevel == 'graduate') {
+        educationLevel = 18;
+    }
+
+    console.log("age: " + age);
+    console.log("gender: " + gender);
+    console.log("educationLevel: " + educationLevel);
+
     var risk = 0;
     var ageRisk = 0;
     var sexRisk = 0;
     var eduRisk = 0;
 
     if (results[0] != 0) {
-        if (gender == 'M') {
+        if (gender == 'male') {
             sexRisk = results[0] * 1 + results[1];
         } else {
             sexRisk = results[0] * 0 + results[1];
@@ -105,4 +133,9 @@ async function calculateRisk(age, gender, educationLevel) {
     const adjustedRisk = (risk * dementiaPrevelance / results[6]) / percentOfDementiaBeingAlzheimers;
     console.log("risk: " + risk);
     console.log("adjustedRisk: " + adjustedRisk);
+
+    const formattedRisk = Math.round(adjustedRisk * 100) / 100;
+    return formattedRisk;
 }
+
+module.exports = { calculateRisk };
