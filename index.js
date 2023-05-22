@@ -614,32 +614,13 @@ app.get("/mmse-results", async (req, res) => {
     const user = await mmseScoresCollection.insertOne({
       username: username,
       date: currentDate,
-      // score: score,
-      score: 90,
+      score: score,
     });
   } catch (error) {
     console.error("Error retrieving user data:", error);
   }
 
-  // const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
-  const randomNumber1to100 = 1;
-
-  // const dataset = [
-  //   { exerciseAvg: 40, socialAvg: 50, smokingAvg: 0, alcoholAvg: 2, score: 85 },
-  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
-  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 2, alcoholAvg: 1, score: 95 },
-  //   { exerciseAvg: 30, socialAvg: 60, smokingAvg: 0, alcoholAvg: 3, score: 75 },
-  //   { exerciseAvg: 50, socialAvg: 80, smokingAvg: 2, alcoholAvg: 2, score: 80 },
-  //   { exerciseAvg: 10, socialAvg: 40, smokingAvg: 4, alcoholAvg: 4, score: 65 },
-  //   { exerciseAvg: 70, socialAvg: 100, smokingAvg: 0, alcoholAvg: 1, score: 95 },
-  //   { exerciseAvg: 40, socialAvg: 70, smokingAvg: 1, alcoholAvg: 3, score: 85 },
-  //   { exerciseAvg: 20, socialAvg: 50, smokingAvg: 4, alcoholAvg: 4, score: 70 },
-  //   { exerciseAvg: 60, socialAvg: 90, smokingAvg: 0, alcoholAvg: 2, score: 100 }
-  // ];
-
-  // dataset.forEach(async (data) => {
-  //   await resultsCorrelationData.insertOne(data);
-  // });
+  const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
 
   if (randomNumber1to100 == 1) {
     console.log("Training model");
