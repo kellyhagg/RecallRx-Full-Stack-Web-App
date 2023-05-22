@@ -639,9 +639,22 @@ app.get("/mmse-results", async (req, res) => {
     });
   }
 
+  const past5ScoresData = await mmseScoresCollection.find({ username: req.session.username })
+    .sort({ date: -1 })
+    .limit(5)
+    .toArray();
+
+  var past5Scores = [];
+  past5ScoresData.forEach((score) => {
+    past5Scores.push(score.score);
+  });
+
+  console.log("PAST 5 SCOOOOROES", past5Scores.reverse());
+
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
     score: score,
+    mmseScores: past5Scores,
   });
   userScore = 0;
 });
