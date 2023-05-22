@@ -2,12 +2,15 @@
     <br>
     <div class="card mx-auto rounded">
         <div class="card-body">
-            <h3>Results:</h3>
-            <br>
             <h4>You scored <%= score %>% on this test.</h4>
             <br>
             <% if(score>= 83){ %>
                 <h4 style="color: #778251;">Nicely done! Scores above 83% are considered normal.</h4>
+                <br>
+                <span style="font-size: large;">See the graph below to view your progress over time.
+                </span>
+                <br><br>
+                <canvas id="mmseChart" style="max-height: 210px;"></canvas>
                 <% } else { %>
                     <h4 style="color: #825151;">You scored below 83% which is considered abnormal.</h4>
                     <br>
@@ -18,4 +21,79 @@
         </div>
     </div>
     <br>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+
+        // Get the canvas element
+        var ctx = document.getElementById('mmseChart').getContext('2d');
+
+        // Define the data for the trendlines
+        var data = {
+            labels: ['', '', '', '', ''],
+            datasets: [
+                {
+                    data: <%= JSON.stringify(mmseScores) %>,
+                    borderColor: 'rgba(129, 165, 165, 1)',
+                    backgroundColor: 'rgba(129, 165, 165, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+            ]
+        };
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // Set to false to allow height adjustments
+                aspectRatio: 1, // Adjust the aspect ratio (e.g., 1.5 for taller graph)
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Recent Scores',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Score /100',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                        labels: {
+                        },
+
+                    }
+                }
+            }
+        });
+    </script>
     <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Close" , reference : "/" }); %>
