@@ -89,7 +89,7 @@
             labels: ['Week 1', 'Week 2', 'Week 3', 'Last Week'],
             datasets: [
                 {
-                    label: 'Exercise',
+                    label: 'Exercise (minutes)',
                     data: <%= JSON.stringify(exerciseAvg) %>,
                     borderColor: 'rgba(255, 137, 127, 1)',
                     backgroundColor: 'rgba(255, 137, 127, 1)',
@@ -99,7 +99,7 @@
                     fill: false
                 },
                 {
-                    label: 'Social',
+                    label: 'Social (minutes)',
                     data: <%= JSON.stringify(socialAvg) %>,
                     borderColor: 'rgba(118, 130, 80, 1)',
                     backgroundColor: 'rgba(118, 130, 80, 1)',
@@ -109,7 +109,7 @@
                     fill: false
                 },
                 {
-                    label: 'Smoking',
+                    label: 'Smoking (cigarettes)',
                     data: <%= JSON.stringify(smokingAvg) %>,
                     borderColor: 'rgba(128, 128, 128, 1)',
                     backgroundColor: 'rgba(128, 128, 128, 1)',
@@ -119,7 +119,7 @@
                     fill: false
                 },
                 {
-                    label: 'Alcohol',
+                    label: 'Alcohol (drinks)',
                     data: <%= JSON.stringify(alcoholAvg) %>,
                     borderColor: 'rgba(255, 159, 64, 1)',
                     backgroundColor: 'rgba(255, 159, 64, 1)',
@@ -187,7 +187,7 @@
                             display: true,
                             text: 'This Month',
                             font: {
-                                size: 24
+                                size: 20
                             }
                         },
                         ticks: {
@@ -200,9 +200,9 @@
                         display: true,
                         title: {
                             display: true,
-                            text: 'Progress',
+                            text: 'Amount',
                             font: {
-                                size: 16
+                                size: 20
                             }
                         },
                         ticks: {
@@ -228,10 +228,10 @@
                                             text: dataset.label,
                                             fillStyle: dataset.backgroundColor,
                                             strokeStyle: dataset.borderColor,
-                                            lineWidth: 0,
+                                            lineWidth: 2,
                                             hidden: !chart.isDatasetVisible(i),
                                             pointStyle: 'circle', // Set the point style to circle
-                                            pointRadius: .5 // Reduce the point radius to make it smaller
+                                            pointRadius: 5 // Reduce the point radius to make it smaller
                                         };
                                     });
                                 }
