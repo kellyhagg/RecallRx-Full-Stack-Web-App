@@ -1,145 +1,123 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
-<style>
-    .homepagestyle {
-        background-image: url('/homepage_background.jpg');
-        background-size: cover;
-        height: 100%;
-        width: 100%;
-        padding-top: 5%;
-    }
 
-    .precom_homepage_card {
-        color: rgb(126, 47, 25);
-        border-radius: 5%;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-        margin-left: 4%;
-        margin-right: 4%;
-        padding: 5%;
-        text-align: center;
-        border-radius: 15px;
-    }
+<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>" data-show-checkup-notification="<%= showCheckupNotification %>" >
 
-    .pact_tracking {
-        font-size: 28px;
-        font-weight: bold;
-        margin-top: 5%;
-    }
-
-    .hptracking {
-        margin: 5%;
-        padding-top: 1%;
-        border-radius: 15px;
-    }
-
-    .hpicon-container {
-        display: flex;
-        justify-content: center;
-        margin: 5%;
-    }
-
-    .hpiconset {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        margin: 5%;
-    }
-
-    .hpicon {
-        align-items: center;
-        border-radius: 50%;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        height: 60px;
-        justify-content: center;
-        text-align: center;
-        width: 60px;
-    }
-
-    .hpicon-text {
-        color: #2f3c08;
-        font-size: 16px;
-        margin-top: 10px;
-    }
-
-    .button-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-left: 50px;
-        margin-right: 50px;
-        padding-bottom: 20%;
-    }
-
-    .material-symbols-outlined {
-        font-size: 50px;
-        font-variation-settings:
-            'FILL' 0,
-            'wght' 400,
-            'GRAD' 200,
-            'opsz' 48
-    }
-
-    .hpbutton {
-        font-size: 30px;
-    }
-</style>
-
-<div class="homepagestyle">
-    <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
-    <div class="precom_homepage_card pink-less-transparent-background text-center">
-        <h4>This is a place holder for personal recommendation of the day generated based on user data.</h4>
-    </div>
-    <!-- activity tracking section -->
-    <div class="hptracking white-less-transparent-background">
-        <!-- this part of code uses google material icon -->
-        <h2 class="pact_tracking text-center">Activity Tracking</h2>
-        <div class="hpicon-container">
-            <!-- exercise tracking section -->
-            <div href="#" class="hpiconset">
-                <div class="hpicon dark-green-background">
-                    <span class="material-symbols-outlined white-font">
-                        hiking
-                    </span>
-                </div>
-                <span class="hpicon-text">Exercise</span>
+    <!-- hidden notification toasts for mmse questionnaire and exercise -->
+    <div aria-live="polite" aria-atomic="true" class="toast-container w-100">
+        <div class="toast toast-border mx-auto mb-2" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-question"></i>
+                <strong class="me-auto px-2">Checkup reminder</strong>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close" id="mmse-toast-close"></button>
             </div>
-            <!-- social tracking section -->
-            <div href="#" class="hpiconset">
-                <div class="hpicon dark-green-background">
-                    <span class="material-symbols-outlined white-font">
-                        connect_without_contact
-                    </span>
-                </div>
-                <span class="hpicon-text">Social</span>
-            </div>
-            <!-- social tracking section -->
-            <div href="#" class="hpiconset">
-                <div class="hpicon dark-green-background">
-                    <span class="material-symbols-outlined white-font">
-                        smoking_rooms
-                    </span>
-                </div>
-                <span class="hpicon-text">Smoking</span>
-            </div>
-            <!-- alcohol consumption tracking section -->
-            <div href="#" class="hpiconset">
-                <div class="hpicon dark-green-background">
-                    <span class="material-symbols-outlined white-font">
-                        liquor
-                    </span>
-                </div>
-                <span class="hpicon-text">Alcohol</span>
+            <div class="toast-body">
+                Please take a moment to complete the MMSE questionnaire.
             </div>
         </div>
-    </div>
-    <div class="button-container">
-        <!-- redirect to daily game page -->
-        <a href="#" class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Daily Game</a>
-        <!-- redirect to questionnaire page -->
-        <a href="mmse-landing-page"
-            class="hpbutton w-100 btn btn-lg dark-green-background white-font mt-3 mb-3">Questionnaire</a>
-    </div>
+        <div class="toast toast-border mx-auto mb-2 pt-1" id="puzzle-notification" role="alert" aria-live="assertive" aria-atomic="true"  data-autohide="false">
+            <div class="toast-header toast-bottom-border">
+                <i class="fa fa-puzzle-piece"></i>
+                <strong class="me-auto px-2">Exercise reminder</strong>
+                <button type="button" class="btn-close" data-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                It's time for a daily challenge.
+            </div>
+        </div>
+        </div>
+    <!-- personal recommendation based on the user's responses to the risk factor survey, activity tracking and the MMSE questionnaire -->
+        <div class="precom_homepage_card pink-less-transparent-background text-center">
+            <h4>We recommend that you <span id="recommendation-1"></span></h4>
+            <a type="button" class="btn btn-block recommendations-btn" id="recommendation-2"
+                href="/dailyrecommendation">
+                Tips & Trends
+            </a>
+        </div>
+        <!-- activity tracking section -->
+        <a href="daily-activity-tracking" class="hp-circle-container" style="text-decoration:none;">
+            <div class="hp-circle-container">
+                <div class="activity-circle">
+                    <div class="running-man-circle">
+                        <span class="material-symbols-outlined hp-running-man">
+                            directions_run
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+			<!-- Scrolling buttons section -->
+     <div class="container-fluid  mb-5 pb-2">
+        <div class="scrolling-wrapper row flex-row flex-nowrap pb-2 d-flex align-items-center justify-content-center">
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5 btn-shadow easter-egg d-none">
+                <div class="card card-block easter-egg-animation d-flex align-items-center justify-content-center">
+                        <a href="meditation" class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column ">
+                            <i class="fa fa-music white-icon"></i>
+                           <p>Meditation</p> 
+                        </a>
+                    </div>
+            </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+                <div class="col-5">
+                    <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                        
+                        <a href="mmse-landing-page" class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column "> 
+                            <i class="fa fa-question white-icon"></i>
+                           <p>Questionnaire</p> 
+                        </a> 
+                    </div>
+                </div>
+            <!-- <div class="card card-body dark-green-background mx-2"> -->
+            <div class="col-5">
+                <div class="card card-block dark-green-background d-flex align-items-center justify-content-center">
+                    <a href="#"
+                        class="white-font reset-style pt-1 w-100 h-100 d-flex align-items-center justify-content-center flex-column ">
+                        <i class="fa fa-puzzle-piece white-icon"></i>
+                        <p>Daily Game</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="placeholder mb-2"></div>
 </div>
+
+<!-- Popup -->
+<% if (showPopUp) { %>
+    <div id="backdrop" class="d-flex align-items-center justify-content-center">
+        <%- include("templates/easter-egg-popup", {data: data}) %>
+            <% console.log("show popup") %>
+    </div>
+    <% } %>
+
+
+<script>
+    const exerciseContent = 'find a way to get some exercise today!';
+    const socialContent = 'find a way to socialise today!';
+    const smokingContent = 'try to reduce how much you smoke today!';
+    const alcoholContent = 'try to reduce how much alcohol you consume today!';
+
+    if (`<%= recommendation1 %>` == 'exercise') {
+        $('#recommendation-1').text(exerciseContent);
+    } else if (`<%= recommendation1 %>` == 'social') {
+        $('#recommendation-1').text(socialContent);
+    } else if (`<%= recommendation1 %>` == 'smoking') {
+        $('#recommendation-1').text(smokingContent);
+    } else if (`<%= recommendation1 %>` == 'alcohol') {
+        $('#recommendation-1').text(alcoholContent);
+    }
+
+</script>
+
+<!-- Handle popup JS -->
+<script src="/scripts/handle-easter-egg-popup.js"></script>
+
+<!-- Reval hidden elements JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>
+
+
+
+<!-- Notifications toasts handlers JS -->
+<script src="/scripts/reveal-hidden-elements.js"></script>
+
 <%- include("templates/footer") %>

@@ -33,7 +33,7 @@ function findSelectedValue(...inputs) {
 }
 
 function updateNotifications() {
-  const isUpdate = confirm("Update?");
+  const isUpdate = confirm("Do you want to save the changes?");
 
   if (!isUpdate) {
     return;
@@ -59,18 +59,32 @@ function updateNotifications() {
   currentDate.setHours(hours);
   currentDate.setMinutes(minutes);
 
+  const mmsefrequency = selectedMmseFrequency;
+  var numberOfDays = 7;
+  switch (mmsefrequency) {
+    case "every-other-week":
+      numberOfDays = 14;
+      break;
+    case "monthly":
+      numberOfDays = 30;
+  }
+  const newNextDate = new Date();
+  newNextDate.setDate(currentDate.getDate() + numberOfDays);
   const body = {
     exercise: {
       frequency: selectedExerciseFrequency,
       isActive: isExerciseActive,
+      wasNotificationClosed: false,
       next: currentDate.toISOString(),
     },
     mmse: {
       frequency: selectedMmseFrequency,
       isActive: isMmseActive,
+      wasNotificationClosed: false,
+      next: newNextDate.toISOString(),
     },
   };
-  fetch("https://recallrx.cyclic.app//notifications", {
+  fetch(`${app_hosting_address}/notifications`, {
     // fetch("http://localhost:3000/notifications", {
     method: "post",
     body: JSON.stringify(body),
