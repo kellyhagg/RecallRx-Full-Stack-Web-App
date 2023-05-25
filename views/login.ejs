@@ -22,13 +22,13 @@
                         <!-- User ID input -->
                         <div class="form-floating">
                             <input name="userName" type="text" class="form-control dark-green-border" id="floatingInput" value="<%= username ? username : '' %>" placeholder="Enter your username" required>
-                            <label for="floatingInput" class="light-font  faded-font">User name</label>
+                            <label for="floatingInput" class="light-font  faded-font">User name*</label>
                         </div>
                         <!-- Password input -->
                         <div class="form-floating mt-3">
                             <input name="password" type="password" class="form-control font-md dark-green-border" id="floatingPassword"
                                 placeholder="Enter password" required>
-                            <label for="floatingPassword" class="light-font faded-font">Password</label>
+                            <label for="floatingPassword" class="light-font faded-font">Password*</label>
                         </div>
                         <div class="px-3 w-100 d-flex justify-content-between align-items-center">
                             <span class="error-message dark-pink font-s"><%= errorMsg %></span>
