@@ -299,12 +299,8 @@ input:checked~label {
     font-size: 24px;
 }
 
-.index-page-container {
-    min-height: 90vh;
-}
-
 .index-pic-container {
-    height: 65vh;
+    height: 60vh;
 }
 
 .riskfactorquestion {
@@ -330,7 +326,7 @@ input:checked~label {
 }
 
 .riskfactorsurvey {
-    background-image: url('riskfactorsurvey.jpg');
+    background-image: url('./images/objects/riskfactorsurvey.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -345,12 +341,6 @@ input:checked~label {
     color: #35430e;
 }
 
-.signupsetting {
-    background-image: url('signup_background.jpg');
-    background-size: cover;
-    background-position: top center;
-    height: 100vh;
-}
 
 .form-signup {
     margin: auto;
@@ -732,7 +722,7 @@ label {
 }
 
 .riskfactorsurvey {
-    background-image: url('riskfactorsurvey.jpg');
+    background-image: url('./images/objects/riskfactorsurvey.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -748,14 +738,14 @@ label {
 }
 
 .signupsetting {
-    background-image: url('signup_background.jpg');
+    background-image: url('./images/objects/signup_background.jpg');
     background-size: cover;
     background-position: top center;
     height: 100vh;
 }
 
 .index-buttons {
-    padding-top: 5%;
+    padding-top: 3.5vh;
 }
 
 .form-signup {
@@ -1078,7 +1068,7 @@ label {
 
 /* homepage-styles */
 .homepagestyle {
-    background-image: url('/homepage_background.jpg');
+    background-image: url('./images/objects/homepage_background.jpg');
     background-size: cover;
     height: 100%;
     width: 100%;
@@ -1274,9 +1264,10 @@ label {
 .hp-running-man {
     font-size: 80px;
 }
+
 /* Music player */
 .control {
-    cursor:pointer;
+    cursor: pointer;
     width: 3em;
     height: 3em;
     border-radius: 50%;
@@ -1287,7 +1278,7 @@ label {
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
 }
 
-.music-image img{
+.music-image img {
     width: 60%;
     height: 60%;
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.5);
@@ -1371,14 +1362,15 @@ label {
 
 .scrolling-wrapper {
     overflow-x: auto;
-    scrollbar-width: none;  /* For Firefox */
+    scrollbar-width: none;
+    /* For Firefox */
 
 }
 
 /* Hide the scrollbar for WebKit browsers (Chrome, Safari) */
 .scrolling-wrapper::-webkit-scrollbar {
     display: none;
-} 
+}
 
 .card-block {
     height: 100px;
@@ -1390,9 +1382,11 @@ label {
     box-shadow: 0 0 10px rgba(119, 130, 81, 0.8);
     font-size: 1.2em;
     transition: box-shadow 0.25s;
+
     &:hover {
         transform: scale(0.95);
     }
+
     &:active {
         transform: scale(0.95);
         border: none;
@@ -1403,12 +1397,12 @@ label {
     color: white;
 }
 
-.placeholder{
+.placeholder {
     height: 3em;
 }
 
 .card-block a {
-    border: none; 
+    border: none;
     box-shadow: none;
 }
 
@@ -1437,6 +1431,7 @@ label {
         background-position: 0% 50%;
     }
 }
+
 /* Notifications toasts */
 .toast-container {
     position: static;
@@ -1445,7 +1440,7 @@ label {
 .toast,
 .toast-header {
     background-color: rgba(208, 164, 73, 0);
-    color:#25271C;
+    color: #25271C;
     border: none;
     font-size: 16px;
     box-shadow: 0 0 5 0px rgba(0, 0, 0, 0.2);
@@ -1463,7 +1458,7 @@ label {
     border-bottom: 1px solid rgba(208, 164, 73, 1);
 }
 
-nav div{
+nav div {
     width: 100%;
 }
 
@@ -1485,5 +1480,12 @@ nav div{
 
     .header-message {
         font-size: 30px;
-    }
+    }}
+.logo-image {
+    position: absolute;
+    top: 3%;
+    left: 35%;
+    width: 30%;
+    height: 25%;
+    z-index: 1;
 }
