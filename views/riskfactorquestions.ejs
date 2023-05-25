@@ -11,8 +11,11 @@
         <form class="form-riskfactorquestion" action="/riskfactorquestions" method="post">
             <div class="form-group mb-3">
                 <!-- asks the user to select their education level -->
-                <label for="educationLevel">1. Please select your education level:</label>
+                <label for="educationLevel">1. Please select your education level:*</label>
                 <select class="form-control" id="educationLevel" name="educationLevel">
+                    <!-- default Select option -->
+                    <option value="" disabled selected>Select</option>
+                    <!-- Actual options -->
                     <option value="lessThanSecondary">Less than secondary (high) school graduation</option>
                     <option value="secondary">Secondary (high) school diploma or equivalent</option>
                     <option value="postSecondary">Postsecondary certificate, diploma or degree</option>
@@ -21,8 +24,11 @@
             </div>
             <div class="form-group mb-3">
                 <!-- asks the user to select their age -->
-                <label for="age">2. What's your age?</label>
+                <label for="age">2. What's your age?<span class="dark-pink">*</span></label>
                 <select class="form-control" id="age" name="age">
+                    <!-- default Select option -->
+                    <option value="" disabled selected>Select</option>
+                    <!-- Actual options -->
                     <option value="lessThan65">Less than 65</option>
                     <option value="65-69">65 - 69</option>
                     <option value="70-75">70 - 75</option>
@@ -33,7 +39,7 @@
             </div>
             <div class="form-group mb-3">
                 <!-- asks the user's gender -->
-                <label>3. What is your gender?</label>
+                <label>3. What is your gender?<span class="dark-pink">*</span></label>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female">
                     <label class="form-check-label" for="genderFemale">
@@ -54,7 +60,7 @@
                 </div>
             </div>
             <div class="form-group mb-3">
-                <label>4. Do you have diabetes?</label>
+                <label>4. Do you have diabetes?<span class="dark-pink">*</span></label>
                 <!-- asks the user if they have diabetes -->
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="diabetes" id="diabetesYes" value="yes">
@@ -70,7 +76,7 @@
                 </div>
             </div>
             <div class="form-group mb-3">
-                <label>5. Do you have depression?</label>
+                <label>5. Do you have depression?<span class="dark-pink">*</span></label>
                 <!-- asks the user if they have depression -->
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="depression" id="depression-yes" value="yes">
@@ -87,9 +93,12 @@
             </div>
             <!-- submit the form -->
             <div class="text-center">
-                <button type="submit" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
-                <button type="reset" class="btn btn-lg fw-bold white-font dark-pink-background">Reset</button>
+                <button type="submit" id="submit"
+                    class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
+                <button type="reset" id="reset"
+                    class="btn btn-lg fw-bold white-font dark-pink-background">Reset</button>
             </div>
+            <span class="submit-error-message text-center dark-pink font-s"></span>
         </form>
     </div>
 </div>
@@ -108,6 +117,23 @@
         document.getElementById("diabetesNo").checked = false;
         document.getElementById("depression-yes").checked = false;
         document.getElementById("depression-no").checked = false;
+    });
+
+    // validate all fields are checked when submit button is clicked
+    document.getElementById("submit").addEventListener("click", function (event) {
+        var educationLevel = document.getElementById("educationLevel").value;
+        var age = document.getElementById("age").value;
+        var genderChecked = document.querySelector('input[name="gender"]:checked');
+        var diabetesChecked = document.querySelector('input[name="diabetes"]:checked');
+        var depressionChecked = document.querySelector('input[name="depression"]:checked');
+        var submitErrorMessage = document.querySelector(".submit-error-message");
+
+        if (educationLevel === "" || age === "" || !genderChecked || !diabetesChecked || !depressionChecked) {
+            submitErrorMessage.textContent = "Please fill in all fields before your submission.";
+            event.preventDefault(); // Prevent form submission if missing fields
+        } else {
+            submitErrorMessage.textContent = ""; // Clear error message if all fields are filled
+        }
     });
 
 </script>
