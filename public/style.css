@@ -285,7 +285,9 @@ input:checked~label {
 }
 
 .index-pic-container {
-    height: 60vh;
+    height: 550px;
+    justify-content: center;
+    align-items: center;
 }
 
 .riskfactorquestion {
@@ -730,7 +732,10 @@ label {
 }
 
 .index-buttons {
-    padding-top: 3.5vh;
+    height: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .form-signup {
