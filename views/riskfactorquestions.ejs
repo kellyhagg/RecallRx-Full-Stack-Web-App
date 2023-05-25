@@ -88,9 +88,28 @@
             <!-- submit the form -->
             <div class="text-center">
                 <button type="submit" class="btn btn-lg btn-light btn-startrisksurvey fw-bold">Submit</button>
+                <button type="reset" class="btn btn-lg fw-bold white-font dark-pink-background">Reset</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    // Reset button event handler
+    document.getElementById("reset").addEventListener("click", function (event) {
+
+        // Reset all fields to their default values
+        document.getElementById("educationLevel").selectedIndex = 0;
+        document.getElementById("age").selectedIndex = 0;
+        document.getElementById("genderFemale").checked = false;
+        document.getElementById("genderMale").checked = false;
+        document.getElementById("genderOther").checked = false;
+        document.getElementById("diabetesYes").checked = false;
+        document.getElementById("diabetesNo").checked = false;
+        document.getElementById("depression-yes").checked = false;
+        document.getElementById("depression-no").checked = false;
+    });
+
+</script>
 
 <%- include("templates/footer") %>
