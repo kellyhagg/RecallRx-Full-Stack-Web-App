@@ -9,8 +9,10 @@
             <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
             <!-- users are required to enter their username, email address and password to sign up for an account. -->
             <input name="username" type="text" placeholder="Username*">
-            <input name="email" type="email" placeholder="Email address*">
-            <input name="password" type="password" placeholder="Password*">
+            <!-- notify the user if the username is already taken -->
+            <span class="error-message dark-pink font-s"><%= errorMessage %></span>
+            <input name="email" type="email" placeholder="Email address*" class="mt-3">
+            <input name="password" type="password" placeholder="Password*" class="mt-3">
             <br>
             <button class="btn btn-lg btn-primary btn-block btn-submit" type="submit">Submit</button>
             <!-- redirect users to the login page if they already have an account -->
@@ -19,13 +21,6 @@
             </div>
         </form>
     </div>
-
-    <!-- notify the user if the username is already taken -->
-    <!-- uses bootstrap alert to show the error message -->
-    <div class="alert alert-danger" role="alert">
-        <%= errorMessage %>
-    </div>
-
 
     <!-- Modified bootstrap modal, which is used to show the error message when users are missing fields when entering sign up information. -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -74,6 +69,7 @@
         }
     </script>
 
+    <!-- toast message for email validation to overwrite the default message -->
     <script src="/scripts/customize_email_validation_toast.js"></script>
 
     <!-- Bootstrap CSS -->
