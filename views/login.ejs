@@ -14,18 +14,18 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body class="light-green-background my-5 teext-center">
-        <div class="container position-center">
+        <div class="container position-center signupsetttings">
             <div class="row justify-content-center p-3">
                 <div class="col-md-6">
-                    <form class="text-center white-background position-center shadow b-radius" action="/login" method="POST">
+                    <form class="text-center white-background position-center shadow b-radius form-signup" action="/login" method="POST">
                         <h1 class="h2 fw-normal py-3">Sign In</h1>
                         <!-- User ID input -->
-                        <div class="form-floating m-3">
+                        <div class="form-floating">
                             <input name="userName" type="text" class="form-control dark-green-border" id="floatingInput" value="<%= username ? username : '' %>" placeholder="Enter your username" required>
                             <label for="floatingInput" class="light-font  faded-font">User name</label>
                         </div>
                         <!-- Password input -->
-                        <div class="form-floating mt-3 mx-3">
+                        <div class="form-floating mt-3">
                             <input name="password" type="password" class="form-control font-md dark-green-border" id="floatingPassword"
                                 placeholder="Enter password" required>
                             <label for="floatingPassword" class="light-font faded-font">Password</label>
@@ -35,7 +35,7 @@
                             <a href="forgot-password" class="dark-green font-s to-the-right">Forgot Password?</a>
                         </div>
                         <!-- Submit button -->
-                        <div class="px-3">
+                        <div class="">
                         <button class="w-100 btn btn-lg dark-green-background white-font mt-3 mb-3" type="submit">Log in</button>
                         </div>
                         <!-- Register button -->
