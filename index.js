@@ -46,9 +46,7 @@ const {
   runAlgorithm,
   train,
 } = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
-const {
-  calculateRisk
-} = require("./public/scripts/alzheimers_risk.js"); // import alzheimers_risk.js
+const { calculateRisk } = require("./public/scripts/alzheimers_risk.js"); // import alzheimers_risk.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
@@ -300,11 +298,15 @@ async function checkChallengeTrend(username) {
   }
 }
 
+// Check if an Easter egg announcement should be shown to a user.
 async function showEasterEggAnnounced(userId, isEasterEggActivated) {
+  // Fetch user information from the database
   const user = await userCollection.findOne(
     { _id: new ObjectId(userId) },
     { projection: { wasEasterEggAnnounced: 1 } }
   );
+
+  // Determine if the Easter egg announcement should be shown
   const showPopUp = !user.wasEasterEggAnnounced;
   if (showPopUp && isEasterEggActivated) {
     return true;
@@ -313,8 +315,9 @@ async function showEasterEggAnnounced(userId, isEasterEggActivated) {
   }
 }
 
+// Check if a checkup notification can be shown to a user.
 async function canShowCheckupNotification(userId) {
-  console.log("userId: ", userId);
+  // Fetch notification information from the database
   const notification = await notificationsCollection.findOne(
     {
       userId: userId,
@@ -323,10 +326,12 @@ async function canShowCheckupNotification(userId) {
       projection: { mmse: 1, wasNotificationClosed: 1 },
     }
   );
-  console.log("notification: ", notification);
-  const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+  // Get today's date
+  const currentDate = new Date().toISOString().slice(0, 10);
+  // Get the next notification date from the MMSE object, if available
   var nextNotificationDate = notification?.mmse?.next;
   nextNotificationDate = nextNotificationDate.slice(0, 10);
+  // Determine if the notification should be shown
   const showNotification = !notification.mmse.wasNotificationClosed;
   console.log(
     "Notification was previously closed: ",
@@ -334,10 +339,8 @@ async function canShowCheckupNotification(userId) {
   );
   console.log("Show notification: ", showNotification);
   if (currentDate >= nextNotificationDate && showNotification) {
-    console.log("Show notification");
     return true;
   } else {
-    console.log("Do not show notification");
     return false;
   }
 }
@@ -346,27 +349,27 @@ async function canShowCheckupNotification(userId) {
 app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", async (req, res) => {
+  // Check if a checkup notification can be shown
   const showCheckupNotification = await canShowCheckupNotification(
     req.session.userId
   );
-  console.log("Home: ", showCheckupNotification);
-
   var data = "";
   var isEasterEggActivated = await checkChallengeTrend(req.session.username);
   var showEasterEggPopup = await showEasterEggAnnounced(
     req.session.userId,
     isEasterEggActivated
   );
-  console.log("showEasterEggPopup", showEasterEggPopup);
+  // Check if the Easter egg popup should be shown
   if (showEasterEggPopup) {
     data = `You were doing great these last ${CHALLENGE_PERIOD} days. 
       So RecallRx team decided to add something special for you.`;
+    // Update the user's "wasEasterEggAnnounced" field to true
     await userCollection.updateOne(
       { _id: new ObjectId(req.session.userId) },
       { $set: { wasEasterEggAnnounced: true } }
     );
   }
-  console.log("render home");
+  // Render the "homepage" view with the necessary data
   res.render("homepage", {
     recommendation1: "alcohol",
     isEasterEggActivated: isEasterEggActivated,
@@ -470,7 +473,11 @@ app.get("/surveyfinished", async (req, res) => {
   );
   console.log("userData: ", userData.educationLevel);
 
-  const risk = await calculateRisk(userData.age, userData.gender, userData.educationLevel);
+  const risk = await calculateRisk(
+    userData.age,
+    userData.gender,
+    userData.educationLevel
+  );
 
   res.render("surveyfinished", { risk: risk });
 });
@@ -639,7 +646,8 @@ app.get("/mmse-results", async (req, res) => {
     });
   }
 
-  const past5ScoresData = await mmseScoresCollection.find({ username: req.session.username })
+  const past5ScoresData = await mmseScoresCollection
+    .find({ username: req.session.username })
     .sort({ date: -1 })
     .limit(5)
     .toArray();
