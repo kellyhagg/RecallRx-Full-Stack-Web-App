@@ -284,12 +284,8 @@ input:checked~label {
     font-size: 24px;
 }
 
-.index-page-container {
-    min-height: 90vh;
-}
-
 .index-pic-container {
-    height: 65vh;
+    height: 60vh;
 }
 
 .riskfactorquestion {
@@ -330,12 +326,6 @@ input:checked~label {
     color: #35430e;
 }
 
-.signupsetting {
-    background-image: url('./images/objects/signup_background.jpg');
-    background-size: cover;
-    background-position: top center;
-    height: 100vh;
-}
 
 .form-signup {
     margin: auto;
@@ -740,7 +730,7 @@ label {
 }
 
 .index-buttons {
-    padding-top: 5%;
+    padding-top: 3.5vh;
 }
 
 .form-signup {
@@ -1460,4 +1450,13 @@ nav div {
 #header-back {
     width: 100%;
     text-align: center;
+}
+
+.logo-image {
+    position: absolute;
+    top: 3%;
+    left: 35%;
+    width: 30%;
+    height: 25%;
+    z-index: 1;
 }
