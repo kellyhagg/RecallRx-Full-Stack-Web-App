@@ -1070,7 +1070,7 @@ label {
 .homepagestyle {
     background-image: url('./images/objects/homepage_background.jpg');
     background-size: cover;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     padding-top: 5%;
     padding-bottom: 20%;
