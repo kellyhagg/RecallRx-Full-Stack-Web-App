@@ -1,7 +1,6 @@
 <%- include("templates/header", {headerMessage: "Homepage" }) %>
 
-<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>" data-show-checkup-notification="<%= showCheckupNotification %>" >
-
+<div class="homepagestyle" id="homepage" data-easter-egg-activated="<%= isEasterEggActivated %>" data-show-checkup-notification="<%= showCheckupNotification %>" data-app-hosting-address="<%= appHostingAddress %>" >
     <!-- hidden notification toasts for mmse questionnaire and exercise -->
     <div aria-live="polite" aria-atomic="true" class="toast-container w-100">
         <div class="toast toast-border mx-auto mb-2" id="checkup-notification" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
@@ -86,7 +85,6 @@
 <% if (showPopUp) { %>
     <div id="backdrop" class="d-flex align-items-center justify-content-center">
         <%- include("templates/easter-egg-popup", {data: data}) %>
-            <% console.log("show popup") %>
     </div>
     <% } %>
 

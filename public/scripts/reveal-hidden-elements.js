@@ -1,4 +1,3 @@
-// Handle easter egg button
 const homepageDiv = document.getElementById("homepage");
 const isEasterEggActivated = homepageDiv.dataset.easterEggActivated === "true";
 
@@ -22,6 +21,7 @@ if (isEasterEggActivated) {
 }
 const showCheckupNotification =
   homepageDiv.dataset.showCheckupNotification === "true";
+const appHostingAddress = homepageDiv.dataset.appHostingAddress;
 const checkupNotification = document.querySelector("#checkup-notification");
 const puzzleNotification = document.querySelector("#puzzle-notification");
 
@@ -49,10 +49,8 @@ $("#mmse-toast-close").on("click", function () {
   var body = {
     wasNotificationClosed: true,
   };
-
   // Send the HTTP POST request
-  fetch(`${app_hosting_address}/checkup-toast-state-update`, {
-    // fetch(`http://localhost:3000/checkup-toast-state-update`, {
+  fetch(`${appHostingAddress}/checkup-toast-state-update`, {
     method: "post",
     body: JSON.stringify(body),
     headers: {
@@ -61,9 +59,7 @@ $("#mmse-toast-close").on("click", function () {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       window.location.reload(); // Reload the current page
-      // Alternatively, you can use other navigation methods like window.location.href = "home.html" to redirect to a specific page
     })
     .catch((error) => {
       console.log(error);

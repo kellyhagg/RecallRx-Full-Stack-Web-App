@@ -376,6 +376,7 @@ app.get("/homepage", async (req, res) => {
     data: data,
     showPopUp: showEasterEggPopup,
     showCheckupNotification: showCheckupNotification,
+    appHostingAddress: app_hosting_address,
   });
 });
 
