@@ -4,7 +4,7 @@ if (document.querySelector("#password")) {
 } else if (document.querySelector('input[type="email"]')) {
   input = document.querySelector('input[type="email"]');
 } else if (document.querySelector("#name")) {
-  input = ocument.querySelector("#name");
+  input = document.querySelector("#name");
 }
 
 input.addEventListener("invalid", function (event) {
