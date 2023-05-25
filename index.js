@@ -1017,9 +1017,9 @@ app.post("/update-user-name/:userId", async (req, res) => {
   const newUserName = req.body.userName;
   const anyUser = await userCollection.findOne(
     { username: newUserName },
-    { projection: { username: 1 } }
+    { projection: { username: 1, userId: 1 } }
   );
-  if (anyUser) {
+  if (anyUser && anyUser.userId !== userId) {
     res.render("user-name-edit", {
       user: user,
       errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
@@ -1081,9 +1081,9 @@ app.post("/update-email/:userId", async (req, res) => {
   }
   const anyUser = await userCollection.findOne(
     { email: email },
-    { projection: { email: 1 } }
+    { projection: { email: 1, username: 1 } }
   );
-  if (anyUser) {
+  if (anyUser && anyUser.username !== req.session.username) {
     res.render("email-edit", {
       userId: user._id,
       userEmail: user.email,
