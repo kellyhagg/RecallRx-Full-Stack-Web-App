@@ -10,9 +10,9 @@
             <!-- users are required to enter their username, email address and password to sign up for an account. -->
             <input name="username" type="text" placeholder="Username*">
             <!-- notify the user if the username is already taken -->
-            <span class="error-message dark-pink font-s"><%= errorMessage %></span>
             <input name="email" type="email" placeholder="Email address*" class="mt-3">
             <input name="password" type="password" placeholder="Password*" class="mt-3">
+            <span class="error-message dark-pink font-s"><%= errorMessage %></span>
             <br>
             <button class="btn btn-lg btn-primary btn-block btn-submit" type="submit">Submit</button>
             <!-- redirect users to the login page if they already have an account -->

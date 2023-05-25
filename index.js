@@ -189,13 +189,44 @@ app.post("/signup", async (req, res) => {
     password: Joi.string().max(20).required(),
   });
 
+  const usernameNotValid = Joi.string().alphanum().max(40).validate(username);
+  const emailNotValid = Joi.string().max(20).validate(email);
+  const passwordNotValid = Joi.string().max(20).validate(password);
+
   // validate the input
   const validationResult = schema.validate({ username, email, password });
   if (validationResult.error != null) {
     console.log(validationResult.error);
-    res.redirect("/signup", { errorMessage: "" });
-    return;
+
+    if (validationResult.error.details[0].path[0] === "username") {
+      console.log("Username not valid");
+      const errorMessage =
+        "Username is not valid, please enter a username with only letters and numbers under 40 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    if (validationResult.error.details[0].path[0] === "email") {
+      console.log("Email not valid");
+      const errorMessage =
+        "Email is not valid, please enter an email under 20 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    if (validationResult.error.details[0].path[0] === "password") {
+      console.log("Password not valid");
+      const errorMessage =
+        "Password is not valid, please enter a password under 20 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    res.redirect("/signup", {
+      errorMessage: "There is an error with your signup, please try again.",
+    });
   }
+
 
   // check if username already exists in databse
   const existingUser = await userCollection.findOne({ username });
