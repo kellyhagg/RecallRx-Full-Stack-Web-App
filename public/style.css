@@ -1529,3 +1529,15 @@ nav div {
             background-position: 200% center;
         }
     }
+
+
+/* Help and Support */
+.support-container {
+    height: 70vh;
+    border: 0;
+}
+
+.email-link{
+    text-decoration: none;
+    color:#7B8B50;
+}
