@@ -1,21 +1,21 @@
 <%- include("templates/header", {headerMessage: "Risk Factor Survey Questions" }) %>
 
 <!-- risk factor survey for users to fill out so the app can have an initial assessment of their cognitive health. -->
-<!-- These questions are carefully selected based on article research results from pubmed, ncbi and Alzheimer's Association page. More details: https://docs.google.com/document/d/1OxY4iJ6J5bMsL8MlZ4JZrPZkv2_HqtU5h7j6wU8ggk8/edit?usp=sharing -->
+<!-- These questions were carefully selected based on article research results from pubmed, ncbi and Alzheimer's Association page. More details: https://docs.google.com/document/d/1OxY4iJ6J5bMsL8MlZ4JZrPZkv2_HqtU5h7j6wU8ggk8/edit?usp=sharing -->
 
 <div class="riskfactorquestion light-green-background">
 
     <div class="container question-container bg-light p-5 rounded">
         <h2 class="text-center mb-4">Risk Factor Survey</h2>
-        <!-- performs app.post so that the user's answers can be stored in the database -->
+        <!-- store user's answers in this form into database -->
         <form class="form-riskfactorquestion" action="/riskfactorquestions" method="post">
             <div class="form-group mb-3">
                 <!-- asks the user to select their education level -->
                 <label for="educationLevel">1. Please select your education level:*</label>
                 <select class="form-control" id="educationLevel" name="educationLevel">
-                    <!-- default Select option -->
+                    <!-- default Select option, greyed out and disabled from being selected -->
                     <option value="" disabled selected>Select</option>
-                    <!-- Actual options -->
+                    <!-- Selectable options -->
                     <option value="lessThanSecondary">Less than secondary (high) school graduation</option>
                     <option value="secondary">Secondary (high) school diploma or equivalent</option>
                     <option value="postSecondary">Postsecondary certificate, diploma or degree</option>
@@ -26,9 +26,9 @@
                 <!-- asks the user to select their age -->
                 <label for="age">2. What's your age?<span class="dark-pink">*</span></label>
                 <select class="form-control" id="age" name="age">
-                    <!-- default Select option -->
+                    <!-- default Select option, greyed out and disabled from being selected -->
                     <option value="" disabled selected>Select</option>
-                    <!-- Actual options -->
+                    <!-- Selectable options -->
                     <option value="lessThan65">Less than 65</option>
                     <option value="65-69">65 - 69</option>
                     <option value="70-75">70 - 75</option>
@@ -91,10 +91,11 @@
                     </label>
                 </div>
             </div>
-            <!-- submit the form -->
             <div class="text-center">
+                <!-- submit the form -->
                 <button type="submit" id="submit"
                     class="btn btn-lg btn-light btn-success btn-startrisksurvey fw-bold">Submit</button>
+                <!-- reset the form -->
                 <button type="reset" id="reset"
                     class="btn btn-lg fw-bold btn-danger white-font dark-pink-background">Reset</button>
             </div>
@@ -119,7 +120,7 @@
         document.getElementById("depression-no").checked = false;
     });
 
-    // validate all fields are checked when submit button is clicked
+    // validate all fields are checked when submit button is clicked, maintain filled information if not all fields are filled
     document.getElementById("submit").addEventListener("click", function (event) {
         var educationLevel = document.getElementById("educationLevel").value;
         var age = document.getElementById("age").value;
@@ -128,6 +129,7 @@
         var depressionChecked = document.querySelector('input[name="depression"]:checked');
         var submitErrorMessage = document.querySelector(".submit-error-message");
 
+        // if any of the fields are empty, display error message
         if (educationLevel === "" || age === "" || !genderChecked || !diabetesChecked || !depressionChecked) {
             submitErrorMessage.textContent = "Please fill in all fields before your submission.";
             event.preventDefault(); // Prevent form submission if missing fields
