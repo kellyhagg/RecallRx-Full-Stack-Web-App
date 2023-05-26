@@ -1730,6 +1730,11 @@ app.get("/meditation", (req, res) => {
 
 // End of meditation API
 
+// Help and Support 
+app.use("/help-and-support", validateSession);
+app.get("/help-and-support", (req, res) => {
+  res.render("help-and-support");
+});
 // get method for coming soon page
 app.use("/coming-soon", validateSession);
 app.get("/coming-soon", (req, res) => {
