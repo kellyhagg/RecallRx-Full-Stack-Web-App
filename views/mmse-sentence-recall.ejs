@@ -1,8 +1,10 @@
+<!-- Include header template -->
 <%- include("templates/header", {headerMessage: headerMessage }) %>
     <br>
 
     <div class="card mx-auto rounded card-spacing">
         <div class="card-body">
+            <!-- Form to test user's memory and language ability per MMSE questionnaire -->
             <form method="POST" action="/mmse-sentence-recall">
                 <input type="hidden" name="sentence" value="<%= sentence %>">
                 <h4>Press the listen <i class="material-icons">&#xe023;</i> button and type the sentence you hear into
@@ -18,8 +20,9 @@
                 <br><br>
                 <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
                     id="inputSentence" name="inputSentence" placeholder="Type your answer here">
-                 
+
         </div>
     </div>
+    <!-- Include footer template -->
     <%- include("templates/mmse-footer", {questionType : "sentence-recall" , mmseBtnText: "Next" , reference
         : "/mmse-sentence-recall" }) %>

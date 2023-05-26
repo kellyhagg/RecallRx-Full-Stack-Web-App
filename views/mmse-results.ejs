@@ -1,9 +1,11 @@
+<!-- Include header template -->
 <%- include("templates/header", {headerMessage: headerMessage }) %>
     <br>
     <div class="card mx-auto rounded">
         <div class="card-body">
             <h4>You scored <%= score %>% on this test.</h4>
             <br>
+            <!-- If the score is equal to or above 83%, display graph and normal message -->
             <% if(score>= 83){ %>
                 <h4 style="color: #778251;">Nicely done! Scores above 83% are considered normal.</h4>
                 <br>
@@ -11,6 +13,7 @@
                 </span>
                 <br><br>
                 <canvas id="mmseChart" style="max-height: 210px;"></canvas>
+                <!-- If the score is below 83%, display warning message -->
                 <% } else { %>
                     <h4 style="color: #825151;">You scored below 83% which is considered abnormal.</h4>
                     <br>
@@ -23,7 +26,6 @@
     <br>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-
 
         // Get the canvas element
         var ctx = document.getElementById('mmseChart').getContext('2d');
@@ -96,4 +98,5 @@
             }
         });
     </script>
+    <!-- Include footer template -->
     <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: "Close" , reference : "/" }); %>

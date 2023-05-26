@@ -1,6 +1,7 @@
+<!-- Include header template -->
 <%- include("templates/header-back", {headerMessage: headerMessage }) %>
-
     <br>
+    <!-- Include card to describe to the user the contents of the test -->
     <div class="card mx-auto rounded">
         <div class="card-body">
             <h4>You are about to complete an assessment of your cognition.</h4>
@@ -15,5 +16,6 @@
         </div>
     </div>
 
+    <!-- Include footer template -->
     <%- include("templates/mmse-footer", {questionType : "landing-page" , mmseBtnText : "Start" , reference
         : "/mmse-landing-page" }) %>

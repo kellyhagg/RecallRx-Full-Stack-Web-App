@@ -1,23 +1,24 @@
+<!-- Include header template -->
 <%- include("templates/header", {headerMessage: headerMessage }) %>
-
     <br>
-
+    <!-- Form to test user's memory and object recall -->
     <div class="card mx-auto rounded card-spacing">
         <div class="card-body">
             <form method="POST" action="/mmse-object-recall">
                 <input type="hidden" name="object" value="<%= object %>">
+                <!-- Populate the number question of this type the user is on -->
                 <h4>Enter the name of the object shown in the text
                     box below then press <span style="color: #778251;">Next</span>. (<%=pageCount%>/3)</h4>
                 <img style="max-height: 55vw;" src="/images/objects/<%= object %>.jpg" class="img-fluid mx-auto d-block"
                     alt="Responsive image">
                 <input type="text" class="form-control border-0 light-green-background font-lg focus mmse-text-box"
                     id="inputObject" name="inputObject" placeholder="Type your answer here">
-                
         </div>
-
     </div>
     <br>
+    <!-- Include text for the button -->
     <% var text="Next" ; %>
 
+        <!-- Include footer template -->
         <%- include("templates/mmse-footer", {questionType : "object-recall" , mmseBtnText: text, reference
             : "/mmse-object-recall" }); %>

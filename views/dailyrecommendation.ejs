@@ -1,261 +1,261 @@
 <%- include("templates/header-back", {headerMessage: "Tips and Trends" }) %>
-<!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
-<!-- These modifications were made: Delete extra elements, Add text content, change content style, change height of carousel-item-->
+    <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/5.3/examples/carousel/ -->
+    <!-- These modifications were made: Delete extra elements, Add text content, change content style, change height of carousel-item-->
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
 
-    <!-- Three pictures with recommendation for different aspects -->
-    <div class="carousel-inner recom-carousel-inner light-green-background">
-        <!-- recommendation on study -->
-        <!-- set to active by default -->
-        <div class="carousel-item active recommendation-graph">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption dark-green">
-                    <!-- text can be replaced through id -->
+        <!-- Three pictures with recommendation for different aspects -->
+        <div class="carousel-inner recom-carousel-inner light-green-background">
+            <!-- recommendation on study -->
+            <!-- set to active by default -->
+            <div class="carousel-item active recommendation-graph">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption dark-green">
+                        <!-- text can be replaced through id -->
 
-                    <h1 style="font-size: 2rem;" id="study-title">Your Trends</h1>
-                    <canvas id="myChart"></canvas>
+                        <h1 style="font-size: 2rem;" id="study-title">Your Trends</h1>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- recommendation on exercise -->
+            <div class="carousel-item recommendation-exercise">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption text-end dark-green">
+                        <!-- text can be replaced through id -->
+                        <h3>Today's Recommendation</h3>
+                        <br><br>
+                        <h1 style="font-size: 2rem;" id="recommendation-1">Get Some Exercise</h1>
+                        <p style="font-size: 1rem;" id="recommendation-1-content">Take care of your well-being,
+                            strengthen your body, and embrace an
+                            active lifestyle at any age - make today the day you prioritize exercise and feel the
+                            benefits.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- recommendation on social -->
+            <div class="carousel-item recommendation-social">
+                <div class="carousel-background recom-carousel-background light-green-background"></div>
+                <div class="container">
+                    <div class="carousel-caption text-start dark-green">
+                        <!-- text can be replaced through id -->
+                        <h3>Don't feel like it? You could
+                            always...</h3>
+                        <br><br>
+                        <h1 style="font-size: 2rem;" id="recommendation-2">Talk To Your Friends</h1>
+                        <p style="font-size: 1rem;" id="recommendation-2-content">Embrace the joy of connection,
+                            cherish
+                            friendships, and engage in
+                            social activities that bring
+                            fulfillment - reach out
+                            to loved ones or join a community gathering to make lasting memories today.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- recommendation on exercise -->
-        <div class="carousel-item recommendation-exercise">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption text-end dark-green">
-                    <!-- text can be replaced through id -->
-                    <h3>Today's Recommendation</h3>
-                    <br><br>
-                    <h1 style="font-size: 2rem;" id="recommendation-1">Get Some Exercise</h1>
-                    <p style="font-size: 1rem;" id="recommendation-1-content">Take care of your well-being,
-                        strengthen your body, and embrace an
-                        active lifestyle at any age - make today the day you prioritize exercise and feel the
-                        benefits.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <!-- recommendation on social -->
-        <div class="carousel-item recommendation-social">
-            <div class="carousel-background recom-carousel-background light-green-background"></div>
-            <div class="container">
-                <div class="carousel-caption text-start dark-green">
-                    <!-- text can be replaced through id -->
-                    <h3>Don't feel like it? You could
-                        always...</h3>
-                    <br><br>
-                    <h1 style="font-size: 2rem;" id="recommendation-2">Talk To Your Friends</h1>
-                    <p style="font-size: 1rem;" id="recommendation-2-content">Embrace the joy of connection,
-                        cherish
-                        friendships, and engage in
-                        social activities that bring
-                        fulfillment - reach out
-                        to loved ones or join a community gathering to make lasting memories today.</p>
-                </div>
-            </div>
-        </div>
+
+        <!-- Carousel controls that allows switching pictures -->
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
-    <!-- Carousel controls that allows switching pictures -->
-    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
+    <!-- notify user that they can swipe to view more recommendations-->
+    <div class="recom-swipe-text text-center light-green-background dark-green">
+        Swipe to View More
+    </div>
 
-<!-- notify user that they can swipe to view more recommendations-->
-<div class="recom-swipe-text text-center light-green-background dark-green">
-    Swipe to View More
-</div>
+    <!-- Initialize the carousel with swipe functionality -->
+    <!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get the canvas element
+        var ctx = document.getElementById('myChart').getContext('2d');
 
-<!-- Initialize the carousel with swipe functionality -->
-<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+        // Define the data for the trendlines
+        var data = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Last Week'],
+            datasets: [
+                {
+                    label: 'Exercise (minutes)',
+                    data: <%= JSON.stringify(exerciseAvg) %>,
+                    borderColor: 'rgba(255, 137, 127, 1)',
+                    backgroundColor: 'rgba(255, 137, 127, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Social (minutes)',
+                    data: <%= JSON.stringify(socialAvg) %>,
+                    borderColor: 'rgba(118, 130, 80, 1)',
+                    backgroundColor: 'rgba(118, 130, 80, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Smoking (cigarettes)',
+                    data: <%= JSON.stringify(smokingAvg) %>,
+                    borderColor: 'rgba(128, 128, 128, 1)',
+                    backgroundColor: 'rgba(128, 128, 128, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Alcohol (drinks)',
+                    data: <%= JSON.stringify(alcoholAvg) %>,
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 4,
+                    pointRadius: 2,
+                    lineTension: 0.4,
+                    fill: false
+                }
+            ]
+        };
 
+        // Set the desired height for the graph
+        var chartHeight = 400;
 
-    // Get the canvas element
-    var ctx = document.getElementById('myChart').getContext('2d');
+        // Set the constants for the text population of the recommendations
+        const exerciseTitle = 'Get Some Exercise';
+        const exerciseContent = 'Take care of your well-being, strengthen your body, and embrace an active lifestyle at any age - make today the day you prioritize exercise and feel the benefits.';
+        const socialTitle = 'Talk To Your Friends';
+        const socialContent = 'Embrace the joy of connection, cherish friendships, and engage in social activities that bring fulfillment - reach out to loved ones or join a community gathering to make lasting memories today.';
+        const smokingTitle = 'Smoke Fewer Cigarettes';
+        const smokingContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on smoking and feel the benefits.';
+        const alcoholTitle = 'Drink Less Alcohol';
+        const alcoholContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on drinking and feel the benefits.';
 
-    // Define the data for the trendlines
-    var data = {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Last Week'],
-        datasets: [
-            {
-                label: 'Exercise (minutes)',
-                data: <%= JSON.stringify(exerciseAvg) %>,
-                borderColor: 'rgba(255, 137, 127, 1)',
-                backgroundColor: 'rgba(255, 137, 127, 1)',
-                borderWidth: 4,
-                pointRadius: 2,
-                lineTension: 0.4,
-                fill: false
-            },
-            {
-                label: 'Social (minutes)',
-                data: <%= JSON.stringify(socialAvg) %>,
-                borderColor: 'rgba(118, 130, 80, 1)',
-                backgroundColor: 'rgba(118, 130, 80, 1)',
-                borderWidth: 4,
-                pointRadius: 2,
-                lineTension: 0.4,
-                fill: false
-            },
-            {
-                label: 'Smoking (cigarettes)',
-                data: <%= JSON.stringify(smokingAvg) %>,
-                borderColor: 'rgba(128, 128, 128, 1)',
-                backgroundColor: 'rgba(128, 128, 128, 1)',
-                borderWidth: 4,
-                pointRadius: 2,
-                lineTension: 0.4,
-                fill: false
-            },
-            {
-                label: 'Alcohol (drinks)',
-                data: <%= JSON.stringify(alcoholAvg) %>,
-                borderColor: 'rgba(255, 159, 64, 1)',
-                backgroundColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 4,
-                pointRadius: 2,
-                lineTension: 0.4,
-                fill: false
-            }
-        ]
-    };
+        // Setting the appropriate text for the first recommendation provided by the algorithm
+        if (`<%= recommendation1 %>` == 'exercise') {
+            $('#recommendation-1').text(exerciseTitle);
+            $('#recommendation-1-content').text(exerciseContent);
+        } else if (`<%= recommendation1 %>` == 'social') {
+            $('#recommendation-1').text(socialTitle);
+            $('#recommendation-1-content').text(socialContent);
+        } else if (`<%= recommendation1 %>` == 'smoking') {
+            $('#recommendation-1').text(smokingTitle);
+            $('#recommendation-1-content').text(smokingContent);
+        } else if (`<%= recommendation1 %>` == 'alcohol') {
+            $('#recommendation-1').text(alcoholTitle);
+            $('#recommendation-1-content').text(alcoholContent);
+        }
 
-    // Set the desired height for the graph
-    var chartHeight = 400;
+        // Setting the appropriate text for the second recommendation provided by the algorithm
+        if (`<%= recommendation2 %>` == 'exercise') {
+            $('#recommendation-2').text(exerciseTitle);
+            $('#recommendation-2-content').text(exerciseContent);
+        } else if (`<%= recommendation2 %>` == 'social') {
+            $('#recommendation-2').text(socialTitle);
+            $('#recommendation-2-content').text(socialContent);
+        } else if (`<%= recommendation2 %>` == 'smoking') {
+            $('#recommendation-2').text(smokingTitle);
+            $('#recommendation-2-content').text(smokingContent);
+        } else if (`<%= recommendation2 %>` == 'alcohol') {
+            $('#recommendation-2').text(alcoholTitle);
+            $('#recommendation-2-content').text(alcoholContent);
+        }
 
-    const exerciseTitle = 'Get Some Exercise';
-    const exerciseContent = 'Take care of your well-being, strengthen your body, and embrace an active lifestyle at any age - make today the day you prioritize exercise and feel the benefits.';
-    const socialTitle = 'Talk To Your Friends';
-    const socialContent = 'Embrace the joy of connection, cherish friendships, and engage in social activities that bring fulfillment - reach out to loved ones or join a community gathering to make lasting memories today.';
-    const smokingTitle = 'Smoke Fewer Cigarettes';
-    const smokingContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on smoking and feel the benefits.';
-    const alcoholTitle = 'Drink Less Alcohol';
-    const alcoholContent = 'Take control of your health, improve your cognition, and improve your quality of life - make today the day you quit or cut back on drinking and feel the benefits.';
-
-
-    if (`<%= recommendation1 %>` == 'exercise') {
-        $('#recommendation-1').text(exerciseTitle);
-        $('#recommendation-1-content').text(exerciseContent);
-    } else if (`<%= recommendation1 %>` == 'social') {
-        $('#recommendation-1').text(socialTitle);
-        $('#recommendation-1-content').text(socialContent);
-    } else if (`<%= recommendation1 %>` == 'smoking') {
-        $('#recommendation-1').text(smokingTitle);
-        $('#recommendation-1-content').text(smokingContent);
-    } else if (`<%= recommendation1 %>` == 'alcohol') {
-        $('#recommendation-1').text(alcoholTitle);
-        $('#recommendation-1-content').text(alcoholContent);
-    }
-
-    if (`<%= recommendation2 %>` == 'exercise') {
-        $('#recommendation-2').text(exerciseTitle);
-        $('#recommendation-2-content').text(exerciseContent);
-    } else if (`<%= recommendation2 %>` == 'social') {
-        $('#recommendation-2').text(socialTitle);
-        $('#recommendation-2-content').text(socialContent);
-    } else if (`<%= recommendation2 %>` == 'smoking') {
-        $('#recommendation-2').text(smokingTitle);
-        $('#recommendation-2-content').text(smokingContent);
-    } else if (`<%= recommendation2 %>` == 'alcohol') {
-        $('#recommendation-2').text(alcoholTitle);
-        $('#recommendation-2-content').text(alcoholContent);
-    }
-
-    // Create the chart
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: true, // Set to false to allow height adjustments
-            aspectRatio: 1, // Adjust the aspect ratio (e.g., 1.5 for taller graph)
-            scales: {
-                x: {
-                    display: true,
-                    title: {
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // Set to false to allow height adjustments
+                aspectRatio: 1, // Adjust the aspect ratio (e.g., 1.5 for taller graph)
+                scales: {
+                    x: {
                         display: true,
-                        text: 'This Month',
-                        font: {
-                            size: 20
+                        title: {
+                            display: true,
+                            text: 'This Month',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
                         }
                     },
-                    ticks: {
-                        font: {
-                            size: 12
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Amount',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            beginAtZero: true
                         }
                     }
                 },
-                y: {
-                    display: true,
-                    title: {
+                plugins: {
+                    legend: {
                         display: true,
-                        text: 'Amount',
-                        font: {
-                            size: 20
-                        }
-                    },
-                    ticks: {
-                        font: {
-                            size: 12
+                        labels: {
+                            // Customize the legend labels
+                            usePointStyle: true, // Use point style for the legend markers
+                            pointStyle: 'circle', // Set the point style to circle
+                            generateLabels: function (chart) {
+                                var data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.datasets.map(function (dataset, i) {
+                                        return {
+                                            text: dataset.label,
+                                            fillStyle: dataset.backgroundColor,
+                                            strokeStyle: dataset.borderColor,
+                                            lineWidth: 2,
+                                            hidden: !chart.isDatasetVisible(i),
+                                            pointStyle: 'circle', // Set the point style to circle
+                                            pointRadius: 5 // Reduce the point radius to make it smaller
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
                         },
-                        beginAtZero: true
+
                     }
                 }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        // Customize the legend labels
-                        usePointStyle: true, // Use point style for the legend markers
-                        pointStyle: 'circle', // Set the point style to circle
-                        generateLabels: function (chart) {
-                            var data = chart.data;
-                            if (data.labels.length && data.datasets.length) {
-                                return data.datasets.map(function (dataset, i) {
-                                    return {
-                                        text: dataset.label,
-                                        fillStyle: dataset.backgroundColor,
-                                        strokeStyle: dataset.borderColor,
-                                        lineWidth: 2,
-                                        hidden: !chart.isDatasetVisible(i),
-                                        pointStyle: 'circle', // Set the point style to circle
-                                        pointRadius: 5 // Reduce the point radius to make it smaller
-                                    };
-                                });
-                            }
-                            return [];
-                        }
-                    },
-
-                }
             }
-        }
-    });
-
-
-
-    $(document).on("pagecreate", function () {
-        $("#myCarousel").swiperight(function () {
-            $(this).carousel("prev");
         });
-        $("#myCarousel").swipeleft(function () {
-            $(this).carousel("next");
+
+        // Set the carousel functionality
+        $(document).on("pagecreate", function () {
+            $("#myCarousel").swiperight(function () {
+                $(this).carousel("prev");
+            });
+            $("#myCarousel").swipeleft(function () {
+                $(this).carousel("next");
+            });
         });
-    });
-</script>
-<%- include("templates/footer") %>
+    </script>
+    <!-- Include the footer template -->
+    <%- include("templates/footer") %>
