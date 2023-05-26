@@ -1,9 +1,12 @@
+// Include necessary libraries
 const fs = require('fs');
 const csv = require('csv-parser');
 const ss = require('simple-statistics');
 
+// Create an array to store the results
 var results = [];
 
+// Create variables to store the regression values
 var ageSlope = 0;
 var ageIntercept = 0;
 
@@ -13,8 +16,12 @@ var sexIntercept = 0;
 var eduSlope = 0;
 var eduIntercept = 0;
 
-async function runAnalysis() {
+// Run the analysis on the Kaggle dataset
+// source: https://www.kaggle.com/datasets/brsdincer/alzheimer-features
+async function runAnalysis
+    () {
     return new Promise((resolve, reject) => {
+        // Read the csv file, and extract the ages, groups as 0 or 1 and sex as 0 or 1
         fs.createReadStream('public/resources/alzheimer.csv')
             .pipe(csv())
             .on('data', (data) => {
@@ -23,7 +30,9 @@ async function runAnalysis() {
                     const sex = sex1.trim() || sex2.trim(); // Choose the non-empty value
                     results.push({
                         Age: Number(data.Age),
+                        // Set the group to 0 if Nondemented, and 1 if Demented
                         Group: data.Group === 'Nondemented' ? 0 : 1,
+                        // Set the group to 0 if Female, and 1 if Male
                         Sex: sex === 'F' ? 0 : 1,
                         Edu: Number(data.EDUC)
                     });
@@ -40,42 +49,48 @@ async function runAnalysis() {
                 // Extract all groups
                 const groups = data.map((data) => data.Group);
 
+                // Find the ratio of dementia to total participants from this dataset
                 const numWithDementia = groups.reduce((count, group) => count + group, 0);
                 const totalParticipants = groups.length;
                 const dementiaRatio = numWithDementia / totalParticipants;
 
+                // Map the data for use in the linear regression function
                 const sexData = groups.map((group, index) => [group, sexes[index]]);
                 const eduData = groups.map((group, index) => [group, edu[index]]);
 
+                // Run the linear regression function
                 const ageRegression = ss.linearRegression([ages, groups]);
                 const sexRegression = ss.linearRegression(sexData);
                 const eduRegression = ss.linearRegression(eduData);
 
+                // Extract the slope and intercept values from the regression
                 ageSlope = ageRegression.m;
                 ageIntercept = ageRegression.b;
 
                 console.log("ageSlope: " + ageSlope);
                 console.log("ageIntercept: " + ageIntercept);
 
-                sexSlope = sexRegression.m; // The slope is 0, indicating no correlation from this dataset
+                sexSlope = sexRegression.m;
                 sexIntercept = sexRegression.b;
 
                 console.log("sexSlope: " + sexSlope);
                 console.log("sexIntercept: " + sexIntercept);
 
-                eduSlope = eduRegression.m; // The slope is 0, indicating no correlation from this dataset
+                eduSlope = eduRegression.m;
                 eduIntercept = eduRegression.b;
 
                 console.log("eduSlope: " + eduSlope);
                 console.log("eduIntercept: " + eduIntercept);
 
+                // Return the regression values
                 resolve([sexSlope, sexIntercept, eduSlope, eduIntercept, ageSlope, ageIntercept, dementiaRatio]);
             });
     });
 }
 
-
+// Calculate the risk of dementia based on the survey results and Kaggle dataset analysis
 async function calculateRisk(age, gender, educationLevel) {
+    // Run the analysis on the Kaggle dataset for comparison
     const results = await runAnalysis();
     const dementiaPrevelance = 55000000 / 8034000000;
     const percentOfDementiaBeingAlzheimers = 0.7;
@@ -138,4 +153,5 @@ async function calculateRisk(age, gender, educationLevel) {
     return formattedRisk;
 }
 
+// Export the function for use in index.js
 module.exports = { calculateRisk };

@@ -2,6 +2,7 @@
 <%- include("templates/header", {headerMessage: headerMessage }) %>
     <br>
     <!-- Form to test user's language and calculation abilities per MMSE questionnaire -->
+    <!-- https://cgatoolkit.ca/Uploads/ContentDocuments/MMSE.pdf -->
     <form method="POST" action="/mmse-word-reversal">
         <input type="hidden" name="word" value="<%= word %>">
         <div class="card mx-auto rounded">
