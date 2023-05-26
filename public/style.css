@@ -1500,3 +1500,32 @@ nav div {
     height: 25%;
     z-index: 1;
 }
+
+/* Animated text */
+.animated-text-container {
+    height: 70vh;
+}
+
+.animated-text {
+
+    background: linear-gradient(to right, white 20%, #D0A449 40%, #D88A63 60%, white 80%);
+        background-size: 200% auto;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: animated_text 3s linear infinite;
+        -moz-animation: animated_text 3s linear infinite;
+        -webkit-animation: animated_text 3s linear infinite;
+    }
+
+.animated-text h1{
+    font-size: 3em;
+}
+    
+    @keyframes animated_text {
+        to {
+            background-position: 200% center;
+        }
+    }
