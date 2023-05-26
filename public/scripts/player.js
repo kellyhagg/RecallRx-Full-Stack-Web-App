@@ -1,3 +1,4 @@
+// Initialize variables and DOM elements
 const content = document.querySelector(".content"),
   musicTitle = content.querySelector(".music-title"),
   audio = content.querySelector(".audio"),
@@ -11,10 +12,12 @@ drop = content.querySelector(".drop");
 let index = 1;
 let isLooping = false;
 
+// Load data when the window is loaded
 window.addEventListener("load", () => {
   loadData(index);
 });
 
+//  Load data based on index
 function loadData(index) {
   musicTitle.innerHTML = music[index - 1].purpose;
   audio.src = "music/" + music[index - 1].audio + ".mp3";
@@ -22,10 +25,14 @@ function loadData(index) {
 
 // Play - pause
 playBtn.addEventListener("click", () => {
+  // Check if the music is currently paused
   const isMusicPaused = content.classList.contains("paused");
+  // If the music is paused, call the pause() function
   if (isMusicPaused) {
     pause();
-  } else {
+  }
+  // If the music is not paused, call the play() function
+  else {
     play();
   }
 });
@@ -34,14 +41,14 @@ function play() {
   content.classList.add("paused");
   playBtnIcon.innerHTML = "pause";
   drop.classList.add("animated");
-  audio.play();
+  audio.play(); // Start playing the audio
 }
 
 function pause() {
   content.classList.remove("paused");
   playBtnIcon.innerHTML = "play_arrow";
   drop.classList.remove("animated");
-  audio.pause();
+  audio.pause(); // Pause the audio
 }
 
 // Update melody duration
@@ -57,16 +64,19 @@ function setDurationTime(durationTimeText) {
 
 // Time bar
 audio.addEventListener("timeupdate", (e) => {
-  const currentTime = e.target.currentTime; // get current melody timestamp
-  const duration = e.target.duration; // get melody duration
-  let progressBarWidth = (currentTime / duration) * 100; // calculate progress width
+  const currentTime = e.target.currentTime; // Get current melody timestamp
+  const duration = e.target.duration; // Get melody duration
+  let progressBarWidth = (currentTime / duration) * 100; // Calculate progress width
   progressBar.style.width = progressBarWidth + "%";
+  if (duration === currentTime) {
+    pause();
+  }
 
   // Update time bar UI
   progressInfo.addEventListener("click", (e) => {
-    let progressValue = progressInfo.clientWidth; // get width of Progress Bar
-    let clickedOffsetX = e.offsetX; // get offset x value
-    let melodyDuration = audio.duration; // get total music duration
+    let progressValue = progressInfo.clientWidth; // Get width of Progress Bar
+    let clickedOffsetX = e.offsetX; // Get offset x value
+    let melodyDuration = audio.duration; // Get total music duration
 
     audio.currentTime = (clickedOffsetX / progressValue) * melodyDuration;
   });
@@ -74,7 +84,6 @@ audio.addEventListener("timeupdate", (e) => {
   //Timer Logic
   let durationTimeText = content.querySelector(".duration");
   audio.addEventListener("loadeddata", () => {
-    console.log("Audio loaded");
     setDurationTime(durationTimeText);
   });
 
@@ -93,7 +102,6 @@ audio.addEventListener("timeupdate", (e) => {
   // Looping Logic
   if (isLooping && currentTime >= duration - 0.5) {
     // Restart the melody when it's about to finish
-    console.log(isLooping);
     audio.currentTime = 0;
     audio.play();
   }
@@ -105,10 +113,8 @@ loopBtn.addEventListener("click", () => {
   const loopBtnContainer = document.querySelector(".loop");
   if (isLooping) {
     loopBtnContainer.classList.remove("deactivated");
-    console.log("loop is deactivated");
   } else {
     loopBtnContainer.classList.add("deactivated");
-    console.log("loop is activated");
   }
   loopBtn.classList.toggle("active");
 });
