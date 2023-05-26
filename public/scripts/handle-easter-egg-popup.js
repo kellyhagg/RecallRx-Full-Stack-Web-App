@@ -1,11 +1,11 @@
 $(document).ready(function () {
-  // get the popup and the OK button
+  // Get the popup and the OK button
   var popup = $("#popup");
   var okBtn = $(".popup-btn");
 
-  // add click event listener to OK button
+  // Add click event listener to OK button
   okBtn.click(function () {
-    // close the popup
+    // Close the popup
     popup.hide();
     okBtn.hide();
     window.location.href = "/homepage";

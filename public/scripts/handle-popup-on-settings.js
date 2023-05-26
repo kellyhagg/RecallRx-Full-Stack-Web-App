@@ -1,14 +1,14 @@
 $(document).ready(function () {
-  // get the popup and the OK button
+  // Get the popup and the OK button
   var popup = $("#popup");
   var okBtn = $(".popup-btn");
 
-  // add click event listener to OK button
+  // Add click event listener to OK button
   okBtn.click(function () {
-    // close the popup
+    // Close the popup
     popup.hide();
     okBtn.hide();
-    // trigger the route (replace "route-url" with your actual route URL)
+    // Trigger the route (replace "route-url" with your actual route URL)
     window.location.href = "/settings";
   });
 });
