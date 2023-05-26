@@ -224,7 +224,6 @@ app.post("/signup", async (req, res) => {
     });
   }
 
-
   // check if username already exists in databse
   const existingUser = await userCollection.findOne({ username });
   if (existingUser) {
@@ -1702,6 +1701,12 @@ app.get("/meditation", (req, res) => {
 });
 
 // End of meditation API
+
+// get method for coming soon page
+app.use("/coming-soon", validateSession);
+app.get("/coming-soon", (req, res) => {
+  res.render("coming-soon");
+});
 
 // get method for 404 page
 app.get("*", (req, res) => {
