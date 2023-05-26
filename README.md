@@ -67,5 +67,12 @@ Olga Zimina
 
 8. [Association Between Smoking and Dementia - British Medical Journal](https://www.bmj.com/content/362/bmj.k2927)
 
+9. [Bootstrap Carousel Example] (https://getbootstrap.com/docs/4.0/components/carousel/)
+
+10. [Bootstrap Carousel Example] (https://getbootstrap.com/docs/5.3/examples/carousel/)
+
+11. [Adding swipe support to Bootstrap Carousel 3.0] (https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/)
+
+12. [HTML - How do I generate a progress bar circle with a percentage in and set the value with JS or jQuery?](https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the)
 
 README.md made with the assistance of ChatGPT
