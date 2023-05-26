@@ -1,3 +1,6 @@
+// Authors: Shuyi Liu, Kelly Hagg, Olga Zimina
+// Last modified: 2023-05-26
+
 // Import necessary modules and packages
 require("./utils.js");
 require("dotenv").config();
@@ -40,8 +43,8 @@ const {
   getObjectScore,
   getWord,
   getReversalScore,
-} = require("./public/scripts/mmse.js"); // import mmse.js
-const ss = require("simple-statistics"); // import simple-statistics
+} = require("./public/scripts/mmse.js"); // import mmse.js functions
+const ss = require("simple-statistics"); // import simple-statistics library
 const {
   runAlgorithm,
   train,
@@ -325,10 +328,10 @@ async function checkChallengeTrend(username) {
 // Check if an Easter egg announcement should be shown to a user.
 async function showEasterEggAnnounced(userId, isEasterEggActivated) {
   // Fetch user information from the database
-    const user = await userCollection.findOne(
-      { _id: new ObjectId(userId) },
-      { projection: { wasEasterEggAnnounced: 1 } }
-    );
+  const user = await userCollection.findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { wasEasterEggAnnounced: 1 } }
+  );
 
 
   // Determine if the Easter egg announcement should be shown
@@ -502,33 +505,62 @@ app.get("/surveyfinished", async (req, res) => {
   res.render("surveyfinished", { risk: risk });
 });
 
+// Get method for mmse landing page, reset the user score and page count, 
+// retrieved objects and retrieved words
 app.get("/mmse-landing-page", (req, res) => {
   userScore = 0;
   pageCount = 1;
   retrievedObjects = [];
   retrievedWords = [];
+  // populate header text
   res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
 });
 
+// Post method for mmse landing page, redirect to mmse orientation page
 app.post("/mmse-landing-page", async (req, res) => {
   res.redirect("/mmse-orientation");
 });
 
+// Get method for mmse orientation page
 app.get("/mmse-orientation", (req, res) => {
   res.render("mmse-orientation.ejs", { headerMessage: "MMSE Questionnaire" });
 });
 
+// Post method for mmse orientation page, redirect to mmse object recall page
+// Made with the assistance of ChatGPT
 app.post("/mmse-orientation", async (req, res) => {
-  var year = req.body.year;
-  var month = req.body.month;
   var day = req.body.day;
+  // Define the validation schema
+  const schema = Joi.object({
+    year: Joi.number().integer(),
+    month: Joi.number().integer(),
+  });
 
+  // Validate the input
+  const { error, value } = schema.validate({
+    year: req.body.year,
+    month: req.body.month,
+  });
+
+  if (error) {
+    // Handle the validation error
+    console.error(error.details[0].message);
+    res.redirect("/mmse-orientation");
+    return;
+  }
+
+  // Validation successful
+  var year = value.year;
+  var month = value.month;
+
+  // validate the input style for year and month using Joi, day is not applicable.
   userScore = userScore + getOrientationScore(year, month, day);
   console.log("userScore: " + userScore);
   res.redirect("/mmse-object-recall");
   return;
 });
 
+// Get method for mmse object recall page
 app.get("/mmse-object-recall", async (req, res) => {
   const object = getObject(retrievedObjects);
   retrievedObjects.push(object);
@@ -539,6 +571,7 @@ app.get("/mmse-object-recall", async (req, res) => {
   });
 });
 
+// Post method for mmse object recall page, redirect to mmse sentence recall page
 app.post("/mmse-object-recall", async (req, res) => {
   const object = req.body.object;
   const inputObject = req.body.inputObject;
@@ -553,6 +586,7 @@ app.post("/mmse-object-recall", async (req, res) => {
   }
 });
 
+// Get method for mmse sentence recall page
 app.get("/mmse-sentence-recall", (req, res) => {
   const sentence = getSentence();
   res.render("mmse-sentence-recall.ejs", {
@@ -561,6 +595,7 @@ app.get("/mmse-sentence-recall", (req, res) => {
   });
 });
 
+// Post method for mmse sentence recall page, redirect to mmse word reversal page
 app.post("/mmse-sentence-recall", async (req, res) => {
   const sentence = req.body.sentence;
   const inputSentence = req.body.inputSentence;
@@ -569,6 +604,7 @@ app.post("/mmse-sentence-recall", async (req, res) => {
   res.redirect("/mmse-word-reversal");
 });
 
+// Get method for mmse word reversal page
 app.get("/mmse-word-reversal", async (req, res) => {
   const word = getWord(retrievedWords);
   retrievedWords.push(word);
@@ -580,6 +616,7 @@ app.get("/mmse-word-reversal", async (req, res) => {
   });
 });
 
+// Post method for mmse word reversal page, redirect to mmse results page
 app.post("/mmse-word-reversal", async (req, res) => {
   const word = req.body.word;
   const inputWord = req.body.inputWord;
@@ -594,19 +631,22 @@ app.post("/mmse-word-reversal", async (req, res) => {
   }
 });
 
+// Get method for mmse results page, populate DB with user score
+// Function created and debugged with the assistance of ChatGPT
 app.get("/mmse-results", async (req, res) => {
   const score = parseInt(Math.round((userScore / 15) * 100));
-  const activityData = await activityCollection.find({}).toArray();
   var exercise = [];
   var social = [];
   var smoking = [];
   var alcohol = [];
 
+  // Get the current date and format it to ISOString
   const previousMonth = new Date();
   previousMonth.setMonth(previousMonth.getMonth() - 1);
   const formattedDate = previousMonth.toISOString();
   const activities = await activityCollection.find({}).toArray();
 
+  // Get the average of each activity of the user for the past month
   activities.forEach((activity) => {
     if (
       req.session.username == activity.username &&
@@ -625,6 +665,7 @@ app.get("/mmse-results", async (req, res) => {
   const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
   const alcoholAvg = alcohol.reduce((a, b) => a + b, 0) / alcohol.length;
 
+  // Insert the results into the database
   await resultsCorrelationData.insertOne({
     exerciseAvg: exerciseAvg,
     socialAvg: socialAvg,
@@ -649,6 +690,7 @@ app.get("/mmse-results", async (req, res) => {
 
   const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
 
+  // Retrain the model from the data every roughly 1 / 100 mmse score submissions
   if (randomNumber1to100 == 1) {
     console.log("Training model");
     var updatedCorrelationValues = [];
@@ -656,6 +698,7 @@ app.get("/mmse-results", async (req, res) => {
     updatedCorrelationValues = await train(result);
     console.log(updatedCorrelationValues[0]);
 
+    // Update the correlation values in the database, and remove the outdated values
     console.log(updatedCorrelationValues);
     await resultsCorrelationValues.deleteMany({});
     await resultsCorrelationValues.insertOne({
@@ -666,6 +709,7 @@ app.get("/mmse-results", async (req, res) => {
     });
   }
 
+  // Get the past 5 scores of the user to populate the visual graph
   const past5ScoresData = await mmseScoresCollection
     .find({ username: req.session.username })
     .sort({ date: -1 })
@@ -676,8 +720,6 @@ app.get("/mmse-results", async (req, res) => {
   past5ScoresData.forEach((score) => {
     past5Scores.push(score.score);
   });
-
-  console.log("PAST 5 SCOOOOROES", past5Scores.reverse());
 
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
@@ -1245,10 +1287,12 @@ app.post("/notifications", async (req, res, next) => {
 // validate user session before accessing daily recommendation page
 app.use("/dailyrecommendation", validateSession);
 
+// Start of Daily Recommendation API
+// Function made and debugged with the assistance of ChatGPT
 async function getRecommendation(req, res) {
   var lastRecommendation;
-  var dailyRecommendation;
 
+  // if user has not visited the page before, create a new document in the collection
   if (
     (await dailyRecommendationLastVisit.findOne(
       { username: req.session.username },
@@ -1261,6 +1305,7 @@ async function getRecommendation(req, res) {
       username: req.session.username,
       date: lastRecommendation,
     });
+    // else get the last recommendation date from the collection
   } else {
     console.log("last visit");
     lastRecommendation = (
@@ -1274,6 +1319,7 @@ async function getRecommendation(req, res) {
   const currentDate = new Date().toISOString().slice(0, 10); // Get current day
   console.log(lastRecommendation != currentDate);
 
+  // If the user has not visited the page today, get a new daily recommendation
   if (lastRecommendation == currentDate) {
     console.log("new day");
     lastRecommendation = currentDate; // Update lastRecommendation with currentDate
@@ -1294,6 +1340,7 @@ async function getRecommendation(req, res) {
     var recommendation1;
     var recommendation2;
 
+    // Get the last month's activities
     const previousMonth = new Date();
     previousMonth.setMonth(previousMonth.getMonth() - 1);
     const formattedDate = previousMonth.toISOString();
@@ -1312,6 +1359,7 @@ async function getRecommendation(req, res) {
       }
     });
 
+    // Get the current trained correlation values from the database
     const correlations = await resultsCorrelationValues.find({}).toArray();
 
     correlations.forEach((result) => {
@@ -1321,6 +1369,7 @@ async function getRecommendation(req, res) {
       coefficients.push(result.alcoholCorrelation);
     });
 
+    // Calculate the average of each activity
     const exerciseAvg = exercise.reduce((a, b) => a + b, 0) / exercise.length;
     const socialAvg = social.reduce((a, b) => a + b, 0) / social.length;
     const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
@@ -1333,6 +1382,8 @@ async function getRecommendation(req, res) {
 
     console.log(coefficients);
 
+    // Run the algorithm to get the daily recommendations found in the 
+    // recommendations_algorithm.js file
     const dailyRecommendations = await runAlgorithm(values, coefficients);
 
     recommendation1 = dailyRecommendations[0];
@@ -1370,6 +1421,7 @@ async function getRecommendation(req, res) {
   return [recommendation1, recommendation2];
 }
 
+// Get the activity averages for the past 4 weeks and populate the graph in daily recommendation page
 async function getWeeklyAverages(req, res) {
   var exerciseAvgWeek1 = [];
   var exerciseAvgWeek2 = [];
@@ -1388,8 +1440,10 @@ async function getWeeklyAverages(req, res) {
   var alcoholAvgWeek3 = [];
   var alcoholAvgWeek4 = [];
 
+  // Get the current day
   const currentDay = new Date().toISOString().slice(0, 10);
 
+  // Get the dates ranges for each week in the last month
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const formatOneWeekAgo = oneWeekAgo.toISOString().slice(0, 10);
@@ -1417,6 +1471,7 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
+  // Calculate the average of each activity for each week
   exerciseAvgWeek4 =
     exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
   socialAvgWeek4 =
@@ -1512,6 +1567,7 @@ async function getWeeklyAverages(req, res) {
     alcoholAvgWeek4,
   ];
 
+  // Return the average of each activity for each week for use in daily recommendation page graph
   return [exerciseAvg, socialAvg, smokingAvg, alcoholAvg];
 }
 
