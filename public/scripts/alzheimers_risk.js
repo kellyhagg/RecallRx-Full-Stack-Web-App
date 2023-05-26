@@ -1,3 +1,7 @@
+// Calculate the risk of dementia based on the survey results and Kaggle dataset analysis
+// Author: Kelly Hagg
+// Last modified: 2023-05-26
+
 // Include necessary libraries
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -20,6 +24,7 @@ var eduIntercept = 0;
 // source: https://www.kaggle.com/datasets/brsdincer/alzheimer-features
 async function runAnalysis
     () {
+    // Function made and debugged with the assistance of ChatGPT
     return new Promise((resolve, reject) => {
         // Read the csv file, and extract the ages, groups as 0 or 1 and sex as 0 or 1
         fs.createReadStream('public/resources/alzheimer.csv')
@@ -92,9 +97,14 @@ async function runAnalysis
 async function calculateRisk(age, gender, educationLevel) {
     // Run the analysis on the Kaggle dataset for comparison
     const results = await runAnalysis();
+    // Get constant for global dementia prevelance
+    // https://www.alzint.org/about/dementia-facts-figures/dementia-statistics/
     const dementiaPrevelance = 55000000 / 8034000000;
+    // Get constant to adjust for dataset applying strictly to alzheimers (70% of dementia cases)
+    // https://www.cdc.gov/aging/dementia/index.html#:~:text=Alzheimer's%20disease.,specific%20changes%20in%20the%20brain
     const percentOfDementiaBeingAlzheimers = 0.7;
 
+    // Adjust the age to the nearest age group
     if (age == 'lessThan65') {
         age = 64;
     } else if (age == '65-69') {
@@ -109,6 +119,7 @@ async function calculateRisk(age, gender, educationLevel) {
         age = 90;
     }
 
+    // Adjust the education level to a number
     if (educationLevel == 'lessThanSecondary') {
         educationLevel = 12;
     } else if (educationLevel == 'secondary') {
@@ -128,6 +139,7 @@ async function calculateRisk(age, gender, educationLevel) {
     var sexRisk = 0;
     var eduRisk = 0;
 
+    // Calculate the risk based on the regression values
     if (results[0] != 0) {
         if (gender == 'male') {
             sexRisk = results[0] * 1 + results[1];
@@ -145,10 +157,13 @@ async function calculateRisk(age, gender, educationLevel) {
         risk += ageRisk;
     }
 
+    // Adjust the risk based on the global dementia prevelance and the percent of dementia cases 
+    // that are alzheimers
     const adjustedRisk = (risk * dementiaPrevelance / results[6]) / percentOfDementiaBeingAlzheimers;
     console.log("risk: " + risk);
     console.log("adjustedRisk: " + adjustedRisk);
 
+    // Format the risk to 2 decimal places and return
     const formattedRisk = Math.round(adjustedRisk * 100) / 100;
     return formattedRisk;
 }
