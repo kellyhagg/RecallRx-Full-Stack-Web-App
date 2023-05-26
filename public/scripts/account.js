@@ -39,6 +39,7 @@ const confirmPasswordInput = document.querySelector("#confirmPassword");
 // Add an event listener to the password input for the "invalid" event
 passwordInput.addEventListener("invalid", function (event) {
   event.preventDefault(); // Prevent the browser's default error message from appearing
+  removeToast(event.target);
   if (!event.target.validity.valid) {
     const validationMessage = event.target.validationMessage;
     const toast = document.createElement("div");
@@ -60,6 +61,7 @@ passwordInput.addEventListener("input", function (event) {
 // Add an event listener to the confirmPassword input for the "invalid" event
 confirmPasswordInput.addEventListener("invalid", function (event) {
   event.preventDefault(); // Prevent the browser's default error message from appearing
+  removeToast(event.target);
   if (!event.target.validity.valid) {
     const validationMessage = event.target.validationMessage;
     const toast = document.createElement("div");
