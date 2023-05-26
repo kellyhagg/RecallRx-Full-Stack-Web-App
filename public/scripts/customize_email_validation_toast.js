@@ -6,6 +6,9 @@ emailInput.addEventListener("invalid", function (event) {
     const validationMessage = event.target.validationMessage;
     const toast = document.createElement("div");
     toast.classList.add("custom-validation-message");
+    if (validationMessage === "Enter an email address") {
+      validationMessage = "Please enter a valid email address.";
+    }
     toast.textContent = validationMessage;
     event.target.insertAdjacentElement("afterend", toast);
   }
