@@ -1,3 +1,7 @@
+// Description: This file contains customization for validation errors toasts.
+// Author: Olga Zimina
+// Last modified: 2023-05-26
+
 // Get the password and confirm password input elements
 const passwordInput = document.querySelector("#password");
 const confirmPasswordInput = document.querySelector("#confirmPassword");

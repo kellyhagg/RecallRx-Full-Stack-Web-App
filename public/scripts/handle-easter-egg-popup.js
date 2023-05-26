@@ -1,3 +1,8 @@
+// Description: This file contains function that displays and hides Easter 
+// egg announcement
+// Author: Olga Zimina
+// Last modified: 2023-05-26
+
 $(document).ready(function () {
   // Get the popup and the OK button
   var popup = $("#popup");

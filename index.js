@@ -807,7 +807,6 @@ async function sendEmail(to, subject, message) {
       html: message,
     });
 
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.log(error);
   }
@@ -850,7 +849,6 @@ app.post("/forgot-password", async (req, res) => {
     console.log("User not found");
     return;
   }
-  console.log(user);
 
   // Create a onetime link valid for a day
   const secret = jwt_secret + user[0].password;
@@ -858,14 +856,8 @@ app.post("/forgot-password", async (req, res) => {
     email: user[0].email,
     id: user[0]._id,
   };
-  console.log("payload" + payload);
   const token = jwt.sign(payload, secret, { expiresIn: "1d" });
-  //  TO DO
   const link = `${app_hosting_address}/reset-password/${user[0]._id}&auth=${token}`;
-  // const link = `https://recallrx.cyclic.app/reset-password/${user[0]._id}&auth=${token}`;
-  // const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
-  console.log(link);
-  //TO DO: send email
   fs.readFile(
     __dirname + "/emails/reset-password-email.html",
     "utf8",
@@ -908,7 +900,6 @@ app.get("/reset-password/:id&auth=:token", async (req, res) => {
       });
       return;
     }
-    console.log("user found");
     // Handle reset password for user with provided id
     const secret = jwt_secret + user.password;
 
@@ -931,13 +922,11 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
   // Extract the id, token, and password from the request
   const { id, token } = req.params;
   const { password } = req.body;
-  console.log("inside post reset password");
   // Check if id exists in database
   const user = await userCollection.findOne(
     { _id: new ObjectId(id) },
     { projection: { username: 1, email: 1, _id: 1, password: 1 } }
   );
-  console.log(user);
   // Handle case where provided id is invalid
   if (!user) {
     console.log("User not found");
@@ -950,7 +939,6 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
       isError: true,
     };
     res.redirect("/messages");
-    console.log("ID is not valid");
     return;
   }
   // Handle reset password for user with provided id
@@ -973,7 +961,6 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
     };
     res.redirect("/messages");
   } catch (error) {
-    console.log("inside try catch");
     console.log(error.message);
     // Set an error message in the session
     req.session.messageData = {
@@ -1004,8 +991,6 @@ app.use("/settings", validateSession);
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
-  console.log(username, email);
-  // res.render("settings", { userName: username, email: email });
   res.render("settings", {
     userName: username,
     email: email,
@@ -1023,7 +1008,6 @@ app.get("/user-name-edit", async (req, res) => {
     .find({ username: username })
     .project({ username: 1, email: 1, password: 1, _id: 1 })
     .toArray();
-  console.log(user);
   res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
@@ -1042,7 +1026,6 @@ app.post("/update-user-name/:userId", async (req, res) => {
   if (validationResult.error != null) {
     console.log(validationResult.error);
     let flag = validationResult.error.details[0].path[0] === "newUserName";
-    console.log("path: ", flag);
     // if the error is related to username, redirect to signup page with error message for username
     if (validationResult.error.details[0].path[0] === "newUserName") {
       const errorMessage =
@@ -1074,7 +1057,6 @@ app.post("/update-user-name/:userId", async (req, res) => {
     _id: new ObjectId(userId),
   });
 
-  console.log("post user name - user: " + user.username);
   req.session.username = user.username;
   res.render("settings", {
     userName: user.username,
@@ -1082,7 +1064,6 @@ app.post("/update-user-name/:userId", async (req, res) => {
     data: "user name",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
 app.use("/email-edit", validateSession);
@@ -1149,7 +1130,6 @@ app.post("/update-email/:userId", async (req, res) => {
     data: "emails",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
 app.use("/password-change", validateSession);
@@ -1169,19 +1149,16 @@ app.post("/update-password/:userId", async (req, res) => {
 
   // Hash the password and update it in the database
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-  console.log(hashedPassword);
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { password: hashedPassword } }
   );
-  console.log("password updated");
   res.render("settings", {
     userName: user.username,
     email: user.email,
     data: "password",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
 app.get("/logout", (req, res) => {
@@ -1621,6 +1598,7 @@ app.get("/daily-activity-tracking", async (req, res) => {
   }
 });
 
+// Determine if users activity meets daily goal
 function isUserOnTrack(
   exerciseDuration,
   socialDuration,

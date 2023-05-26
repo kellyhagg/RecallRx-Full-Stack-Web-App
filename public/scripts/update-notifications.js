@@ -1,7 +1,7 @@
+// Description: This code updates the notification settings based on the user's selections.
 // Implemented with the assistance of theChatGPT
-/* 
-* This code updates the notification settings based on the user's selections.
-*/
+// Author: Olga Zimina
+// Last modified: 2023-05-26
 
 // Initialize the notification settings by toggling the specified notification switches.
 function init() {

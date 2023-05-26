@@ -1,7 +1,8 @@
-/**
- * This code retrieves elements from the HTML document and performs actions based on the values of specific dataset attributes.
- * It controls the visibility of certain elements and triggers toast notifications.
- */
+// Description: This code retrieves elements from the HTML document and 
+// performs actions based on the values of specific dataset attributes.
+// It controls the visibility of certain elements and triggers toast notifications.
+// Author: Olga Zimina
+// Last modified: 2023-05-26
 
 // Get the element with the ID "homepage"
 const homepageDiv = document.getElementById("homepage");
