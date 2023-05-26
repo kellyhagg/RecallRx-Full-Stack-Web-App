@@ -1,6 +1,7 @@
 // Description: This code retrieves elements from the HTML document and 
 // performs actions based on the values of specific dataset attributes.
 // It controls the visibility of certain elements and triggers toast notifications.
+// Implemented with the assistance of theChatGPT
 // Author: Olga Zimina
 // Last modified: 2023-05-26
 
