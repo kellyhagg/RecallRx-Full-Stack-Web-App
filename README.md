@@ -75,4 +75,12 @@ Olga Zimina
 
 12. [HTML - How do I generate a progress bar circle with a percentage in and set the value with JS or jQuery?](https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the)
 
+13. [POST request with json data in reveal-hidden-elements.js] (implemented with assistance of ChatGPT)
+
+14. [Date manipulations in update-notifications.js] (implemented with assistance of ChatGPT)
+
+15. [Login API in index.js]  (modified code block from COMP 2537 Assignment 2 by Olga Zimina)
+
+16. [Bootstrap 4 Horizontal Scrolling] (<https://codepen.io/Temmio/pen/gKGEYV>)
+
 README.md made with the assistance of ChatGPT
