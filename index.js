@@ -185,7 +185,7 @@ app.post("/signup", async (req, res) => {
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().max(40).required(),
-    email: Joi.string().max(20).required(),
+    email: Joi.string().max(40).required(),
     password: Joi.string().max(20).required(),
   });
 
@@ -325,10 +325,11 @@ async function checkChallengeTrend(username) {
 // Check if an Easter egg announcement should be shown to a user.
 async function showEasterEggAnnounced(userId, isEasterEggActivated) {
   // Fetch user information from the database
-  const user = await userCollection.findOne(
-    { _id: new ObjectId(userId) },
-    { projection: { wasEasterEggAnnounced: 1 } }
-  );
+    const user = await userCollection.findOne(
+      { _id: new ObjectId(userId) },
+      { projection: { wasEasterEggAnnounced: 1 } }
+    );
+
 
   // Determine if the Easter egg announcement should be shown
   const showPopUp = !user.wasEasterEggAnnounced;
@@ -822,7 +823,7 @@ app.post("/forgot-password", async (req, res) => {
 
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    email: Joi.string().max(50).required(),
+    email: Joi.string().max(40).required(),
   });
 
   // validate the input
@@ -1033,11 +1034,32 @@ app.post("/update-user-name/:userId", async (req, res) => {
     .project({ username: 1, email: 1 })
     .toArray();
   const newUserName = req.body.userName;
+
+  const schema = Joi.object({
+    newUserName: Joi.string().alphanum().max(40).required(),
+  });
+  const validationResult = schema.validate({ newUserName });
+  if (validationResult.error != null) {
+    console.log(validationResult.error);
+    let flag = validationResult.error.details[0].path[0] === "newUserName";
+    console.log("path: ", flag);
+    // if the error is related to username, redirect to signup page with error message for username
+    if (validationResult.error.details[0].path[0] === "newUserName") {
+      const errorMessage =
+        "Username is not valid, please enter a username with only letters and numbers under 40 characters.";
+      res.render("user-name-edit", {
+        user: user,
+        errorMsg: errorMessage,
+      });
+      return;
+    }
+  }
+
   const anyUser = await userCollection.findOne(
     { username: newUserName },
     { projection: { username: 1, userId: 1 } }
   );
-  if (anyUser && anyUser.userId !== userId) {
+  if (anyUser && anyUser.username !== req.session.username) {
     res.render("user-name-edit", {
       user: user,
       errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
@@ -1085,15 +1107,18 @@ app.post("/update-email/:userId", async (req, res) => {
   const email = req.body.email;
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    email: Joi.string().max(50).required(),
+    email: Joi.string().max(40).required(),
   });
   // validate the input
   const validationResult = schema.validate({ email });
+
   if (validationResult.error != null) {
+    const errorMessage =
+      "Email is not valid, please enter an email under 20 characters.";
     res.render("email-edit", {
       userId: user._id,
       userEmail: user.email,
-      errorMsg: validationResult.error.message,
+      errorMsg: errorMessage,
     });
     return;
   }
@@ -1142,8 +1167,6 @@ app.post("/update-password/:userId", async (req, res) => {
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const newPassword = req.body.password;
 
-  console.log(newPassword);
-
   // Hash the password and update it in the database
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
   console.log(hashedPassword);
@@ -1159,6 +1182,11 @@ app.post("/update-password/:userId", async (req, res) => {
     showPopUp: true,
   });
   // res.redirect("/settings");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("index");
 });
 
 // End of Settings API
