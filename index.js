@@ -729,15 +729,19 @@ app.get("/mmse-results", async (req, res) => {
   userScore = 0;
 });
 
+// Defines the next MMSE (Mini-Mental State Examination) date for a user
 async function defineNextMmseDate(userId) {
-  const currentDate = new Date();
+  const currentDate = new Date(); // Get the current date
+  // Retrieve the notification document for the user
   var notification = await notificationsCollection.findOne(
     { userId: userId },
     { projection: { mmse: 1 } }
   );
+  // Extract the frequency and active status of MMSE from the notification
   const frequency = notification.mmse.frequency;
   const isActive = notification.mmse.active;
   var numberOfDays = 7;
+  // Determine the number of days based on the frequency
   switch (frequency) {
     case "every-other-week":
       numberOfDays = 14;
@@ -745,12 +749,9 @@ async function defineNextMmseDate(userId) {
     case "monthly":
       numberOfDays = 30;
   }
-  console.log("current date: ", currentDate);
   const newNextDate = new Date();
   newNextDate.setDate(currentDate.getDate() + numberOfDays);
-  console.log("next: ", newNextDate);
-  console.log("next: ", newNextDate.toISOString());
-  console.log("user id: ", userId);
+  // Update the next MMSE date if the notification is active
   if (isActive) {
     const updatedNotification = await notificationsCollection.findOneAndUpdate(
       { userId: userId },
@@ -799,7 +800,6 @@ app.post("/login", async (req, res) => {
     });
     return;
   }
-  console.log(user);
   // Check password match and set session variables
   const passwordMatch = await bcrypt.compare(password, user[0].password);
   if (passwordMatch) {
@@ -825,7 +825,6 @@ app.use("/loggedIn", validateSession);
 
 // Route to handle user session validation
 app.get("/loggedIn", (res, req) => {
-  console.log("loggedin");
   res.redirect("/homepage");
 });
 // End of Login API
@@ -1016,6 +1015,7 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
   }
 });
 
+// Retrieves the message data and renders the "messages" view with the data.
 app.get("/messages", (req, res) => {
   const messageData = req.session.messageData;
   res.render("messages", {
@@ -1053,18 +1053,23 @@ app.get("/user-name-edit", async (req, res) => {
   res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
+// Update a user's name based on the provided user ID.
 app.post("/update-user-name/:userId", async (req, res) => {
   const userId = req.params.userId;
+  // Find the user with the specified ID and retrieve the username and email
   var user = await userCollection
     .find({ _id: new ObjectId(userId) })
     .project({ username: 1, email: 1 })
     .toArray();
   const newUserName = req.body.userName;
 
+  // Define the validation schema for the new user name
   const schema = Joi.object({
     newUserName: Joi.string().alphanum().max(40).required(),
   });
+  // Validate the new user name against the schema
   const validationResult = schema.validate({ newUserName });
+  // Check if there is an error in the validation result
   if (validationResult.error != null) {
     console.log(validationResult.error);
     let flag = validationResult.error.details[0].path[0] === "newUserName";
@@ -1084,6 +1089,8 @@ app.post("/update-user-name/:userId", async (req, res) => {
     { username: newUserName },
     { projection: { username: 1, userId: 1 } }
   );
+  // / If a user with the same user name exists and it is not the current user's name,
+  // render the "user-name-edit" view with an error message
   if (anyUser && anyUser.username !== req.session.username) {
     res.render("user-name-edit", {
       user: user,
@@ -1091,15 +1098,18 @@ app.post("/update-user-name/:userId", async (req, res) => {
     });
     return;
   }
+  // Update the user's username in the user collection
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { username: newUserName } }
   );
+  // Retrieve the updated user information from the user collection
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
 
   req.session.username = user.username;
+  // Render the "settings" view with the updated user information and a success message
   res.render("settings", {
     userName: user.username,
     email: user.email,
@@ -1108,15 +1118,17 @@ app.post("/update-user-name/:userId", async (req, res) => {
   });
 });
 
+// Middleware that validates the user session before accessing the "/email-edit" endpoint.
 app.use("/email-edit", validateSession);
+// Renders the "email-edit" view with the user's email
 app.get("/email-edit", async (req, res) => {
   const email = req.session.email;
+  // Find the user with the specified email and retrieve the necessary data
   const user = await userCollection.findOne(
     { email: email },
-    { projection: { username: 1, email: 1, is_admin: 1, _id: 1 } }
+    { projection: { username: 1, email: 1, _id: 1 } }
   );
-
-  console.log("get email - user: " + user);
+  // Render the "email-edit" view with the user's ID, email, and an empty error message
   res.render("email-edit", {
     userId: user._id,
     userEmail: user.email,
@@ -1124,6 +1136,7 @@ app.get("/email-edit", async (req, res) => {
   });
 });
 
+// Update a user's email address.
 app.post("/update-email/:userId", async (req, res) => {
   const userId = req.params.userId;
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -1132,9 +1145,9 @@ app.post("/update-email/:userId", async (req, res) => {
   const schema = Joi.object({
     email: Joi.string().max(40).required(),
   });
-  // validate the input
+  // Validate the input
   const validationResult = schema.validate({ email });
-
+  // If email validation fails, render the "email-edit" template with an error message
   if (validationResult.error != null) {
     const errorMessage =
       "Email is not valid, please enter an email under 20 characters.";
@@ -1145,10 +1158,13 @@ app.post("/update-email/:userId", async (req, res) => {
     });
     return;
   }
+  // Check if any user already exists with the new email address
   const anyUser = await userCollection.findOne(
     { email: email },
     { projection: { email: 1, username: 1 } }
   );
+  // If a user with the new email address already exists and it is not the current user,
+  // render the "email-edit" template with an error message
   if (anyUser && anyUser.username !== req.session.username) {
     res.render("email-edit", {
       userId: user._id,
@@ -1157,14 +1173,16 @@ app.post("/update-email/:userId", async (req, res) => {
     });
     return;
   }
+  // Update the user's email address in the database
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { email: email } }
   );
+  // Find the updated user in the userCollection
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
-
+  // Render the "settings" template with the updated user information and a popup message
   req.session.email = user.email;
   res.render("settings", {
     userName: user.username,
@@ -1174,9 +1192,11 @@ app.post("/update-email/:userId", async (req, res) => {
   });
 });
 
+// Update user's password
 app.use("/password-change", validateSession);
 app.get("/password-change", async (req, res) => {
   const email = req.session.email;
+  // Find the user with the given userId in the userCollection
   const user = await userCollection
     .find({ email: email })
     .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
@@ -1195,6 +1215,7 @@ app.post("/update-password/:userId", async (req, res) => {
     { _id: new ObjectId(userId) },
     { $set: { password: hashedPassword } }
   );
+  // Render the "settings" template with the user information and a popup message
   res.render("settings", {
     userName: user.username,
     email: user.email,
@@ -1203,20 +1224,22 @@ app.post("/update-password/:userId", async (req, res) => {
   });
 });
 
+// Destroy current session and render indx template
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("index");
 });
-
 // End of Settings API
-app.use("/notifications", validateSession);
+
 // Start notification API
+app.use("/notifications", validateSession);
+// Get user's notifications
 app.get("/notifications", async (req, res) => {
   try {
     const { userId } = req.session;
 
     const notifications = await notificationsCollection.findOne({ userId });
-
+    // Format the notifications data into an options object
     const date = new Date(notifications.exercise.next);
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -1244,16 +1267,18 @@ app.get("/notifications", async (req, res) => {
   }
 });
 
+// Update the notifications for a user.
 app.post("/notifications", async (req, res, next) => {
   try {
     const { userId } = req.session;
+    // Extract the new values for exercise and mmse notifications from the request body
     const exercise = req.body.exercise;
     const mmse = req.body.mmse;
+    // Update the exercise and mmse notification values for the user in the notificationsCollection
     await notificationsCollection.updateOne(
       { userId },
       { $set: { exercise, mmse } }
     );
-
     res.status(200).json({ message: "Updated" });
   } catch (error) {
     res.status(500).json({ message: error?.message || "error" });
