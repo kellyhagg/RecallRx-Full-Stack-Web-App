@@ -189,39 +189,36 @@ app.post("/signup", async (req, res) => {
     password: Joi.string().max(20).required(),
   });
 
-  const usernameNotValid = Joi.string().alphanum().max(40).validate(username);
-  const emailNotValid = Joi.string().max(20).validate(email);
-  const passwordNotValid = Joi.string().max(20).validate(password);
-
   // validate the input
   const validationResult = schema.validate({ username, email, password });
   if (validationResult.error != null) {
     console.log(validationResult.error);
 
+    // if the error is related to username, redirect to signup page with error message for username
     if (validationResult.error.details[0].path[0] === "username") {
-      console.log("Username not valid");
       const errorMessage =
         "Username is not valid, please enter a username with only letters and numbers under 40 characters.";
       res.render("signup", { errorMessage: errorMessage });
       return;
     }
 
+    // if the error is related to email, redirect to signup page with error message for email
     if (validationResult.error.details[0].path[0] === "email") {
-      console.log("Email not valid");
       const errorMessage =
         "Email is not valid, please enter an email under 20 characters.";
       res.render("signup", { errorMessage: errorMessage });
       return;
     }
 
+    // if the error is related to password, redirect to signup page with error message for password
     if (validationResult.error.details[0].path[0] === "password") {
-      console.log("Password not valid");
       const errorMessage =
         "Password is not valid, please enter a password under 20 characters.";
       res.render("signup", { errorMessage: errorMessage });
       return;
     }
 
+    // if the error is not related to username, email or password, redirect to signup page with general error message
     res.redirect("/signup", {
       errorMessage: "There is an error with your signup, please try again.",
     });
@@ -231,7 +228,6 @@ app.post("/signup", async (req, res) => {
   // check if username already exists in databse
   const existingUser = await userCollection.findOne({ username });
   if (existingUser) {
-    console.log("Username already exists");
     const errorMessage =
       "Username already exists, please choose another username.";
     res.render("signup", { errorMessage: errorMessage });
@@ -243,7 +239,7 @@ app.post("/signup", async (req, res) => {
 
   // Set notification configuration
   const currentDate = new Date();
-  // insert the user into the database
+  // insert the user into the database with default values
   const result = await userCollection.insertOne({
     username: username,
     email: email,
@@ -282,8 +278,6 @@ app.post("/signup", async (req, res) => {
       wasNotificationClosed: false,
     },
   });
-
-  console.log("Inserted user through signup");
 
   // store the userId in the session
   req.session.userId = result.insertedId;
@@ -424,12 +418,15 @@ app.post("/checkup-toast-state-update", async (req, res) => {
   );
 });
 
+// Middleware to validate user session before accessing risk factor survey
 app.use("/riskfactorsurvey", validateSession);
+
 // get method for risk factor survey
 app.get("/riskfactorsurvey", (req, res) => {
   res.render("riskfactorsurvey");
 });
 
+// Middleware to validate user session before accessing risk factor survey questions
 app.use("/riskfactorquestions", validateSession);
 // get method for risk factor survey
 app.get("/riskfactorquestions", (req, res) => {
@@ -461,8 +458,9 @@ app.post("/riskfactorquestions", async (req, res) => {
     diabetes,
     depression,
   });
+
+  // if the input is invalid, redirect to the risk factor survey page
   if (validationResult.error != null) {
-    console.log(validationResult.error);
     res.redirect("/riskfactorquestions");
     return;
   }
@@ -470,14 +468,7 @@ app.post("/riskfactorquestions", async (req, res) => {
   // retrieve the user ID from the session
   const username = req.session.username;
 
-  // insert the user's risk factor survey results into the database and save it to the same document
-  console.log("username: ", username);
-  console.log("educationLevel: ", educationLevel);
-  console.log("age: ", age);
-  console.log("gender: ", gender);
-  console.log("diabetes: ", diabetes);
-  console.log("depression: ", depression);
-
+  // update the user's risk factor survey results in the database
   await userCollection.updateOne(
     { username: username },
     {
@@ -491,8 +482,6 @@ app.post("/riskfactorquestions", async (req, res) => {
     }
   );
 
-  console.log("Inserted user survey");
-
   // redirect to the homepage when user finishes survey
   res.redirect("/surveyfinished");
 });
@@ -503,7 +492,6 @@ app.get("/surveyfinished", async (req, res) => {
     { username: req.session.username },
     { projection: { educationLevel: 1, age: 1, gender: 1 } }
   );
-  console.log("userData: ", userData.educationLevel);
 
   const risk = await calculateRisk(
     userData.age,
@@ -1174,11 +1162,6 @@ app.post("/update-password/:userId", async (req, res) => {
   // res.redirect("/settings");
 });
 
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.render("index");
-});
-
 // End of Settings API
 app.use("/notifications", validateSession);
 // Start notification API
@@ -1564,11 +1547,6 @@ app.get("/daily-activity-tracking", async (req, res) => {
       smokeAmount = 0;
     }
 
-    console.log("Exercise Time:", exerciseDuration);
-    console.log("Social Time:", socialDuration);
-    console.log("Alcohol Consumption:", alcoholAmount);
-    console.log("Smoke Count:", smokeAmount);
-
     // Calculate the progress ratios based on the retrieved data
     const exerciseProgressRatio = exerciseDuration
       ? exerciseDuration / EXERCISE_TIME_GOAL
@@ -1582,10 +1560,14 @@ app.get("/daily-activity-tracking", async (req, res) => {
     const smokeProgressRatio = smokeAmount
       ? smokeAmount / SMOKE_COUNT_LIMIT
       : 0;
+
+    // Calculate the time left to reach the goals or limites
     const exerciseMinLeft = EXERCISE_TIME_GOAL - exerciseDuration;
     const socialMinLeft = SOCIAL_TIME_GOAL - socialDuration;
     const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholAmount;
     const smokeLeft = SMOKE_COUNT_LIMIT - smokeAmount;
+
+    // Check if the goals or limits are reached
     const isExerciseGoalReached = exerciseMinLeft <= 0;
     const isSocialGoalReached = socialMinLeft <= 0;
     const isAlcoholGoalReached = alcoholLeft <= 0;
@@ -1607,6 +1589,7 @@ app.get("/daily-activity-tracking", async (req, res) => {
       isSmokeGoalReached: isSmokeGoalReached,
     });
   } catch (error) {
+    // Handle errors when retrieving user data
     console.error("Error retrieving user data:", error);
   }
 });
@@ -1628,6 +1611,7 @@ function isUserOnTrack(
   return true;
 }
 
+// post method for daily activity tracking page
 app.post("/daily-activity-tracking", async (req, res) => {
   try {
     const username = req.session.username;
@@ -1637,16 +1621,13 @@ app.post("/daily-activity-tracking", async (req, res) => {
     let { exerciseDuration, socialDuration, alcoholAmount, smokeAmount } =
       req.body;
 
-    console.log("Received exerciseDuration:", exerciseDuration);
-    console.log("Received socialDuration:", socialDuration);
-    console.log("Received alcoholAmount:", alcoholAmount);
-    console.log("Received smokeAmount:", smokeAmount);
-
     // Parse the values as floats and fallback to 0 if they are NaN
     exerciseDuration = parseFloat(exerciseDuration) || 0;
     socialDuration = parseFloat(socialDuration) || 0;
     alcoholAmount = parseFloat(alcoholAmount) || 0;
     smokeAmount = parseFloat(smokeAmount) || 0;
+
+    // Check if the user is on track
     const isOnTrack = isUserOnTrack(
       exerciseDuration,
       socialDuration,
@@ -1660,8 +1641,6 @@ app.post("/daily-activity-tracking", async (req, res) => {
       date: currentDate,
     });
 
-    console.log("found:" + username + currentDate);
-
     if (existingDocument) {
       // Document exists, update all the fields by adding the new values to the existing values
       const updatedExerciseDuration =
@@ -1672,6 +1651,8 @@ app.post("/daily-activity-tracking", async (req, res) => {
         existingDocument.alcoholAmount + parseFloat(alcoholAmount);
       const updatedSmokeAmount =
         existingDocument.smokeAmount + parseFloat(smokeAmount);
+
+      // Check and update if the user is on track
       const updatedIsOnTrack = isUserOnTrack(
         updatedExerciseDuration,
         updatedSocialDuration,
@@ -1679,9 +1660,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
         updatedSmokeAmount
       );
 
-      console.log("Existing document:", existingDocument);
-      console.log("Existing document ID:", existingDocument._id);
-
+      // Find the user document based on _id and update activity tracking fields
       await activityCollection.updateOne(
         { _id: existingDocument._id },
         {
@@ -1694,14 +1673,8 @@ app.post("/daily-activity-tracking", async (req, res) => {
           },
         }
       );
-      console.log("Today's activity updated");
-      console.log("updatedExerciseDuration:" + updatedExerciseDuration);
-      console.log("updatedSocialDuration:" + updatedSocialDuration);
-      console.log("updatedAlcoholAmount:" + updatedAlcoholAmount);
-      console.log("updatedSmokeAmount:" + updatedSmokeAmount);
-      console.log("updatedIsOnTrack:" + updatedIsOnTrack);
     } else {
-      // Document does not exist, create a new one
+      // Document does not exist, create a new document and set the values to the new values
       await activityCollection.insertOne({
         username: username,
         date: currentDate,
@@ -1711,12 +1684,13 @@ app.post("/daily-activity-tracking", async (req, res) => {
         smokeAmount: smokeAmount,
         isOnTrack: isOnTrack,
       });
-      console.log("Today's activity created");
     }
   } catch (error) {
-    console.log(error);
+    // Handle errors when updating or creating a document
+    console.error("Error updating or creating a document:", error);
   }
 
+  // Redirect the user to the daily activity tracking page
   res.redirect("/daily-activity-tracking");
 });
 
