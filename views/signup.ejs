@@ -1,6 +1,6 @@
 <%- include("templates/header-no-nav") %>
 
-<!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu, with size and color adaptation made. The function validateForm() is written with assistance of chatGPT -->
+<!-- This block of code is modified from COMP 2537 Assignment 2 by Shuyi Liu, with size and color adaptation made.-->
 
 <div class="signupsetting">
     <div class="text-center">
@@ -24,6 +24,7 @@
     </div>
 
     <!-- Using array to store the missing fields, and then join them with a comma and space to form a string. Written with assistance from chatGPT -->
+    <!-- chatGPT assistance: look for syntax to show all error messages in one array -->
     <script>
         function validateForm() {
             var username = document.getElementsByName("username")[0].value;
