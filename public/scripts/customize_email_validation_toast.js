@@ -1,3 +1,7 @@
+// Description: This file contains customization for validation errors toasts.
+// Author: Olga Zimina
+// Last modified: 2023-05-26
+
 // Get the email input element
 const emailInput = document.querySelector('input[type="email"]');
 

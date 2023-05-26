@@ -1,3 +1,8 @@
+// Description: This file contains functions that controls
+// player components (play, pause, loop, progress bar, time)
+// Author: Olga Zimina
+// Last modified: 2023-05-26
+
 // Initialize variables and DOM elements
 const content = document.querySelector(".content"),
   musicTitle = content.querySelector(".music-title"),
