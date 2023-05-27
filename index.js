@@ -1,3 +1,6 @@
+// Authors: Shuyi Liu, Kelly Hagg, Olga Zimina
+// Last modified: 2023-05-26
+
 // Import necessary modules and packages
 require("./utils.js");
 require("dotenv").config();
@@ -40,15 +43,13 @@ const {
   getObjectScore,
   getWord,
   getReversalScore,
-} = require("./public/scripts/mmse.js"); // import mmse.js
-const ss = require("simple-statistics"); // import simple-statistics
+} = require("./public/scripts/mmse.js"); // import mmse.js functions
+const ss = require("simple-statistics"); // import simple-statistics library
 const {
   runAlgorithm,
   train,
 } = require("./public/scripts/recommendations_algorithm.js"); // import recommendations_algorithm.js
-const {
-  calculateRisk
-} = require("./public/scripts/alzheimers_risk.js"); // import alzheimers_risk.js
+const { calculateRisk } = require("./public/scripts/alzheimers_risk.js"); // import alzheimers_risk.js
 const jwt = require("jsonwebtoken"); // import jsonwebtoken
 const nodemailer = require("nodemailer"); // import nodemailer
 const fs = require("fs"); // import fs
@@ -187,7 +188,7 @@ app.post("/signup", async (req, res) => {
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
     username: Joi.string().alphanum().max(40).required(),
-    email: Joi.string().max(20).required(),
+    email: Joi.string().max(40).required(),
     password: Joi.string().max(20).required(),
   });
 
@@ -195,14 +196,40 @@ app.post("/signup", async (req, res) => {
   const validationResult = schema.validate({ username, email, password });
   if (validationResult.error != null) {
     console.log(validationResult.error);
-    res.redirect("/signup", { errorMessage: "" });
-    return;
+
+    // if the error is related to username, redirect to signup page with error message for username
+    if (validationResult.error.details[0].path[0] === "username") {
+      const errorMessage =
+        "Username is not valid, please enter a username with only letters and numbers under 40 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    // if the error is related to email, redirect to signup page with error message for email
+    if (validationResult.error.details[0].path[0] === "email") {
+      const errorMessage =
+        "Email is not valid, please enter an email under 20 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    // if the error is related to password, redirect to signup page with error message for password
+    if (validationResult.error.details[0].path[0] === "password") {
+      const errorMessage =
+        "Password is not valid, please enter a password under 20 characters.";
+      res.render("signup", { errorMessage: errorMessage });
+      return;
+    }
+
+    // if the error is not related to username, email or password, redirect to signup page with general error message
+    res.redirect("/signup", {
+      errorMessage: "There is an error with your signup, please try again.",
+    });
   }
 
   // check if username already exists in databse
   const existingUser = await userCollection.findOne({ username });
   if (existingUser) {
-    console.log("Username already exists");
     const errorMessage =
       "Username already exists, please choose another username.";
     res.render("signup", { errorMessage: errorMessage });
@@ -214,7 +241,7 @@ app.post("/signup", async (req, res) => {
 
   // Set notification configuration
   const currentDate = new Date();
-  // insert the user into the database
+  // insert the user into the database with default values
   const result = await userCollection.insertOne({
     username: username,
     email: email,
@@ -253,8 +280,6 @@ app.post("/signup", async (req, res) => {
       wasNotificationClosed: false,
     },
   });
-
-  console.log("Inserted user through signup");
 
   // store the userId in the session
   req.session.userId = result.insertedId;
@@ -300,11 +325,16 @@ async function checkChallengeTrend(username) {
   }
 }
 
+// Check if an Easter egg announcement should be shown to a user.
 async function showEasterEggAnnounced(userId, isEasterEggActivated) {
+  // Fetch user information from the database
   const user = await userCollection.findOne(
     { _id: new ObjectId(userId) },
     { projection: { wasEasterEggAnnounced: 1 } }
   );
+
+
+  // Determine if the Easter egg announcement should be shown
   const showPopUp = !user.wasEasterEggAnnounced;
   if (showPopUp && isEasterEggActivated) {
     return true;
@@ -313,8 +343,9 @@ async function showEasterEggAnnounced(userId, isEasterEggActivated) {
   }
 }
 
+// Check if a checkup notification can be shown to a user.
 async function canShowCheckupNotification(userId) {
-  console.log("userId: ", userId);
+  // Fetch notification information from the database
   const notification = await notificationsCollection.findOne(
     {
       userId: userId,
@@ -323,10 +354,12 @@ async function canShowCheckupNotification(userId) {
       projection: { mmse: 1, wasNotificationClosed: 1 },
     }
   );
-  console.log("notification: ", notification);
-  const currentDate = new Date().toISOString().slice(0, 10); // Get today's date
+  // Get today's date
+  const currentDate = new Date().toISOString().slice(0, 10);
+  // Get the next notification date from the MMSE object, if available
   var nextNotificationDate = notification?.mmse?.next;
   nextNotificationDate = nextNotificationDate.slice(0, 10);
+  // Determine if the notification should be shown
   const showNotification = !notification.mmse.wasNotificationClosed;
   console.log(
     "Notification was previously closed: ",
@@ -334,10 +367,8 @@ async function canShowCheckupNotification(userId) {
   );
   console.log("Show notification: ", showNotification);
   if (currentDate >= nextNotificationDate && showNotification) {
-    console.log("Show notification");
     return true;
   } else {
-    console.log("Do not show notification");
     return false;
   }
 }
@@ -346,33 +377,34 @@ async function canShowCheckupNotification(userId) {
 app.use("/homepage", validateSession);
 // get method for homepage
 app.get("/homepage", async (req, res) => {
+  // Check if a checkup notification can be shown
   const showCheckupNotification = await canShowCheckupNotification(
     req.session.userId
   );
-  console.log("Home: ", showCheckupNotification);
-
   var data = "";
   var isEasterEggActivated = await checkChallengeTrend(req.session.username);
   var showEasterEggPopup = await showEasterEggAnnounced(
     req.session.userId,
     isEasterEggActivated
   );
-  console.log("showEasterEggPopup", showEasterEggPopup);
+  // Check if the Easter egg popup should be shown
   if (showEasterEggPopup) {
     data = `You were doing great these last ${CHALLENGE_PERIOD} days. 
       So RecallRx team decided to add something special for you.`;
+    // Update the user's "wasEasterEggAnnounced" field to true
     await userCollection.updateOne(
       { _id: new ObjectId(req.session.userId) },
       { $set: { wasEasterEggAnnounced: true } }
     );
   }
-  console.log("render home");
+  // Render the "homepage" view with the necessary data
   res.render("homepage", {
     recommendation1: "alcohol",
     isEasterEggActivated: isEasterEggActivated,
     data: data,
     showPopUp: showEasterEggPopup,
     showCheckupNotification: showCheckupNotification,
+    appHostingAddress: app_hosting_address,
   });
 });
 
@@ -389,12 +421,15 @@ app.post("/checkup-toast-state-update", async (req, res) => {
   );
 });
 
+// Middleware to validate user session before accessing risk factor survey
 app.use("/riskfactorsurvey", validateSession);
+
 // get method for risk factor survey
 app.get("/riskfactorsurvey", (req, res) => {
   res.render("riskfactorsurvey");
 });
 
+// Middleware to validate user session before accessing risk factor survey questions
 app.use("/riskfactorquestions", validateSession);
 // get method for risk factor survey
 app.get("/riskfactorquestions", (req, res) => {
@@ -426,8 +461,9 @@ app.post("/riskfactorquestions", async (req, res) => {
     diabetes,
     depression,
   });
+
+  // if the input is invalid, redirect to the risk factor survey page
   if (validationResult.error != null) {
-    console.log(validationResult.error);
     res.redirect("/riskfactorquestions");
     return;
   }
@@ -435,14 +471,7 @@ app.post("/riskfactorquestions", async (req, res) => {
   // retrieve the user ID from the session
   const username = req.session.username;
 
-  // insert the user's risk factor survey results into the database and save it to the same document
-  console.log("username: ", username);
-  console.log("educationLevel: ", educationLevel);
-  console.log("age: ", age);
-  console.log("gender: ", gender);
-  console.log("diabetes: ", diabetes);
-  console.log("depression: ", depression);
-
+  // update the user's risk factor survey results in the database
   await userCollection.updateOne(
     { username: username },
     {
@@ -456,8 +485,6 @@ app.post("/riskfactorquestions", async (req, res) => {
     }
   );
 
-  console.log("Inserted user survey");
-
   // redirect to the homepage when user finishes survey
   res.redirect("/surveyfinished");
 });
@@ -468,40 +495,72 @@ app.get("/surveyfinished", async (req, res) => {
     { username: req.session.username },
     { projection: { educationLevel: 1, age: 1, gender: 1 } }
   );
-  console.log("userData: ", userData.educationLevel);
 
-  const risk = await calculateRisk(userData.age, userData.gender, userData.educationLevel);
+  const risk = await calculateRisk(
+    userData.age,
+    userData.gender,
+    userData.educationLevel
+  );
 
   res.render("surveyfinished", { risk: risk });
 });
 
+// Get method for mmse landing page, reset the user score and page count, 
+// retrieved objects and retrieved words
 app.get("/mmse-landing-page", (req, res) => {
   userScore = 0;
   pageCount = 1;
   retrievedObjects = [];
   retrievedWords = [];
+  // populate header text
   res.render("mmse-landing-page", { headerMessage: "MMSE Questionnaire" });
 });
 
+// Post method for mmse landing page, redirect to mmse orientation page
 app.post("/mmse-landing-page", async (req, res) => {
   res.redirect("/mmse-orientation");
 });
 
+// Get method for mmse orientation page
 app.get("/mmse-orientation", (req, res) => {
   res.render("mmse-orientation.ejs", { headerMessage: "MMSE Questionnaire" });
 });
 
+// Post method for mmse orientation page, redirect to mmse object recall page
+// Made with the assistance of ChatGPT
 app.post("/mmse-orientation", async (req, res) => {
-  var year = req.body.year;
-  var month = req.body.month;
   var day = req.body.day;
+  // Define the validation schema
+  const schema = Joi.object({
+    year: Joi.number().integer(),
+    month: Joi.number().integer(),
+  });
 
+  // Validate the input
+  const { error, value } = schema.validate({
+    year: req.body.year,
+    month: req.body.month,
+  });
+
+  if (error) {
+    // Handle the validation error
+    console.error(error.details[0].message);
+    res.redirect("/mmse-orientation");
+    return;
+  }
+
+  // Validation successful
+  var year = value.year;
+  var month = value.month;
+
+  // validate the input style for year and month using Joi, day is not applicable.
   userScore = userScore + getOrientationScore(year, month, day);
   console.log("userScore: " + userScore);
   res.redirect("/mmse-object-recall");
   return;
 });
 
+// Get method for mmse object recall page
 app.get("/mmse-object-recall", async (req, res) => {
   const object = getObject(retrievedObjects);
   retrievedObjects.push(object);
@@ -512,6 +571,7 @@ app.get("/mmse-object-recall", async (req, res) => {
   });
 });
 
+// Post method for mmse object recall page, redirect to mmse sentence recall page
 app.post("/mmse-object-recall", async (req, res) => {
   const object = req.body.object;
   const inputObject = req.body.inputObject;
@@ -526,6 +586,7 @@ app.post("/mmse-object-recall", async (req, res) => {
   }
 });
 
+// Get method for mmse sentence recall page
 app.get("/mmse-sentence-recall", (req, res) => {
   const sentence = getSentence();
   res.render("mmse-sentence-recall.ejs", {
@@ -534,6 +595,7 @@ app.get("/mmse-sentence-recall", (req, res) => {
   });
 });
 
+// Post method for mmse sentence recall page, redirect to mmse word reversal page
 app.post("/mmse-sentence-recall", async (req, res) => {
   const sentence = req.body.sentence;
   const inputSentence = req.body.inputSentence;
@@ -542,6 +604,7 @@ app.post("/mmse-sentence-recall", async (req, res) => {
   res.redirect("/mmse-word-reversal");
 });
 
+// Get method for mmse word reversal page
 app.get("/mmse-word-reversal", async (req, res) => {
   const word = getWord(retrievedWords);
   retrievedWords.push(word);
@@ -553,6 +616,7 @@ app.get("/mmse-word-reversal", async (req, res) => {
   });
 });
 
+// Post method for mmse word reversal page, redirect to mmse results page
 app.post("/mmse-word-reversal", async (req, res) => {
   const word = req.body.word;
   const inputWord = req.body.inputWord;
@@ -567,19 +631,22 @@ app.post("/mmse-word-reversal", async (req, res) => {
   }
 });
 
+// Get method for mmse results page, populate DB with user score
+// Function created and debugged with the assistance of ChatGPT
 app.get("/mmse-results", async (req, res) => {
   const score = parseInt(Math.round((userScore / 15) * 100));
-  const activityData = await activityCollection.find({}).toArray();
   var exercise = [];
   var social = [];
   var smoking = [];
   var alcohol = [];
 
+  // Get the current date and format it to ISOString
   const previousMonth = new Date();
   previousMonth.setMonth(previousMonth.getMonth() - 1);
   const formattedDate = previousMonth.toISOString();
   const activities = await activityCollection.find({}).toArray();
 
+  // Get the average of each activity of the user for the past month
   activities.forEach((activity) => {
     if (
       req.session.username == activity.username &&
@@ -598,6 +665,7 @@ app.get("/mmse-results", async (req, res) => {
   const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
   const alcoholAvg = alcohol.reduce((a, b) => a + b, 0) / alcohol.length;
 
+  // Insert the results into the database
   await resultsCorrelationData.insertOne({
     exerciseAvg: exerciseAvg,
     socialAvg: socialAvg,
@@ -622,6 +690,7 @@ app.get("/mmse-results", async (req, res) => {
 
   const randomNumber1to100 = Math.floor(Math.random() * 100) + 1;
 
+  // Retrain the model from the data every roughly 1 / 100 mmse score submissions
   if (randomNumber1to100 == 1) {
     console.log("Training model");
     var updatedCorrelationValues = [];
@@ -629,6 +698,7 @@ app.get("/mmse-results", async (req, res) => {
     updatedCorrelationValues = await train(result);
     console.log(updatedCorrelationValues[0]);
 
+    // Update the correlation values in the database, and remove the outdated values
     console.log(updatedCorrelationValues);
     await resultsCorrelationValues.deleteMany({});
     await resultsCorrelationValues.insertOne({
@@ -639,7 +709,9 @@ app.get("/mmse-results", async (req, res) => {
     });
   }
 
-  const past5ScoresData = await mmseScoresCollection.find({ username: req.session.username })
+  // Get the past 5 scores of the user to populate the visual graph
+  const past5ScoresData = await mmseScoresCollection
+    .find({ username: req.session.username })
     .sort({ date: -1 })
     .limit(5)
     .toArray();
@@ -649,8 +721,6 @@ app.get("/mmse-results", async (req, res) => {
     past5Scores.push(score.score);
   });
 
-  console.log("PAST 5 SCOOOOROES", past5Scores.reverse());
-
   res.render("mmse-results.ejs", {
     headerMessage: "MMSE Results",
     score: score,
@@ -659,15 +729,19 @@ app.get("/mmse-results", async (req, res) => {
   userScore = 0;
 });
 
+// Defines the next MMSE (Mini-Mental State Examination) date for a user
 async function defineNextMmseDate(userId) {
-  const currentDate = new Date();
+  const currentDate = new Date(); // Get the current date
+  // Retrieve the notification document for the user
   var notification = await notificationsCollection.findOne(
     { userId: userId },
     { projection: { mmse: 1 } }
   );
+  // Extract the frequency and active status of MMSE from the notification
   const frequency = notification.mmse.frequency;
   const isActive = notification.mmse.active;
   var numberOfDays = 7;
+  // Determine the number of days based on the frequency
   switch (frequency) {
     case "every-other-week":
       numberOfDays = 14;
@@ -675,12 +749,9 @@ async function defineNextMmseDate(userId) {
     case "monthly":
       numberOfDays = 30;
   }
-  console.log("current date: ", currentDate);
   const newNextDate = new Date();
   newNextDate.setDate(currentDate.getDate() + numberOfDays);
-  console.log("next: ", newNextDate);
-  console.log("next: ", newNextDate.toISOString());
-  console.log("user id: ", userId);
+  // Update the next MMSE date if the notification is active
   if (isActive) {
     const updatedNotification = await notificationsCollection.findOneAndUpdate(
       { userId: userId },
@@ -729,7 +800,6 @@ app.post("/login", async (req, res) => {
     });
     return;
   }
-  console.log(user);
   // Check password match and set session variables
   const passwordMatch = await bcrypt.compare(password, user[0].password);
   if (passwordMatch) {
@@ -755,7 +825,6 @@ app.use("/loggedIn", validateSession);
 
 // Route to handle user session validation
 app.get("/loggedIn", (res, req) => {
-  console.log("loggedin");
   res.redirect("/homepage");
 });
 // End of Login API
@@ -779,7 +848,6 @@ async function sendEmail(to, subject, message) {
       html: message,
     });
 
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.log(error);
   }
@@ -795,7 +863,7 @@ app.post("/forgot-password", async (req, res) => {
 
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    email: Joi.string().max(50).required(),
+    email: Joi.string().max(40).required(),
   });
 
   // validate the input
@@ -822,7 +890,6 @@ app.post("/forgot-password", async (req, res) => {
     console.log("User not found");
     return;
   }
-  console.log(user);
 
   // Create a onetime link valid for a day
   const secret = jwt_secret + user[0].password;
@@ -830,14 +897,8 @@ app.post("/forgot-password", async (req, res) => {
     email: user[0].email,
     id: user[0]._id,
   };
-  console.log("payload" + payload);
   const token = jwt.sign(payload, secret, { expiresIn: "1d" });
-  //  TO DO
   const link = `${app_hosting_address}/reset-password/${user[0]._id}&auth=${token}`;
-  // const link = `https://recallrx.cyclic.app/reset-password/${user[0]._id}&auth=${token}`;
-  // const link = `http://localhost:3000/reset-password/${user[0]._id}&auth=${token}`;
-  console.log(link);
-  //TO DO: send email
   fs.readFile(
     __dirname + "/emails/reset-password-email.html",
     "utf8",
@@ -880,7 +941,6 @@ app.get("/reset-password/:id&auth=:token", async (req, res) => {
       });
       return;
     }
-    console.log("user found");
     // Handle reset password for user with provided id
     const secret = jwt_secret + user.password;
 
@@ -903,13 +963,11 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
   // Extract the id, token, and password from the request
   const { id, token } = req.params;
   const { password } = req.body;
-  console.log("inside post reset password");
   // Check if id exists in database
   const user = await userCollection.findOne(
     { _id: new ObjectId(id) },
     { projection: { username: 1, email: 1, _id: 1, password: 1 } }
   );
-  console.log(user);
   // Handle case where provided id is invalid
   if (!user) {
     console.log("User not found");
@@ -922,7 +980,6 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
       isError: true,
     };
     res.redirect("/messages");
-    console.log("ID is not valid");
     return;
   }
   // Handle reset password for user with provided id
@@ -945,7 +1002,6 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
     };
     res.redirect("/messages");
   } catch (error) {
-    console.log("inside try catch");
     console.log(error.message);
     // Set an error message in the session
     req.session.messageData = {
@@ -959,6 +1015,7 @@ app.post("/reset-password/:id&auth=:token", async (req, res) => {
   }
 });
 
+// Retrieves the message data and renders the "messages" view with the data.
 app.get("/messages", (req, res) => {
   const messageData = req.session.messageData;
   res.render("messages", {
@@ -976,8 +1033,6 @@ app.use("/settings", validateSession);
 app.get("/settings", (req, res) => {
   const username = req.session.username;
   const email = req.session.email;
-  console.log(username, email);
-  // res.render("settings", { userName: username, email: email });
   res.render("settings", {
     userName: username,
     email: email,
@@ -995,56 +1050,85 @@ app.get("/user-name-edit", async (req, res) => {
     .find({ username: username })
     .project({ username: 1, email: 1, password: 1, _id: 1 })
     .toArray();
-  console.log(user);
   res.render("user-name-edit", { user: user, errorMsg: "" });
 });
 
+// Update a user's name based on the provided user ID.
 app.post("/update-user-name/:userId", async (req, res) => {
   const userId = req.params.userId;
+  // Find the user with the specified ID and retrieve the username and email
   var user = await userCollection
     .find({ _id: new ObjectId(userId) })
     .project({ username: 1, email: 1 })
     .toArray();
   const newUserName = req.body.userName;
+
+  // Define the validation schema for the new user name
+  const schema = Joi.object({
+    newUserName: Joi.string().alphanum().max(40).required(),
+  });
+  // Validate the new user name against the schema
+  const validationResult = schema.validate({ newUserName });
+  // Check if there is an error in the validation result
+  if (validationResult.error != null) {
+    console.log(validationResult.error);
+    let flag = validationResult.error.details[0].path[0] === "newUserName";
+    // if the error is related to username, redirect to signup page with error message for username
+    if (validationResult.error.details[0].path[0] === "newUserName") {
+      const errorMessage =
+        "Username is not valid, please enter a username with only letters and numbers under 40 characters.";
+      res.render("user-name-edit", {
+        user: user,
+        errorMsg: errorMessage,
+      });
+      return;
+    }
+  }
+
   const anyUser = await userCollection.findOne(
     { username: newUserName },
-    { projection: { username: 1 } }
+    { projection: { username: 1, userId: 1 } }
   );
-  if (anyUser) {
+  // / If a user with the same user name exists and it is not the current user's name,
+  // render the "user-name-edit" view with an error message
+  if (anyUser && anyUser.username !== req.session.username) {
     res.render("user-name-edit", {
       user: user,
       errorMsg: `User with user name ${newUserName} already exists. Please select different user name.`,
     });
     return;
   }
+  // Update the user's username in the user collection
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { username: newUserName } }
   );
+  // Retrieve the updated user information from the user collection
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
 
-  console.log("post user name - user: " + user.username);
   req.session.username = user.username;
+  // Render the "settings" view with the updated user information and a success message
   res.render("settings", {
     userName: user.username,
     email: user.email,
     data: "user name",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
+// Middleware that validates the user session before accessing the "/email-edit" endpoint.
 app.use("/email-edit", validateSession);
+// Renders the "email-edit" view with the user's email
 app.get("/email-edit", async (req, res) => {
   const email = req.session.email;
+  // Find the user with the specified email and retrieve the necessary data
   const user = await userCollection.findOne(
     { email: email },
-    { projection: { username: 1, email: 1, is_admin: 1, _id: 1 } }
+    { projection: { username: 1, email: 1, _id: 1 } }
   );
-
-  console.log("get email - user: " + user);
+  // Render the "email-edit" view with the user's ID, email, and an empty error message
   res.render("email-edit", {
     userId: user._id,
     userEmail: user.email,
@@ -1052,29 +1136,36 @@ app.get("/email-edit", async (req, res) => {
   });
 });
 
+// Update a user's email address.
 app.post("/update-email/:userId", async (req, res) => {
   const userId = req.params.userId;
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const email = req.body.email;
   // validate the input style for username, email and password using Joi
   const schema = Joi.object({
-    email: Joi.string().max(50).required(),
+    email: Joi.string().max(40).required(),
   });
-  // validate the input
+  // Validate the input
   const validationResult = schema.validate({ email });
+  // If email validation fails, render the "email-edit" template with an error message
   if (validationResult.error != null) {
+    const errorMessage =
+      "Email is not valid, please enter an email under 20 characters.";
     res.render("email-edit", {
       userId: user._id,
       userEmail: user.email,
-      errorMsg: validationResult.error.message,
+      errorMsg: errorMessage,
     });
     return;
   }
+  // Check if any user already exists with the new email address
   const anyUser = await userCollection.findOne(
     { email: email },
-    { projection: { email: 1 } }
+    { projection: { email: 1, username: 1 } }
   );
-  if (anyUser) {
+  // If a user with the new email address already exists and it is not the current user,
+  // render the "email-edit" template with an error message
+  if (anyUser && anyUser.username !== req.session.username) {
     res.render("email-edit", {
       userId: user._id,
       userEmail: user.email,
@@ -1082,14 +1173,16 @@ app.post("/update-email/:userId", async (req, res) => {
     });
     return;
   }
+  // Update the user's email address in the database
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { email: email } }
   );
+  // Find the updated user in the userCollection
   user = await userCollection.findOne({
     _id: new ObjectId(userId),
   });
-
+  // Render the "settings" template with the updated user information and a popup message
   req.session.email = user.email;
   res.render("settings", {
     userName: user.username,
@@ -1097,12 +1190,13 @@ app.post("/update-email/:userId", async (req, res) => {
     data: "emails",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
+// Update user's password
 app.use("/password-change", validateSession);
 app.get("/password-change", async (req, res) => {
   const email = req.session.email;
+  // Find the user with the given userId in the userCollection
   const user = await userCollection
     .find({ email: email })
     .project({ username: 1, email: 1, is_admin: 1, _id: 1 })
@@ -1115,39 +1209,37 @@ app.post("/update-password/:userId", async (req, res) => {
   var user = await userCollection.findOne({ _id: new ObjectId(userId) });
   const newPassword = req.body.password;
 
-  console.log(newPassword);
-
   // Hash the password and update it in the database
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-  console.log(hashedPassword);
   await userCollection.updateOne(
     { _id: new ObjectId(userId) },
     { $set: { password: hashedPassword } }
   );
-  console.log("password updated");
+  // Render the "settings" template with the user information and a popup message
   res.render("settings", {
     userName: user.username,
     email: user.email,
     data: "password",
     showPopUp: true,
   });
-  // res.redirect("/settings");
 });
 
+// Destroy current session and render indx template
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("index");
 });
-
 // End of Settings API
-app.use("/notifications", validateSession);
+
 // Start notification API
+app.use("/notifications", validateSession);
+// Get user's notifications
 app.get("/notifications", async (req, res) => {
   try {
     const { userId } = req.session;
 
     const notifications = await notificationsCollection.findOne({ userId });
-
+    // Format the notifications data into an options object
     const date = new Date(notifications.exercise.next);
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -1175,16 +1267,18 @@ app.get("/notifications", async (req, res) => {
   }
 });
 
+// Update the notifications for a user.
 app.post("/notifications", async (req, res, next) => {
   try {
     const { userId } = req.session;
+    // Extract the new values for exercise and mmse notifications from the request body
     const exercise = req.body.exercise;
     const mmse = req.body.mmse;
+    // Update the exercise and mmse notification values for the user in the notificationsCollection
     await notificationsCollection.updateOne(
       { userId },
       { $set: { exercise, mmse } }
     );
-
     res.status(200).json({ message: "Updated" });
   } catch (error) {
     res.status(500).json({ message: error?.message || "error" });
@@ -1195,10 +1289,12 @@ app.post("/notifications", async (req, res, next) => {
 // validate user session before accessing daily recommendation page
 app.use("/dailyrecommendation", validateSession);
 
+// Start of Daily Recommendation API
+// Function made and debugged with the assistance of ChatGPT
 async function getRecommendation(req, res) {
   var lastRecommendation;
-  var dailyRecommendation;
 
+  // if user has not visited the page before, create a new document in the collection
   if (
     (await dailyRecommendationLastVisit.findOne(
       { username: req.session.username },
@@ -1211,6 +1307,7 @@ async function getRecommendation(req, res) {
       username: req.session.username,
       date: lastRecommendation,
     });
+    // else get the last recommendation date from the collection
   } else {
     console.log("last visit");
     lastRecommendation = (
@@ -1224,6 +1321,7 @@ async function getRecommendation(req, res) {
   const currentDate = new Date().toISOString().slice(0, 10); // Get current day
   console.log(lastRecommendation != currentDate);
 
+  // If the user has not visited the page today, get a new daily recommendation
   if (lastRecommendation == currentDate) {
     console.log("new day");
     lastRecommendation = currentDate; // Update lastRecommendation with currentDate
@@ -1244,6 +1342,7 @@ async function getRecommendation(req, res) {
     var recommendation1;
     var recommendation2;
 
+    // Get the last month's activities
     const previousMonth = new Date();
     previousMonth.setMonth(previousMonth.getMonth() - 1);
     const formattedDate = previousMonth.toISOString();
@@ -1262,6 +1361,7 @@ async function getRecommendation(req, res) {
       }
     });
 
+    // Get the current trained correlation values from the database
     const correlations = await resultsCorrelationValues.find({}).toArray();
 
     correlations.forEach((result) => {
@@ -1271,6 +1371,7 @@ async function getRecommendation(req, res) {
       coefficients.push(result.alcoholCorrelation);
     });
 
+    // Calculate the average of each activity
     const exerciseAvg = exercise.reduce((a, b) => a + b, 0) / exercise.length;
     const socialAvg = social.reduce((a, b) => a + b, 0) / social.length;
     const smokingAvg = smoking.reduce((a, b) => a + b, 0) / smoking.length;
@@ -1283,6 +1384,8 @@ async function getRecommendation(req, res) {
 
     console.log(coefficients);
 
+    // Run the algorithm to get the daily recommendations found in the 
+    // recommendations_algorithm.js file
     const dailyRecommendations = await runAlgorithm(values, coefficients);
 
     recommendation1 = dailyRecommendations[0];
@@ -1320,6 +1423,7 @@ async function getRecommendation(req, res) {
   return [recommendation1, recommendation2];
 }
 
+// Get the activity averages for the past 4 weeks and populate the graph in daily recommendation page
 async function getWeeklyAverages(req, res) {
   var exerciseAvgWeek1 = [];
   var exerciseAvgWeek2 = [];
@@ -1338,8 +1442,10 @@ async function getWeeklyAverages(req, res) {
   var alcoholAvgWeek3 = [];
   var alcoholAvgWeek4 = [];
 
+  // Get the current day
   const currentDay = new Date().toISOString().slice(0, 10);
 
+  // Get the dates ranges for each week in the last month
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const formatOneWeekAgo = oneWeekAgo.toISOString().slice(0, 10);
@@ -1367,6 +1473,7 @@ async function getWeeklyAverages(req, res) {
     }
   });
 
+  // Calculate the average of each activity for each week
   exerciseAvgWeek4 =
     exerciseAvgWeek4.reduce((a, b) => a + b, 0) / exerciseAvgWeek4.length;
   socialAvgWeek4 =
@@ -1462,6 +1569,7 @@ async function getWeeklyAverages(req, res) {
     alcoholAvgWeek4,
   ];
 
+  // Return the average of each activity for each week for use in daily recommendation page graph
   return [exerciseAvg, socialAvg, smokingAvg, alcoholAvg];
 }
 
@@ -1524,11 +1632,6 @@ app.get("/daily-activity-tracking", async (req, res) => {
       smokeAmount = 0;
     }
 
-    console.log("Exercise Time:", exerciseDuration);
-    console.log("Social Time:", socialDuration);
-    console.log("Alcohol Consumption:", alcoholAmount);
-    console.log("Smoke Count:", smokeAmount);
-
     // Calculate the progress ratios based on the retrieved data
     const exerciseProgressRatio = exerciseDuration
       ? exerciseDuration / EXERCISE_TIME_GOAL
@@ -1542,10 +1645,14 @@ app.get("/daily-activity-tracking", async (req, res) => {
     const smokeProgressRatio = smokeAmount
       ? smokeAmount / SMOKE_COUNT_LIMIT
       : 0;
+
+    // Calculate the time left to reach the goals or limites
     const exerciseMinLeft = EXERCISE_TIME_GOAL - exerciseDuration;
     const socialMinLeft = SOCIAL_TIME_GOAL - socialDuration;
     const alcoholLeft = ALCOHOL_CONSUMPTION_LIMIT - alcoholAmount;
     const smokeLeft = SMOKE_COUNT_LIMIT - smokeAmount;
+
+    // Check if the goals or limits are reached
     const isExerciseGoalReached = exerciseMinLeft <= 0;
     const isSocialGoalReached = socialMinLeft <= 0;
     const isAlcoholGoalReached = alcoholLeft <= 0;
@@ -1567,10 +1674,12 @@ app.get("/daily-activity-tracking", async (req, res) => {
       isSmokeGoalReached: isSmokeGoalReached,
     });
   } catch (error) {
+    // Handle errors when retrieving user data
     console.error("Error retrieving user data:", error);
   }
 });
 
+// Determine if users activity meets daily goal
 function isUserOnTrack(
   exerciseDuration,
   socialDuration,
@@ -1588,6 +1697,7 @@ function isUserOnTrack(
   return true;
 }
 
+// post method for daily activity tracking page
 app.post("/daily-activity-tracking", async (req, res) => {
   try {
     const username = req.session.username;
@@ -1597,16 +1707,13 @@ app.post("/daily-activity-tracking", async (req, res) => {
     let { exerciseDuration, socialDuration, alcoholAmount, smokeAmount } =
       req.body;
 
-    console.log("Received exerciseDuration:", exerciseDuration);
-    console.log("Received socialDuration:", socialDuration);
-    console.log("Received alcoholAmount:", alcoholAmount);
-    console.log("Received smokeAmount:", smokeAmount);
-
     // Parse the values as floats and fallback to 0 if they are NaN
     exerciseDuration = parseFloat(exerciseDuration) || 0;
     socialDuration = parseFloat(socialDuration) || 0;
     alcoholAmount = parseFloat(alcoholAmount) || 0;
     smokeAmount = parseFloat(smokeAmount) || 0;
+
+    // Check if the user is on track
     const isOnTrack = isUserOnTrack(
       exerciseDuration,
       socialDuration,
@@ -1620,8 +1727,6 @@ app.post("/daily-activity-tracking", async (req, res) => {
       date: currentDate,
     });
 
-    console.log("found:" + username + currentDate);
-
     if (existingDocument) {
       // Document exists, update all the fields by adding the new values to the existing values
       const updatedExerciseDuration =
@@ -1632,6 +1737,8 @@ app.post("/daily-activity-tracking", async (req, res) => {
         existingDocument.alcoholAmount + parseFloat(alcoholAmount);
       const updatedSmokeAmount =
         existingDocument.smokeAmount + parseFloat(smokeAmount);
+
+      // Check and update if the user is on track
       const updatedIsOnTrack = isUserOnTrack(
         updatedExerciseDuration,
         updatedSocialDuration,
@@ -1639,9 +1746,7 @@ app.post("/daily-activity-tracking", async (req, res) => {
         updatedSmokeAmount
       );
 
-      console.log("Existing document:", existingDocument);
-      console.log("Existing document ID:", existingDocument._id);
-
+      // Find the user document based on _id and update activity tracking fields
       await activityCollection.updateOne(
         { _id: existingDocument._id },
         {
@@ -1654,14 +1759,8 @@ app.post("/daily-activity-tracking", async (req, res) => {
           },
         }
       );
-      console.log("Today's activity updated");
-      console.log("updatedExerciseDuration:" + updatedExerciseDuration);
-      console.log("updatedSocialDuration:" + updatedSocialDuration);
-      console.log("updatedAlcoholAmount:" + updatedAlcoholAmount);
-      console.log("updatedSmokeAmount:" + updatedSmokeAmount);
-      console.log("updatedIsOnTrack:" + updatedIsOnTrack);
     } else {
-      // Document does not exist, create a new one
+      // Document does not exist, create a new document and set the values to the new values
       await activityCollection.insertOne({
         username: username,
         date: currentDate,
@@ -1671,12 +1770,13 @@ app.post("/daily-activity-tracking", async (req, res) => {
         smokeAmount: smokeAmount,
         isOnTrack: isOnTrack,
       });
-      console.log("Today's activity created");
     }
   } catch (error) {
-    console.log(error);
+    // Handle errors when updating or creating a document
+    console.error("Error updating or creating a document:", error);
   }
 
+  // Redirect the user to the daily activity tracking page
   res.redirect("/daily-activity-tracking");
 });
 
@@ -1688,6 +1788,17 @@ app.get("/meditation", (req, res) => {
 });
 
 // End of meditation API
+
+// Help and Support 
+app.use("/help-and-support", validateSession);
+app.get("/help-and-support", (req, res) => {
+  res.render("help-and-support");
+});
+// get method for coming soon page
+app.use("/coming-soon", validateSession);
+app.get("/coming-soon", (req, res) => {
+  res.render("coming-soon");
+});
 
 // get method for 404 page
 app.get("*", (req, res) => {

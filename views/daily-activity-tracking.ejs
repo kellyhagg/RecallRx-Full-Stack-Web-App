@@ -1,8 +1,10 @@
 <%- include("templates/header-back", {headerMessage: "Daily Activity Tracking" }) %>
 
 <!-- This is modified from bootstrap's carousel example: https://getbootstrap.com/docs/4.0/components/carousel/ -->
+<!-- These modifications were made: Add text content, change content style, change height of carousel-item, add elements-->
 
 <div class="activity-tracking-page light-green-background">
+    <!-- notify the user that they can swipe to view other activities -->
     <div class="activity-swipe-text text-center light-green-background dark-green">
         Swipe to View Other Activities
     </div>
@@ -10,11 +12,13 @@
     <div id="hero-carousel" class="carousel slide w-100 light-green-background activity-tracking-container"
         data-bs-ride="carousel">
         <div class="carousel-inner activity-container">
+            <!-- exercise tracking section -->
             <div class="carousel-item active c-item">
                 <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
                 <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
                     <h1 class="display-1 fw-bolder text-capitalize">Exercise</h1>
                     <br>
+                    <!-- placeholder for progress bar -->
                     <div class="radialprogress exercise-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
                         <!-- when user reaches their exercise goal -->
@@ -35,11 +39,13 @@
                     </div>
                 </div>
             </div>
+            <!-- social tracking section -->
             <div class="carousel-item c-item">
                 <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
                 <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
                     <p class="display-1 fw-bolder text-capitalize">Social</p>
                     <br>
+                    <!-- placeholder for progress bar -->
                     <div class="radialprogress social-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
                         <!-- when user reaches their social goal -->
@@ -59,11 +65,13 @@
                     </div>
                 </div>
             </div>
+            <!-- alcohol tracking section -->
             <div class=" carousel-item c-item">
                 <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
                 <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
                     <p class="display-1 fw-bolder text-capitalize">Alcohol</p>
                     <br>
+                    <!-- placeholder for progress bar -->
                     <div class="radialprogress alcohol-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
                         <% if (isAlcoholGoalReached) { %>
@@ -83,11 +91,13 @@
                         drink</div>
                 </div>
             </div>
+            <!-- smoke tracking section -->
             <div class="carousel-item c-item">
                 <div class="carousel-background activity-tracking-carousel-background light-green-background"></div>
                 <div class="carousel-caption activity-caption top-0 mt-4 dark-green">
                     <p class="display-1 fw-bolder text-capitalize">Smoke</p>
                     <br>
+                    <!-- placeholder for progress bar -->
                     <div class="radialprogress smoke-progress-bar"></div>
                     <div class="fs-3 mt-5 " style="font-size: 10px;">
                         <!-- when user reaches their smoke limit -->
@@ -108,6 +118,7 @@
                     </div>
                 </div>
             </div>
+            <!-- buttons to navigate between the slides -->
             <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
@@ -143,6 +154,7 @@
         </div>
     </div>
 
+    <!-- submit button -->
     <div class="text-center">
         <button class="btn btn btn-lg btn-primary btn-block rounded-pill px-4 py-2 mx-auto"
             style="background-color: #778251; width: 250px; border-color: #778251; font-size: 1.5rem;"
@@ -155,8 +167,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
-<!-- swiping functions -->
-<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ -->
+<!-- swiping functions, user can swipe between different activity tracking pages -->
+<!-- this code is taken from https://lazcreative.com/blog/adding-swipe-support-to-bootstrap-carousel-3-0/ written by
+Justin Lazanowski-->
 
 <script>
     var carousel = document.getElementById('hero-carousel');
@@ -174,7 +187,7 @@
 
 <!-- Script to create progress bar -->
 <!-- modified and adapted from code from https://stackoverflow.com/questions/49345858/html-how-do-i-generate-a-progress-bar-circle-with-a-percentage-in-and-set-the by G_S -->
-<!-- modification: populate dynamically on different activities, added colours, changed size, changed text, changed progress ratio -->
+<!-- modification: populate dynamically on different activities, add colours, change size, change text, change progress ratio -->
 <script>
     function drawProgress(elementClass, end) {
         var wrapper = d3.select('.' + elementClass);
@@ -254,13 +267,10 @@
 
 <script>
     // Note: this warning does not affect functionality, and can be ignored (confirmed with supervisor)
-    // eslint-disable-next-line
+    // Function to draw progress bar based on progress ratio passed from backend database
     drawProgress('exercise-progress-bar', <%= exerciseProgressRatio %>);
-    // eslint-disable-next-line
     drawProgress('social-progress-bar', <%= socialProgressRatio %>);
-    // eslint-disable-next-line
     drawProgress('alcohol-progress-bar', <%= alcoholProgressRatio %>);
-    // eslint-disable-next-line
     drawProgress('smoke-progress-bar', <%= smokeProgressRatio %>);
 </script>
 
@@ -353,7 +363,7 @@
 </script>
 
 <script>
-    // written with assistance of chatGPT
+    // written with assistance of chatGPT: search for syntax to parse numbers with signs
     // Function to handle the submit button click event
     $('#submitActivityChange').click(function () {
         // Extract the numbers from the text content of the <p> elements
@@ -379,20 +389,10 @@
 
         // Make the POST request using jQuery's $.post method
         $.post('/daily-activity-tracking', data, function (response) {
-            // Handle the response from the server if needed
-            console.log(response);
 
             // Reload the page after submitting changes
             window.location.href = window.location.href;
         })
-            .done(function () {
-                // if the request is successful
-                console.log('POST request successful');
-            })
-            .fail(function () {
-                // if the request fails
-                console.log('POST request failed');
-            });
     });
 
 </script>

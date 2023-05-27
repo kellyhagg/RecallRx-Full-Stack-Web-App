@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 
-<body>
+<body class="desktop">
     <nav class="navbar navbar-expand-md navbar-light">
         <div class="d-flex align-items-center navbar-content">
             <a onclick="history.back()">
@@ -45,8 +45,11 @@
                     <i class="material-icons" style="color: #f5f5f5">arrow_back_ios</i>
                 </button>
             </a>
-            <h1 class="header-message">
+            <div class="header-back d-flex align-items-center justify-content-center">
+                <h1 class="header-message" id="header-back">
                 <%= headerMessage %>
             </h1>
+        </div>
+            
         </div>
     </nav>

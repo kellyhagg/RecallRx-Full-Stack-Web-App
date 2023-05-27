@@ -1,9 +1,12 @@
+<!-- Include header template -->
 <%- include("templates/header", {headerMessage: headerMessage }) %>
 
     <br>
 
-    <div class="card mx-auto rounded">
+    <div class="card mx-auto rounded card-spacing">
         <div class="card-body">
+            <!-- Form to test user's orientation with time per MMSE questionnaire -->
+            <!-- https://cgatoolkit.ca/Uploads/ContentDocuments/MMSE.pdf -->
             <form method="POST" action="/mmse-orientation">
                 <h4>What year is it (YYYY)?</h4>
                 <div class="text-boxes">
@@ -53,8 +56,8 @@
                 </script>
         </div>
     </div>
-    <br><br>
 
+    <!-- Include footer template -->
     <%- include("templates/mmse-footer", {questionType : "orientation" , mmseBtnText: "Next" , reference
         : "/mmse-orientation" }) %>
         </form>

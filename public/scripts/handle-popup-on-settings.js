@@ -1,14 +1,19 @@
+// Description: This file contains function that displays and hides 
+// successful user details update popup 
+// Author: Olga Zimina
+// Last modified: 2023-05-26
+
 $(document).ready(function () {
-  // get the popup and the OK button
+  // Get the popup and the OK button
   var popup = $("#popup");
   var okBtn = $(".popup-btn");
 
-  // add click event listener to OK button
+  // Add click event listener to OK button
   okBtn.click(function () {
-    // close the popup
+    // Close the popup
     popup.hide();
     okBtn.hide();
-    // trigger the route (replace "route-url" with your actual route URL)
+    // Trigger the settings route 
     window.location.href = "/settings";
   });
 });

@@ -1,5 +1,11 @@
+// Calculate and weight the MMSE results score for each question and provide a total score
+// https://cgatoolkit.ca/Uploads/ContentDocuments/MMSE.pdf
+// Author: Kelly Hagg
+// Last modified: 2023-05-26
+
 const fs = require('fs');
 
+// Get score for time orientation related questions and return the weighted value
 function getOrientationScore(year, month, day) {
     var score = 0;
     const now = new Date();
@@ -9,6 +15,7 @@ function getOrientationScore(year, month, day) {
     return score * (5 / 3);
 }
 
+// Get score for object recall related questions and return the weighted value
 function getObjectScore(input, correctObject) {
     var score = 0;
     var cleaned = cleanAnswer(input);
@@ -17,6 +24,7 @@ function getObjectScore(input, correctObject) {
     return score;
 }
 
+// Get score for sentence repetition related questions and return the weighted value
 function getSentenceScore(input, correctSentence) {
     var score = 0;
     var cleaned = cleanAnswer(input);
@@ -26,6 +34,7 @@ function getSentenceScore(input, correctSentence) {
     return score * 2;
 }
 
+// Get score for word reversal related questions and return the weighted value
 function getReversalScore(input, correctWord) {
     var score = 0;
     var reversedWord = reverseWord(correctWord);
@@ -44,6 +53,8 @@ function getDayStr() {
     return `${dayOfWeek}`;
 }
 
+// Get the object to be recalled from objects.json file (populated using ChatGPT)
+// Function created and debugged with the assistance of ChatGPT
 function getObject(retrievedObjects) {
     const objectsPair = JSON.parse(fs.readFileSync('public/resources/objects.json', 'utf8'));
     var objects = objectsPair.objects;
@@ -61,6 +72,8 @@ function getObject(retrievedObjects) {
     return randomObject;
 }
 
+// Get the sentence to be recalled from sentences.json file (populated using ChatGPT)
+// Function created and debugged with the assistance of ChatGPT
 function getSentence() {
     const sentencesPair = JSON.parse(fs.readFileSync('public/resources/sentences.json', 'utf8'));
     const sentences = sentencesPair.sentences;
@@ -71,7 +84,8 @@ function getSentence() {
     return randomSentence;
 }
 
-
+// Get the word to be reversed from sentences.json file (populated using ChatGPT)
+// Function created and debugged with the assistance of ChatGPT
 function getWord(retrievedWords) {
     const wordsPair = JSON.parse(fs.readFileSync('public/resources/words.json', 'utf8'));
     var words = wordsPair.words;
@@ -89,6 +103,8 @@ function getWord(retrievedWords) {
     return randomWord;
 }
 
+// Function to reverse the word to compare the entered result
+// Helper function created with the assistance of ChatGPT
 function reverseWord(word) {
     let reversedWord = "";
     for (let i = word.length - 1; i >= 0; i--) {
@@ -97,6 +113,8 @@ function reverseWord(word) {
     return reversedWord;
 }
 
+// Function to clean answer to all lowercase and remove punctuation
+// Helper function created with the assistance of ChatGPT
 function cleanAnswer(answer) {
     if (!answer) {
         return "";
@@ -105,4 +123,5 @@ function cleanAnswer(answer) {
     return cleanStr;
 }
 
+// Export functions to be used in index.js file
 module.exports = { getObject, getSentence, getWord, getOrientationScore, getSentenceScore, getObjectScore, getReversalScore };
